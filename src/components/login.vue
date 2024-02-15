@@ -27,7 +27,7 @@ export default {
     async login() {
       // Implementazione del login
       try {
-        const response = await fetch('/api/login', {
+        const response = await fetch('http://localhost:3000/api/login', {
           method: 'POST',
           body: {
             email: this.email,

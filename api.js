@@ -2,12 +2,16 @@ const express = require('express');
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
 
 // Aggiungi il middleware per il parsing dei dati da form-data
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+    origin: 'http://localhost:8080'
+}));
 
 const pool = mysql.createPool({
     host: 'localhost',
@@ -18,16 +22,16 @@ const pool = mysql.createPool({
 
 app.get('/api/utenti', (req, res) => {
     pool.query('SELECT * FROM utenti', (error, results) => {
-      if (error) throw error;
-      res.send(results); // Utilizza send invece di json
+        if (error) throw error;
+        res.send(results); // Utilizza send invece di json
     });
 });
 
 app.get('/api/utenti/:id', (req, res) => {
     const id = req.params.id; // Accedi alla chiave 'id' di req.params
     pool.query('SELECT * FROM utenti WHERE id = ?', id, (error, results) => {
-      if (error) throw error;
-      res.send(results); // Utilizza send invece di json
+        if (error) throw error;
+        res.send(results); // Utilizza send invece di json
     });
 });
 
@@ -62,13 +66,14 @@ app.post('/api/login', (req, res) => {
 
         // Verifica la password
         const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) {
+        console.log(passwordMatch);
+        if (passwordMatch === false) {
             return res.status(401).send('Credenziali non valide');
         }
 
         // Genera un token di autenticazione
         const token = jwt.sign({ id: user.id, email: user.email, role: user.idRuolo }, 'secret', { expiresIn: '1y' });
-        
+
         // Restituisci il token di autenticazione al client
         res.send(token);
     });
@@ -93,16 +98,16 @@ app.post('/api/registrazione', (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Query per inserire il nuovo utente nel database
-        pool.query('INSERT INTO utenti (email, password, dataNascita, idRuolo) VALUES (?, ?, ?, ?)', 
-                   [email, hashedPassword, dataNascita, 1], // idRuolo 1 corrisponde al ruolo 'cliente'
-                   (error, results) => {
-            if (error) {
-                console.error(error);
-                return res.status(500).send('Errore durante la registrazione');
-            }
+        pool.query('INSERT INTO utenti (email, password, dataNascita, idRuolo) VALUES (?, ?, ?, ?)',
+            [email, hashedPassword, dataNascita, 1], // idRuolo 1 corrisponde al ruolo 'cliente'
+            (error, results) => {
+                if (error) {
+                    console.error(error);
+                    return res.status(500).send('Errore durante la registrazione');
+                }
 
-            res.send('Registrazione completata con successo');
-        });
+                res.send('Registrazione completata con successo');
+            });
     });
 });
 
