@@ -27,20 +27,20 @@ export default {
     async login() {
       // Implementazione del login
       try {
-        const response = await fetch('/login', {
+        const response = await fetch('/api/login', {
           method: 'POST',
           body: {
             email: this.email,
             password: this.password
           }
         });
-
+        console.log(response);
         if (!response.ok) {
           throw new Error('Errore durante il login');
         }
 
         const token = await response.text(); // Assume che il token sia restituito come stringa dal server
-
+        console.log(token);
         // Esempio di salvataggio del token nello storage locale
         localStorage.setItem('token', token);
 

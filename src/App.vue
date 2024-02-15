@@ -1,5 +1,6 @@
 <template>
   <login></login>
+  <registrazione></registrazione>
 </template>
 
 <script>

@@ -44,7 +44,7 @@ app.post('/api/utenti', (req, res) => {
     });
 });
 
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
 
     // Query per cercare l'utente nel database
@@ -74,7 +74,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/registrazione', (req, res) => {
+app.post('/api/registrazione', (req, res) => {
     const { email, password, dataNascita } = req.body;
 
     // Query per verificare se l'email esiste già nel database
