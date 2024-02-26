@@ -1,13 +1,13 @@
 <template>
   <div class="container">
     <v-card class="login-card" elevation="4">
-      <v-card-title>Login</v-card-title>
+      <v-card-title class="title">Benvenuto!</v-card-title>
       <v-card-text>
         <v-form @submit.prevent="login">
           <v-text-field v-model="email" label="Email" outlined required></v-text-field>
           <v-text-field v-model="password" label="Password" outlined required type="password"></v-text-field>
-          <v-btn type="submit" color="primary">Login</v-btn>
-          <router-link to="/registrazione">Vai alla pagina di registrazione</router-link>
+          <v-btn type="submit" color="primary" class="login-btn">Accedi</v-btn>
+          <router-link to="/registrazione">Non hai un account? Registrati qui</router-link>
         </v-form>
       </v-card-text>
     </v-card>
@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import '../assets/style/style.css';
 import router from '../router.js';
+import '../assets/style/style.css';
 export default {
   name: 'login',
   data() {
@@ -49,7 +49,7 @@ export default {
         // Esempio di salvataggio del token nello storage locale
         localStorage.setItem('token', token);
 
-        router.push("dajeroma");
+        router.push("/dajeroma");
         //*IMPORTANTE* Devo reindirizzare il cliente con -> this.$router.push('/paginaCliente');
       } catch (error) {
         // Gestione degli errori in caso di fallimento della richiesta
@@ -57,6 +57,5 @@ export default {
       }
     }
   }
-    
 };
 </script>
