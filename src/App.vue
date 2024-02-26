@@ -1,17 +1,14 @@
 <template>
-  <login></login>
-  <registrazione></registrazione>
+   <router-view/>
 </template>
 
 <script>
-import login from './components/login.vue'
-import registrazione from './components/registrazione.vue';
+
 
 export default {
   name: 'App',
   components: {
-    login,
-    registrazione
+    
   }
 }
 </script>

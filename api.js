@@ -50,10 +50,13 @@ app.post('/api/utenti', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
+    console.log(email, password);
 
     // Query per cercare l'utente nel database
     pool.query('SELECT * FROM utenti WHERE email = ?', [email], async (error, results) => {
+        console.log("Funziona query")
         if (error) {
+            
             console.error(error);
             return res.status(500).send('Errore durante l\'autenticazione');
         }
@@ -63,19 +66,21 @@ app.post('/api/login', (req, res) => {
         }
 
         const user = results[0];
-
+        console.log(user.password);
         // Verifica la password
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        console.log(passwordMatch);
-        if (passwordMatch === false) {
-            return res.status(401).send('Credenziali non valide');
-        }
-
-        // Genera un token di autenticazione
-        const token = jwt.sign({ id: user.id, email: user.email, role: user.idRuolo }, 'secret', { expiresIn: '1y' });
-
-        // Restituisci il token di autenticazione al client
-        res.send(token);
+        await bcrypt.compare(password, user.password, (err, same) => {
+            console.log(same);
+            if(err)
+                return res.status(401).send('Errore nel recuperare la password');
+            else if(same) {
+                // Genera un token di autenticazione
+                const token = jwt.sign({ id: user.id, email: user.email, role: user.idRuolo }, 'secret', { expiresIn: '1y' });
+                // Restituisci il token di autenticazione al client
+                res.send(token);
+            } else {
+                res.status(401).send('Credenziali non valide');
+            }
+        }); 
     });
 });
 

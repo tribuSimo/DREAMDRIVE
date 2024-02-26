@@ -7,6 +7,7 @@
           <v-text-field v-model="email" label="Email" outlined required></v-text-field>
           <v-text-field v-model="password" label="Password" outlined required type="password"></v-text-field>
           <v-btn type="submit" color="primary">Login</v-btn>
+          <router-link to="/registrazione">Vai alla pagina di registrazione</router-link>
         </v-form>
       </v-card-text>
     </v-card>
@@ -15,6 +16,7 @@
 
 <script>
 import '../assets/style/style.css';
+import router from '../router.js';
 export default {
   name: 'login',
   data() {
@@ -29,9 +31,12 @@ export default {
       try {
         const response = await fetch('http://localhost:3000/api/login', {
           method: 'POST',
-          body: {
+          body: new URLSearchParams({
             email: this.email,
             password: this.password
+          }).toString(),
+          headers: {
+            "Content-Type":"application/x-www-form-urlencoded"
           }
         });
         console.log(response);
@@ -44,6 +49,7 @@ export default {
         // Esempio di salvataggio del token nello storage locale
         localStorage.setItem('token', token);
 
+        router.push("dajeroma");
         //*IMPORTANTE* Devo reindirizzare il cliente con -> this.$router.push('/paginaCliente');
       } catch (error) {
         // Gestione degli errori in caso di fallimento della richiesta
@@ -51,5 +57,6 @@ export default {
       }
     }
   }
+    
 };
 </script>
