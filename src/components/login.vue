@@ -1,13 +1,25 @@
 <template>
-  <div class="container">
-    <v-card class="login-card" elevation="4">
+  <div>
+    <v-img class="mx-auto my-6" max-width="228"
+      src="../assets/img/logoPiccolo.jpg"></v-img>
+
+    <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
       <v-card-title class="title">Benvenuto!</v-card-title>
+
       <v-card-text>
         <v-form @submit.prevent="login">
-          <v-text-field v-model="email" label="Email" outlined required></v-text-field>
-          <v-text-field v-model="password" label="Password" outlined required type="password"></v-text-field>
-          <v-btn type="submit" color="primary" class="login-btn">Accedi</v-btn>
-          <router-link to="/registrazione">Non hai un account? Registrati qui</router-link>
+          <v-text-field v-model="email" label="Email" outlined required :rules="emailRules"
+            prepend-inner-icon="mdi-email-outline"></v-text-field>
+
+          <v-text-field v-model="password" label="Password" outlined required type="password" :rules="passwordRules"
+            prepend-inner-icon="mdi-lock-outline"></v-text-field>
+
+          <v-btn type="submit" block color="blue" size="large" variant="tonal">Accedi</v-btn>
+
+          <v-card-text class="text-center">
+            <router-link class="text-blue text-decoration-none" to="/registrazione">Non hai un account? Registrati qui
+              <v-icon icon="mdi-chevron-right"></v-icon></router-link>
+          </v-card-text>
         </v-form>
       </v-card-text>
     </v-card>
@@ -16,13 +28,20 @@
 
 <script>
 import router from '../router.js';
-import '../assets/style/style.css';
 export default {
   name: 'login',
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      emailRules: [
+        v => !!v || 'Il campo Email è richiesto',
+        v => /.+@.+\..+/.test(v) || "L'indirizzo email non è valido",
+      ],
+      passwordRules: [
+        v => !!v || 'Il campo Password è richiesto',
+        v => (v && v.length >= 8) || 'La password deve contenere almeno 8 caratteri',
+      ],
     };
   },
   methods: {

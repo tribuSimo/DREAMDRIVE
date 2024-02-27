@@ -4,15 +4,16 @@
       <v-card-title class="title">Registrazione</v-card-title>
       <v-card-text>
         <v-form @submit.prevent="registrazione">
-          <v-text-field v-model="email" label="Email" outlined required></v-text-field>
-          <v-text-field v-model="password" label="Password" outlined required type="password"></v-text-field>
+          <v-text-field v-model="email" label="Email" outlined required :rules="emailRules"></v-text-field>
+          <v-text-field v-model="password" label="Password" outlined required type="password" :rules="passwordRules"></v-text-field>
           <v-date-picker
             v-model="dataNascita"
             label="Data di nascita"
             required
+            elevation="4"
           ></v-date-picker>
           <v-btn type="submit" color="primary" class="register-btn">Registrati</v-btn>
-          <router-link to="/login">Hai già un account? Accedi qui</router-link>
+          <router-link class="lblRouterLink" to="/login">Hai già un account? Accedi qui</router-link>
         </v-form>
       </v-card-text>
     </v-card>
@@ -28,7 +29,15 @@
       return {
         email: '',
         password: '',
-        dataNascita: null
+        dataNascita: null,
+        emailRules: [
+          v => !!v || 'Il campo Email è richiesto',
+          v => /.+@.+\..+/.test(v) || 'L\'indirizzo email non è valido',
+        ],
+        passwordRules: [
+          v => !!v || 'Il campo Password è richiesto',
+          v => (v && v.length >= 8) || 'La password deve contenere almeno 8 caratteri',
+        ],
       };
     },
     methods: {

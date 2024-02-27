@@ -36,3 +36,18 @@
   margin-top: 20px;
   margin-bottom: 10px;
 }
+
+.lblRouterLink {
+  text-decoration: none;
+  font-size: 12pt;
+  transition: font-size 0.3s ease, color 0.3s ease; /* Aggiungo una transizione per un effetto più fluido */
+}
+
+.lblRouterLink:hover {
+  font-size: 14pt;
+  color: crimson;
+}
+
+.dataPicker{
+  margin-top: 5px;
+}
