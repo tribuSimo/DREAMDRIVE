@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-img class="mx-auto my-6" max-width="228"
-      src="../assets/img/logoPiccolo.jpg"></v-img>
+    <v-img class="mx-auto my-6"
+      src="logo.jpg" width="150px" height="150px"></v-img>
 
     <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
       <v-card-title class="title">Benvenuto!</v-card-title>

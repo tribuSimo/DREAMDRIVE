@@ -1,26 +1,35 @@
 <template>
-  <div class="containerRegistrati">
-    <v-card class="registrazione-card" elevation="4">
+  <div>
+    <v-img class="mx-auto my-6"
+      src="logo.jpg" width="150px" height="150px"></v-img>
+
+    <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
       <v-card-title class="title">Registrazione</v-card-title>
+
       <v-card-text>
         <v-form @submit.prevent="registrazione">
-          <v-text-field v-model="email" label="Email" outlined required :rules="emailRules"></v-text-field>
-          <v-text-field v-model="password" label="Password" outlined required type="password" :rules="passwordRules"></v-text-field>
-          <v-date-picker
-            v-model="dataNascita"
-            label="Data di nascita"
-            required
-            elevation="4"
-          ></v-date-picker>
-          <v-btn type="submit" color="primary" class="register-btn">Registrati</v-btn>
-          <router-link class="lblRouterLink" to="/login">Hai già un account? Accedi qui</router-link>
+          <v-text-field v-model="email" label="Email" outlined required :rules="emailRules"
+            prepend-inner-icon="mdi-email-outline"></v-text-field>
+
+          <v-text-field v-model="password" label="Password" outlined required type="password" :rules="passwordRules"
+            prepend-inner-icon="mdi-lock-outline"></v-text-field>
+
+          <v-date-picker v-model="dataNascita" label="Data di nascita" outlined required elevation="4" class="my-6" width="340px"></v-date-picker>
+
+          <v-btn type="submit" block color="primary" size="large" variant="tonal">Registrati</v-btn>
+
+          <v-card-text class="text-center">
+            <router-link class="text-blue text-decoration-none" to="/login">Hai già un account? Accedi qui
+              <v-icon icon="mdi-chevron-right"></v-icon>
+            </router-link>
+          </v-card-text>
         </v-form>
       </v-card-text>
     </v-card>
   </div>
 </template>
   
-  <script>
+<script>
   import '../assets/style/style.css';
   import moment from 'moment';
   export default {
