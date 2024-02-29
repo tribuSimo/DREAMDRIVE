@@ -22,3 +22,5 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+Link database: http://localhost/phpmyadmin/index.php?route=/database/structure&db=concessionario
