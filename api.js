@@ -20,6 +20,18 @@ const pool = mysql.createPool({
     database: 'concessionario'
 });
 
+app.get('/api/auto', (req, res) => {
+    let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio,'
+    q += 'auto.annoProduzione, auto.cambio, auto.peso, auto.usata, auto.prezzo, marche.marca, carburanti.carburante,'
+    q += 'modelli.modello, colori.colore FROM auto, marche, carburanti, modelli, colori '
+    q += ' WHERE auto.idMarca = marche.idMarche AND auto.idCarburante = carburanti.idCarburante AND '
+    q += 'auto.idModello = modelli.idModello AND auto.idColore = colori.idColore'
+    pool.query(q, (error, results) => {
+        if(error) throw error;
+        res.send(results);
+    });
+});
+
 app.get('/api/utenti', (req, res) => {
     pool.query('SELECT * FROM utenti', (error, results) => {
         if (error) throw error;
