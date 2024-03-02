@@ -6,6 +6,7 @@ const cors = require('cors');
 
 const app = express();
 const port = 3000;
+const verificaAutenticazione = require('./controlli');
 
 // Aggiungi il middleware per il parsing dei dati da form-data
 app.use(express.urlencoded({ extended: true }));
@@ -20,7 +21,7 @@ const pool = mysql.createPool({
     database: 'concessionario'
 });
 
-app.get('/api/auto', (req, res) => {
+app.get('/api/auto', verificaAutenticazione, (req, res) => {
     let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio,'
     q += 'auto.annoProduzione, auto.cambio, auto.peso, auto.usata, auto.prezzo, marche.marca, carburanti.carburante,'
     q += 'modelli.modello, colori.colore, GROUP_CONCAT(immagini.immagine) AS immagini '
