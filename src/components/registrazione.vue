@@ -4,7 +4,9 @@
       src="logo.jpg" width="150px" height="150px"></v-img>
 
     <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
-      <v-card-title class="title">Registrazione</v-card-title>
+      <v-card-title class="title">
+        <p class="font-weight-black">Registrazione</p>
+      </v-card-title>
 
       <v-card-text>
         <v-form @submit.prevent="registrazione">
