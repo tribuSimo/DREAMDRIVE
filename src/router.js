@@ -5,6 +5,7 @@ import registrazione from './components/registrazione.vue';
 import navbar from './components/navbar.vue';
 import home from './components/home.vue';
 
+
 const routes = [
   {
     path: '/',
