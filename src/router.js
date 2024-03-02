@@ -8,8 +8,9 @@ import home from './components/home.vue';
 const routes = [
   {
     path: '/',
-    name : 'login',
-    component: login
+    // name : 'login',
+    // component: login
+    redirect : "/login"
   },
   {
     path: '/login',

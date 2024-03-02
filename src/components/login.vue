@@ -3,8 +3,8 @@
     <v-img class="mx-auto my-6"
       src="logo.jpg" width="150px" height="150px"></v-img>
 
-    <v-card class="mx-auto pa-12 pb-8 card" elevation="8" max-width="448" rounded="lg">
-      <v-card-title class="title">
+    <v-card class="loginCard" elevation="8" max-width="448" rounded="lg">
+      <v-card-title>
         <p class="font-weight-black">Login</p>
       </v-card-title>
 
