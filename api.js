@@ -38,14 +38,14 @@ app.get('/api/auto', verificaAutenticazione, (req, res) => {
     });
 });
 
-app.get('/api/utenti', (req, res) => {
+app.get('/api/utenti',verificaAutenticazione, (req, res) => {
     pool.query('SELECT * FROM utenti', (error, results) => {
         if (error) throw error;
         res.send(results); // Utilizza send invece di json
     });
 });
 
-app.get('/api/utenti/:id', (req, res) => {
+app.get('/api/utenti/:id', verificaAutenticazione, (req, res) => {
     const id = req.params.id; // Accedi alla chiave 'id' di req.params
     pool.query('SELECT * FROM utenti WHERE id = ?', id, (error, results) => {
         if (error) throw error;
@@ -53,7 +53,7 @@ app.get('/api/utenti/:id', (req, res) => {
     });
 });
 
-app.post('/api/utenti', (req, res) => {
+app.post('/api/utenti', verificaAutenticazione, (req, res) => {
     const { email, password, dataNascita } = req.body;
     if (!email || !password || !dataNascita) {
         return res.status(400).send('Tutti i campi sono obbligatori');
