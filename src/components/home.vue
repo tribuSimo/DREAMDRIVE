@@ -1,36 +1,64 @@
 <template>
-    <v-app>
-        <v-container fluid>
-      <v-row>
-        <!-- Primo container (colorato di rosso) -->
-        <v-col cols="2" style="background-color: red;border-right: 1px solid black;height:500px;">
-          <v-container fluid>
-           qui faremo la ricerca con tutte le compo box
-          </v-container>
+  <v-app>
+    <v-container class="containerSearch">
+      
+        <v-col v-for="index in 5" :key="index" cols="12" class="text-left">
+          <v-card outlined>
+            <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <v-label>Etichetta {{ index }}</v-label>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-combobox
+                    v-model="selectedItem"
+                    :items="items"
+                    label="Seleziona un elemento"
+                  ></v-combobox>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
         </v-col>
+    </v-container>
+    <v-container class="containerMain">
+      <text-h1>CONCESSIONARIO</text-h1>
 
-        <!-- Secondo container -->
-        <v-col cols="6">
-          <v-container fluid>
-            <!-- Contenuto del secondo container -->
-             <!-- Contenuto del primo container -->
-            <p class="font-weight-black text-h2">
-              ELITE MOTORS
-            </p>
-            <br />
-            <v-row justify="center">
-              <v-col cols="30">
-                <v-card>
-                  <v-img
-                    src="/img/home/car_home.png"
-                    cover
-                  ></v-img>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-col>
-      </v-row>
+      
     </v-container>
   </v-app>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      selectedItem: null,
+      items: ['Elemento 1', 'Elemento 2', 'Elemento 3', 'Elemento 4', 'Elemento 5'],
+    };
+  },
+};
+</script>
+
+<style scoped>
+.containerSearch
+{
+  width: 25%;
+  height: 800px;
+  margin-left: 0px;
+  margin-top: 80px;
+  border-right: #333;
+  float: right;
+}
+
+.containerMain{
+  width: 75%;
+  float: left ;
+  margin-top: 0px;
+  margin-left: 0px;
+  position: absolute;
+
+}
+</style>
