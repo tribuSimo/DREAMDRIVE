@@ -14,7 +14,7 @@
             prepend-inner-icon="mdi-lock-outline"></v-text-field>
 
           <v-text-field v-model="dataNascita" label="Data di nascita" outlined required readonly
-            append-icon="mdi-calendar" @click="showDatePicker()"></v-text-field>
+            prepend-inner-icon="mdi-calendar" @click="showDatePicker()"></v-text-field>
 
           <v-dialog v-model="datePickerDialog" :max-width="dialogMaxWidth">
             <v-card>
@@ -60,7 +60,7 @@
           v => (v && v.length >= 8) || 'La password deve contenere almeno 8 caratteri',
         ],
         datePickerDialog: false,
-        dialogMaxWidth: 300,
+        dialogMaxWidth: 400,
       };
     },
     methods: {
