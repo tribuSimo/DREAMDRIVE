@@ -1,7 +1,8 @@
+<!-- eslint-disable vue/no-unused-components -->
 <template>
   <v-app>
+    <navbar></navbar>
     <v-container class="containerSearch">
-      
         <v-col v-for="index in 5" :key="index" cols="12" class="text-left">
           <v-card outlined>
             <v-container>
@@ -23,16 +24,18 @@
           </v-card>
         </v-col>
     </v-container>
-    <v-container class="containerMain">
-      <text-h1>CONCESSIONARIO</text-h1>
-
-      
-    </v-container>
+    <footer></footer> <!-- Includi il componente footer qui -->
   </v-app>
 </template>
 
 <script>
+import navbar from './navbar.vue';
+import footer from './footer.vue';
 export default {
+  components: {
+    navbar,
+    footer // Aggiungi il componente footer
+  },
   data() {
     return {
       selectedItem: null,
