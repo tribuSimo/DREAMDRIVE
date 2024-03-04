@@ -1,7 +1,6 @@
 <template>
   <div>
-    <v-img class="mx-auto my-6"
-      src="logo.jpg" width="150px" height="150px"></v-img>
+    <v-img class="mx-auto my-6" src="logo.jpg" width="150px" height="150px"></v-img>
 
     <v-card class="loginCard" elevation="8" max-width="448" rounded="lg">
       <v-card-title>
@@ -13,9 +12,12 @@
           <v-text-field v-model="email" label="Email" outlined required :rules="emailRules"
             prepend-inner-icon="mdi-email-outline"></v-text-field>
 
-          <v-text-field v-model="password" label="Password" outlined required type="password" :rules="passwordRules"
-            prepend-inner-icon="mdi-lock-outline"></v-text-field>
-
+          <v-text-field v-model="password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+            :type="visible ? 'text' : 'password'" @click:append-inner="toggleVisibility" @focus="visible = true"
+            @blur="visible = false" label="Password" outlined required :rules="passwordRules"
+            prepend-inner-icon="mdi-lock-outline">
+          </v-text-field>
+          
           <v-btn type="submit" block color="blue" size="large" variant="tonal">Accedi</v-btn>
 
           <v-card-text class="text-center">
@@ -36,6 +38,7 @@ export default {
     return {
       email: '',
       password: '',
+      visible: false,
       emailRules: [
         v => !!v || 'Il campo Email è richiesto',
         v => /.+@.+\..+/.test(v) || "L'indirizzo email non è valido",
@@ -76,7 +79,10 @@ export default {
         // Gestione degli errori in caso di fallimento della richiesta
         console.error('Errore durante il login:', error);
       }
-    }
+    },
+    toggleVisibility() {
+      this.visible = !this.visible;
+    },
   }
 };
 </script>

@@ -10,8 +10,11 @@
           <v-text-field v-model="email" label="Email" outlined required :rules="emailRules"
             prepend-inner-icon="mdi-email-outline"></v-text-field>
 
-          <v-text-field v-model="password" label="Password" outlined required type="password" :rules="passwordRules"
-            prepend-inner-icon="mdi-lock-outline"></v-text-field>
+          <v-text-field v-model="password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+            :type="visible ? 'text' : 'password'" @click:append-inner="toggleVisibility" @focus="visible = true"
+            @blur="visible = false" label="Password" outlined required :rules="passwordRules"
+            prepend-inner-icon="mdi-lock-outline">
+          </v-text-field>
 
           <v-text-field v-model="dataNascita" label="Data di nascita" outlined required readonly
             prepend-inner-icon="mdi-calendar" @click="showDatePicker()"></v-text-field>
@@ -51,6 +54,7 @@
         email: '',
         password: '',
         dataNascita: null,
+        visible : false,
         emailRules: [
           v => !!v || 'Il campo Email è richiesto',
           v => /.+@.+\..+/.test(v) || 'L\'indirizzo email non è valido',
@@ -107,6 +111,9 @@
             this.dialogMaxWidth = datePicker.offsetWidth + 40; // Aggiungi una spaziatura di 20px su ciascun lato
           }
         });
+      },
+      toggleVisibility() {
+        this.visible = !this.visible;
       },
     }
   };
