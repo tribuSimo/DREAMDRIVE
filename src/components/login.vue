@@ -17,7 +17,7 @@
             @blur="visible = false" label="Password" outlined required :rules="passwordRules"
             prepend-inner-icon="mdi-lock-outline">
           </v-text-field>
-          
+
           <v-btn type="submit" block color="blue" size="large" variant="tonal">Accedi</v-btn>
 
           <v-card-text class="text-center">
@@ -73,8 +73,7 @@ export default {
         // Esempio di salvataggio del token nello storage locale
         localStorage.setItem('token', token);
 
-        router.push("/dajeroma");
-        //*IMPORTANTE* Devo reindirizzare il cliente con -> this.$router.push('/paginaCliente');
+        router.push("/home");
       } catch (error) {
         // Gestione degli errori in caso di fallimento della richiesta
         console.error('Errore durante il login:', error);
