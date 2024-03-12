@@ -6,7 +6,8 @@ const cors = require('cors');
 
 const app = express();
 const port = 3000;
-const verificaAutenticazione = require('./controlli');
+const { verificaCliente, verificaAdmin, verificaSuperAdmin } = require('./controlli');
+
 
 // Aggiungi il middleware per il parsing dei dati da form-data
 app.use(express.urlencoded({ extended: true }));
@@ -21,7 +22,7 @@ const pool = mysql.createPool({
     database: 'concessionario'
 });
 
-app.get('/api/auto', verificaAutenticazione, (req, res) => {
+app.get('/api/auto', verificaCliente, (req, res) => {
     let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio,'
     q += 'auto.annoProduzione, auto.cambio, auto.peso, auto.usata, auto.prezzo, marche.marca, carburanti.carburante,'
     q += 'modelli.modello, colori.colore, GROUP_CONCAT(immagini.immagine) AS immagini '
@@ -38,22 +39,22 @@ app.get('/api/auto', verificaAutenticazione, (req, res) => {
     });
 });
 
-app.get('/api/utenti',verificaAutenticazione, (req, res) => {
+app.get('/api/utenti',verificaAdmin, (req, res) => {
     pool.query('SELECT * FROM utenti', (error, results) => {
         if (error) throw error;
-        res.send(results); // Utilizza send invece di json
+        res.send(results);
     });
 });
 
-app.get('/api/utenti/:id', verificaAutenticazione, (req, res) => {
+app.get('/api/utenti/:id', verificaAdmin, (req, res) => {
     const id = req.params.id; // Accedi alla chiave 'id' di req.params
     pool.query('SELECT * FROM utenti WHERE id = ?', id, (error, results) => {
         if (error) throw error;
-        res.send(results); // Utilizza send invece di json
+        res.send(results);
     });
 });
 
-app.post('/api/utenti', verificaAutenticazione, (req, res) => {
+app.post('/api/utenti', verificaAdmin, (req, res) => {
     const { email, password, dataNascita } = req.body;
     if (!email || !password || !dataNascita) {
         return res.status(400).send('Tutti i campi sono obbligatori');
