@@ -24,17 +24,17 @@
           </v-card>
         </v-col>
     </v-container>
-    <footer></footer> <!-- Includi il componente footer qui -->
+    <finePagina></finePagina>
   </v-app>
 </template>
 
 <script>
 import navbar from './navbar.vue';
-import footer from './footer.vue';
+import finePagina from './footer.vue';
 export default {
   components: {
     navbar,
-    footer // Aggiungi il componente footer
+    finePagina
   },
   data() {
     return {
