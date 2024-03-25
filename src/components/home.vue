@@ -2,28 +2,26 @@
   <v-app>
     <navbar></navbar>
     <v-container class="containerSearch">
-      <v-col v-for="(auto, index) in auto" :key="index" cols="12" class="text-left">
-        <v-card outlined>
-          <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-label>Modello: {{ auto.modello }}</v-label>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
-                <v-label>Prezzo: {{ auto.prezzo }}</v-label>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
-                <v-label>Anno di produzione: {{ auto.annoProduzione }}</v-label>
-              </v-col>
-            </v-row>
-            <!-- Aggiungi qui altre informazioni sull'auto -->
-          </v-container>
-        </v-card>
-      </v-col>
+        <v-col v-for="index in 5" :key="index" cols="12" class="text-left">
+          <v-card outlined>
+            <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <v-label>Etichetta {{ index }}</v-label>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-combobox
+                    v-model="selectedItem"
+                    :items="items"
+                    label="Seleziona un elemento"
+                  ></v-combobox>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-col>
     </v-container>
     <finePagina></finePagina>
   </v-app>
@@ -74,21 +72,26 @@ export default {
 </script>
 
 <style scoped>
-.containerSearch {
+.containerSearch
+{
   width: 25%;
   height: 800px;
   margin-left: 0px;
-  margin-top: 80px;
+  margin-top: 50px;
   border-right: #333;
   float: right;
 }
 
-.containerMain {
+.containerMain{
   width: 75%;
-  float: left;
+  float: left ;
   margin-top: 0px;
   margin-left: 0px;
   position: absolute;
 
+}
+
+.cmbElement{
+  width: 90%;
 }
 </style>
