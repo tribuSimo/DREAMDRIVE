@@ -90,4 +90,6 @@ function verificaSuperAdmin(req, res, next) {
     }
 }
 
+
+
 module.exports = { verificaCliente, verificaAdmin, verificaSuperAdmin };

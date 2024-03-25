@@ -3,17 +3,17 @@
   <v-app>
     <navbar></navbar>
     <v-container class="containerSearch">
-        <v-col v-for="index in 5" :key="index" cols="12" class="text-left">
+        <v-col v-for="index in 5" :key="index" class="text-left">
           <v-card outlined>
             <v-container>
               <v-row>
-                <v-col cols="12">
+                <v-col>
                   <v-label>Etichetta {{ index }}</v-label>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="12">
-                  <v-combobox
+                <v-col>
+                  <v-combobox class="cmbElement"
                     v-model="selectedItem"
                     :items="items"
                     label="Seleziona un elemento"
@@ -48,20 +48,24 @@ export default {
 <style scoped>
 .containerSearch
 {
-  width: 25%;
-  height: 800px;
+  width: 400px;
+  height: 100%;
   margin-left: 0px;
-  margin-top: 80px;
+  margin-top: 50px;
   border-right: #333;
   float: right;
 }
 
 .containerMain{
-  width: 75%;
+  width: 100%;
   float: left ;
   margin-top: 0px;
   margin-left: 0px;
   position: absolute;
 
+}
+
+.cmbElement{
+  width: 90%;
 }
 </style>
