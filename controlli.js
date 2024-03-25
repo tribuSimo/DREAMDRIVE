@@ -18,7 +18,7 @@ function verificaCliente(req, res, next) {
         req.user = decoded;
 
         // Verifica se l'utente è un cliente
-        if (parseInt(decoded.role) < 1) {
+        if (parseInt(decoded.role) >= 1) {
             // Prosegui con la richiesta
             next();
         } else {
@@ -48,7 +48,7 @@ function verificaAdmin(req, res, next) {
         req.user = decoded;
 
         // Verifica se l'utente è un amministratore
-        if (parseInt(decoded.role) < 2) {
+        if (parseInt(decoded.role) >= 2) {
             // Prosegui con la richiesta
             next();
         } else {
