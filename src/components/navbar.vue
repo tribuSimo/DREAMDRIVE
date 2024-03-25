@@ -29,6 +29,10 @@
 </template>
   
 <style scoped>
+body, #app {
+  margin: 0;
+  padding: 0;
+}
 .nav-button {
   text-align: left;
   margin-right: 10px;
@@ -50,11 +54,8 @@
 
 .nav_v-text-field {
   width: 50px;
-
   padding-left: 30px;
-
 }
-
 
 .nav {
   display: flex;
