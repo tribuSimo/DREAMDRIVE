@@ -32,6 +32,7 @@ app.get('/api/auto', verificaCliente, (req, res) => {
     q += 'INNER JOIN modelli ON auto.idModello = modelli.idModello '
     q += 'INNER JOIN colori ON auto.idColore = colori.idColore '
     q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
+    q += 'WHERE AUTO.disponibile = 1 '
     q += 'GROUP BY auto.idAuto';
     pool.query(q, (error, results) => {
         if(error) throw error;
