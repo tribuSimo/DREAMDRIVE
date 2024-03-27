@@ -11,7 +11,7 @@
             <v-list-item link title="Prezzo">
               <v-card >
                   <v-card-text>
-                    <v-range-slider style="margin-top:30px ;" v-model="valuePrice" step="10" thumb-label="always"></v-range-slider> 
+                    <v-range-slider :max="80000" :min="0" style="margin-top:30px ;" v-model="valuePrice" step="10" thumb-label="always"></v-range-slider> 
                   </v-card-text>
                 </v-card>
             </v-list-item>
@@ -19,7 +19,7 @@
             <v-list-item link title="Chilometraggio">
                 <v-card >
                   <v-card-text>
-                    <v-range-slider style="margin-top:30px ;" v-model="value" step="10" thumb-label="always"></v-range-slider> 
+                    <v-range-slider :max="80000" :min="0" style="margin-top:30px ;" v-model="value" step="10" thumb-label="always"></v-range-slider> 
                   </v-card-text>
                 </v-card>
             </v-list-item>
