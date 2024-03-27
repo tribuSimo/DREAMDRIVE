@@ -1,6 +1,36 @@
 <template>
   <v-app>
     <navbar></navbar>
+   
+      <v-navigation-drawer :width="200" class="nav_Drawer">
+            <v-list-item title="Ricerca Auto" subtitle=""></v-list-item>
+            <v-divider></v-divider>
+            <v-list-item link title="Marca"></v-list-item>
+            
+            <v-list-item link title="Modello"></v-list-item>
+            <v-list-item link title="Prezzo">
+              <v-card >
+                  <v-card-text>
+                    <v-range-slider style="margin-top:30px ;" v-model="valuePrice" step="10" thumb-label="always"></v-range-slider> 
+                  </v-card-text>
+                </v-card>
+            </v-list-item>
+            <v-list-item link title="Carburante"></v-list-item>
+            <v-list-item link title="Chilometraggio">
+                <v-card >
+                  <v-card-text>
+                    <v-range-slider style="margin-top:30px ;" v-model="value" step="10" thumb-label="always"></v-range-slider> 
+                  </v-card-text>
+                </v-card>
+            </v-list-item>
+            <v-list-item link title="Usata">
+              <v-checkbox style="margin-left:50px ;" label="SI"></v-checkbox>
+            </v-list-item>
+        <div class="text-center">
+          <v-btn>Cerca</v-btn>
+        </div>
+      </v-navigation-drawer>
+   
     <v-container class="containerSearch">
       <v-row>
         <v-col v-for="(auto, index) in auto" :key="index" cols="12" class="text-left">
@@ -36,7 +66,9 @@ export default {
   },
   data() {
     return {
-      auto: []
+      auto: [],
+      valuePrice:[20,100],
+      value: [20, 100],
     };
   },
   created() {
@@ -72,8 +104,15 @@ export default {
   width: 75%;
   margin: 20px auto;
 }
+.nav_Drawer{
+  margin-top: 65px;
 
+}
 .text-left {
   text-align: left;
+}
+
+.search{
+ margin-top: 100px;
 }
 </style>

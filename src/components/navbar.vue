@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="white">
+     <v-app-bar app color="white">
       <v-container class="nav-container">
         <v-row class="nav">
           <v-img src="logo.jpg" max-width="50" max-height="50" contain />
@@ -18,15 +18,27 @@
           </v-btn>
           <div class="div-search">
             <v-img class="nav-img" src="search.png" max-width="20" max-height="20" contain />
-            <!-- Ricerca a destra -->
             <v-text-field class="nav_v-text-field" placeholder="Cerca" outlined dense></v-text-field>
           </div>
             
         </v-row>
       </v-container>
-    </v-app-bar>
+    </v-app-bar> 
   </v-app>
 </template>
+<script>
+export default {
+  name: "App",
+  data: () => ({
+      items: [
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me 2' },
+      ],
+    }),
+};
+</script>
   
 <style scoped>
 body, #app {
