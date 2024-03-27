@@ -58,6 +58,7 @@
 <script>
 import navbar from './navbar.vue';
 import finePagina from './footer.vue';
+import router from '@/router';
 
 export default {
   components: {
@@ -72,7 +73,10 @@ export default {
     };
   },
   created() {
-    this.caricaAuto();
+    if(localStorage.getItem('token'))
+      this.caricaAuto();
+    else
+      router.push('/login');
   },
   methods: {
     async caricaAuto() {

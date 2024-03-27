@@ -16,6 +16,9 @@
           <v-btn to="/novita" class="nav-button">
             Novità
           </v-btn>
+          <v-btn @click="logout()" class="nav-button">
+            logout
+          </v-btn>
           <div class="div-search">
             <v-img class="nav-img" src="search.png" max-width="20" max-height="20" contain />
             <v-text-field class="nav_v-text-field" placeholder="Cerca" outlined dense></v-text-field>
@@ -27,6 +30,8 @@
   </v-app>
 </template>
 <script>
+import router from '@/router';
+
 export default {
   name: "App",
   data: () => ({
@@ -37,6 +42,12 @@ export default {
         { title: 'Click Me 2' },
       ],
     }),
+    methods :{
+      logout(){
+        localStorage.clear();
+        router.push("/login");
+      }
+    }
 };
 </script>
   
