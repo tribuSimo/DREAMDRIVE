@@ -4,24 +4,23 @@
       <v-container class="nav-container">
         <v-row class="nav">
           <v-img src="logo.jpg" max-width="50" max-height="50" contain />
-          <v-btn to="/auto" class="nav-button">
+          <v-btn to="/home" class="nav-button">
             Auto
           </v-btn>
           <v-btn to="/nuove-uscite" class="nav-button">
             Nuove Uscite
           </v-btn>
-          <v-btn to="/carrello" class="nav-button">
-            Carrello
+          <v-btn to="/prenotazioni" class="nav-button">
+            Prenotazioni
           </v-btn>
-          <v-btn to="/novita" class="nav-button">
-            Novità
+          <v-btn to="/notifiche" class="nav-button">
+            Notifiche
           </v-btn>
           <v-btn @click="logout()" class="nav-button">
-            logout
+            Logout
           </v-btn>
           <div class="div-search">
-            <v-img class="nav-img" src="search.png" max-width="20" max-height="20" contain />
-            <v-text-field class="nav_v-text-field" placeholder="Cerca" outlined dense></v-text-field>
+            <v-text-field class="nav_v-text-field" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined dense></v-text-field>
           </div>
             
         </v-row>
