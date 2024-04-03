@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <navbar></navbar>
-    <v-combobox label="Ordina" :items="['Prezzo', 'Anno uscita', 'Chilometraggio']" class="combo"></v-combobox>  
+    <v-combobox label="Ordina" :items="['Prezzo', 'Anno uscita', 'Chilometraggio']" class="combo"  v-model = "filtro" @change="ordinaCombo()"></v-combobox>  
       <v-navigation-drawer :width="200" class="nav_Drawer"> 
             <v-list-item title="Ricerca Auto" subtitle=""></v-list-item>
             <v-divider></v-divider>
@@ -73,6 +73,7 @@ export default {
       auto: [],
       valuePrice:[20,100],
       value: [20, 100],
+      filtro: null,
     };
   },
   created() {
@@ -100,6 +101,15 @@ export default {
         }
       } catch (error) {
         console.error('Errore nel caricamento delle auto:', error);
+      }
+    },
+    ordinaCombo(){
+      if(this.filtro === "Prezzo"){
+        
+      }else if(this.filtro === "Chilometraggio"){
+
+      }else{
+        
       }
     }
   }
