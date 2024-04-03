@@ -1,6 +1,6 @@
 <template>
-  <v-app>
-     <v-app-bar app color="white">
+  
+     <v-app-bar app color="white" >
       <v-container class="nav-container">
         <v-row class="nav">
           <v-img src="logo.jpg" max-width="50" max-height="50" contain />
@@ -26,7 +26,7 @@
         </v-row>
       </v-container>
     </v-app-bar> 
-  </v-app>
+  
 </template>
 <script>
 import router from '@/router';
@@ -55,14 +55,14 @@ body, #app {
   margin: 0;
   padding: 0;
 }
+
 .nav-button {
   text-align: left;
   margin-right: 10px;
-  /* Aggiungi margine tra i pulsanti */
   transition: background-color 1s;
-  /* Transizione di 1 secondo */
 }
-.div-search{
+
+.div-search {
   margin-top: 20px;
   display: flex;
   width: 400px;
@@ -79,12 +79,19 @@ body, #app {
   padding-left: 30px;
 }
 
+.nav-container {
+  padding: 0;
+  
+}
+
 .nav {
   display: flex;
   align-items: center;
-  height: 100%;
 }
 
-.nav-img {
-  margin-top: 15px;
-}</style>
+/* Imposta l'altezza della barra di navigazione */
+.v-toolbar__content {
+  min-height: 50px; /* Imposta l'altezza desiderata */
+}
+
+</style>
