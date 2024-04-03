@@ -40,6 +40,24 @@ app.get('/api/auto', verificaCliente, (req, res) => {
     });
 });
 
+app.get('/api/auto/:idAuto', (req, res) => {
+    const idAuto = req.params.idAuto;
+    let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio, '
+    q += 'auto.annoProduzione, auto.cambio, auto.peso, auto.usata, auto.prezzo, marche.marca, carburanti.carburante, '
+    q += 'modelli.modello, colori.colore, GROUP_CONCAT(immagini.immagine) AS immagini '
+    q += 'FROM auto '
+    q += 'INNER JOIN marche ON auto.idMarca = marche.idMarca '
+    q += 'INNER JOIN carburanti ON auto.idCarburante = carburanti.idCarburante '
+    q += 'INNER JOIN modelli ON auto.idModello = modelli.idModello '
+    q += 'INNER JOIN colori ON auto.idColore = colori.idColore '
+    q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
+    q += 'WHERE auto.idAuto = ? AND auto.disponibile = 1';  // Utilizziamo un placeholder per l'id dell'auto
+    pool.query(q, [idAuto], (error, results) => {
+        if(error) throw error;
+        res.send(results);
+    });
+});
+
 app.get('/api/utenti',verificaAdmin, (req, res) => {
     pool.query('SELECT * FROM utenti', (error, results) => {
         if (error) throw error;
