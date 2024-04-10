@@ -23,7 +23,6 @@ const pool = mysql.createPool({
 });
 
 app.get('/api/auto', verificaCliente, (req, res) => {
-<<<<<<< HEAD
     let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio,'
     q += 'auto.annoProduzione, auto.cambio, auto.peso, auto.usata, auto.prezzo, marche.marca, carburanti.carburante,'
     q += 'modelli.modello, colori.colore, GROUP_CONCAT(immagini.immagine) AS immagini '
@@ -35,22 +34,6 @@ app.get('/api/auto', verificaCliente, (req, res) => {
     q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
     q += 'WHERE AUTO.disponibile = 1 '
     q += 'group by auto.idAuto '; 
-
-
-
-=======
-    let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio, ';
-    q += 'auto.annoProduzione, auto.cambio, auto.peso, auto.usata, auto.prezzo, marche.marca, carburanti.carburante, ';
-    q += 'modelli.modello, colori.colore, GROUP_CONCAT(immagini.immagine) AS immagini ';
-    q += 'FROM auto ';
-    q += 'INNER JOIN marche ON auto.idMarca = marche.idMarca ';
-    q += 'INNER JOIN carburanti ON auto.idCarburante = carburanti.idCarburante ';
-    q += 'INNER JOIN modelli ON auto.idModello = modelli.idModello ';
-    q += 'INNER JOIN colori ON auto.idColore = colori.idColore ';
-    q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto ';
-    q += 'WHERE auto.disponibile = 1 ';
-    q += 'GROUP BY auto.idAuto';
->>>>>>> 6a59c6c6f84d186b894506eddecc3c63f187e0bd
 
     // Controlla se è presente il parametro di query sortBy e aggiorna la query di conseguenza
     if (req.query.sortBy === 'Prezzo') {
