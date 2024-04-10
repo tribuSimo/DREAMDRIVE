@@ -1,38 +1,9 @@
 <template>
   <v-app>
     <navbar></navbar>
-    <v-combobox label="Ordina" :items="['Prezzo', 'Anno uscita', 'Chilometraggio']" class="combo"  v-model = "filtro" @change="ordinaCombo()"></v-combobox>  
-      <v-navigation-drawer :width="200" class="nav_Drawer"> 
-            <v-list-item title="Ricerca Auto" subtitle=""></v-list-item>
-            <v-divider></v-divider>
-            <v-list-item link title="Marca"></v-list-item>
-            
-            <v-list-item link title="Modello"></v-list-item>
-            
-            
-            <v-list-item link title="Prezzo">
-              <v-card >
-                  <v-card-text>
-                    <v-range-slider :max="80000" :min="0" style="margin-top:30px ;" v-model="valuePrice" step="10" thumb-label="always"></v-range-slider> 
-                  </v-card-text>
-                </v-card>
-            </v-list-item>
-            <v-list-item link title="Carburante"></v-list-item>
-            <v-list-item link title="Chilometraggio">
-                <v-card >
-                  <v-card-text>
-                    <v-range-slider :max="80000" :min="0" style="margin-top:30px ;" v-model="value" step="10" thumb-label="always"></v-range-slider> 
-                  </v-card-text>
-                </v-card>
-            </v-list-item>
-            <v-list-item link title="Usata">
-              <v-checkbox style="margin-left:50px ;" label="SI"></v-checkbox>
-            </v-list-item>
-        <div class="text-center">
-          <v-btn @click="cercaAuto()">Cerca</v-btn>
-        </div>
-     </v-navigation-drawer>
-
+    <v-select label="Ordina" :items="['Nessuno', 'Prezzo', 'Anno produzione', 'Chilometraggio']" class="combo"  v-model = "filtro" @update:modelValue="ordinaCombo()"></v-select>  
+    
+        <v-checkbox class="checkbox" label="Usata"></v-checkbox>
    <v-container class="containerSearch">
       <v-row>
         <v-col v-for="(auto, index) in auto" :key="index" cols="3" class="text-left">
@@ -104,15 +75,25 @@ export default {
       }
     },
     async ordinaCombo(){
+      
+
       try {
         const token = localStorage.getItem('token');
         let url = 'http://localhost:3000/api/auto';
 
-        if (this.filtro === "Prezzo") {
-          url += '?sortBy=prezzo'; // Aggiungi il parametro per l'ordinamento per prezzo
-        } else if (this.filtro === "Chilometraggio") {
-          url += '?sortBy=chilometraggio'; // Aggiungi il parametro per l'ordinamento per chilometraggio
+        if(this.filtro !== "Nessuno" && this.filtro !== ""){
+          url += '?sortBy=' + encodeURIComponent(this.filtro);
         }
+
+        console.log(url);
+
+        // if (this.filtro === "Prezzo") {
+        //   url += '?sortBy=prezzo'; // Aggiungi il parametro per l'ordinamento per prezzo
+        // } else if (this.filtro === "Chilometraggio") {
+        //   url += '?sortBy=chilometraggio'; // Aggiungi il parametro per l'ordinamento per chilometraggio
+        // }else{
+        //   url += '?sortBy=annoProduzione';
+        // }
 
         const response = await fetch(url, {
           method: 'GET',
@@ -167,5 +148,10 @@ export default {
   margin-top:79px;
   width: 300px;
   margin-left:225px;
+}
+
+.checkbox{
+  margin-left:225px;
+  height: 60px;
 }
 </style>

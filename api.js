@@ -12,7 +12,7 @@ const { verificaCliente, verificaAdmin, verificaSuperAdmin } = require('./contro
 // Aggiungi il middleware per il parsing dei dati da form-data
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: 'http://localhost:8080'
+    origin: '*'
 }));
 
 const pool = mysql.createPool({
@@ -32,15 +32,24 @@ app.get('/api/auto', verificaCliente, (req, res) => {
     q += 'INNER JOIN modelli ON auto.idModello = modelli.idModello '
     q += 'INNER JOIN colori ON auto.idColore = colori.idColore '
     q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
-    q += 'WHERE AUTO.disponibile = 1 ';
+    q += 'WHERE AUTO.disponibile = 1 '
+    q += 'group by auto.idAuto '; 
+
+
+
 
     // Controlla se è presente il parametro di query sortBy e aggiorna la query di conseguenza
-    if (req.query.sortBy === 'prezzo') {
+    if (req.query.sortBy === 'Prezzo') {
         q += 'ORDER BY auto.prezzo'; // Ordina per prezzo
-    } else if (req.query.sortBy === 'chilometraggio') {
+    } else if (req.query.sortBy === 'Chilometraggio') {
         q += 'ORDER BY auto.chilometraggio'; // Ordina per chilometraggio
-    } // Aggiungi altri controlli per altri campi di ordinamento se necessario
+    }else if(req.query.sortBy === 'Anno produzione'){
+        q += 'ORDER BY auto.annoProduzione';
+    }else{
+        q += 'ORDER BY auto.idAuto';
+    }    // Aggiungi altri controlli per altri campi di ordinamento se necessario
 
+    console.log(q);
     pool.query(q, (error, results) => {
         if (error) throw error;
         res.send(results);
