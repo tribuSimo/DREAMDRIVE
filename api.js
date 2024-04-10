@@ -32,10 +32,17 @@ app.get('/api/auto', verificaCliente, (req, res) => {
     q += 'INNER JOIN modelli ON auto.idModello = modelli.idModello '
     q += 'INNER JOIN colori ON auto.idColore = colori.idColore '
     q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
-    q += 'WHERE AUTO.disponibile = 1 '
-    q += 'GROUP BY auto.idAuto';
+    q += 'WHERE AUTO.disponibile = 1 ';
+
+    // Controlla se è presente il parametro di query sortBy e aggiorna la query di conseguenza
+    if (req.query.sortBy === 'prezzo') {
+        q += 'ORDER BY auto.prezzo'; // Ordina per prezzo
+    } else if (req.query.sortBy === 'chilometraggio') {
+        q += 'ORDER BY auto.chilometraggio'; // Ordina per chilometraggio
+    } // Aggiungi altri controlli per altri campi di ordinamento se necessario
+
     pool.query(q, (error, results) => {
-        if(error) throw error;
+        if (error) throw error;
         res.send(results);
     });
 });

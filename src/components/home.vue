@@ -103,13 +103,33 @@ export default {
         console.error('Errore nel caricamento delle auto:', error);
       }
     },
-    ordinaCombo(){
-      if(this.filtro === "Prezzo"){
-        
-      }else if(this.filtro === "Chilometraggio"){
+    async ordinaCombo(){
+      try {
+        const token = localStorage.getItem('token');
+        let url = 'http://localhost:3000/api/auto';
 
-      }else{
-        
+        if (this.filtro === "Prezzo") {
+          url += '?sortBy=prezzo'; // Aggiungi il parametro per l'ordinamento per prezzo
+        } else if (this.filtro === "Chilometraggio") {
+          url += '?sortBy=chilometraggio'; // Aggiungi il parametro per l'ordinamento per chilometraggio
+        }
+
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            'Authorization': `${token}`
+          }
+        });
+
+        if (response.ok) {
+          this.auto = await response.json();
+          console.log('ecco le auto:', this.auto);
+        } else {
+          console.error('Errore nel caricamento delle auto:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Errore nel caricamento delle auto:', error);
       }
     }
   }
