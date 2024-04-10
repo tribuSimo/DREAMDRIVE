@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import login from './components/login.vue';
 import registrazione from './components/registrazione.vue';
 import home from './components/home.vue';
+import dettagliAuto from './components/dettagliAuto.vue';
 
 
 const routes = [
@@ -28,6 +29,11 @@ const routes = [
     path: '/home',
     name : 'home',
     component: home
+  },
+  {
+    path: '/dettagliAuto/:idAuto',
+    name : 'Dettagli auto',
+    component : dettagliAuto
   },
 ];
 
