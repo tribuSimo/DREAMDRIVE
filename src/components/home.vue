@@ -80,17 +80,7 @@ export default {
         if (this.filtro !== "Nessuno" && this.filtro !== "") {
           url += '?sortBy=' + encodeURIComponent(this.filtro);
         }
-
-        console.log(url);
-
-        // if (this.filtro === "Prezzo") {
-        //   url += '?sortBy=prezzo'; // Aggiungi il parametro per l'ordinamento per prezzo
-        // } else if (this.filtro === "Chilometraggio") {
-        //   url += '?sortBy=chilometraggio'; // Aggiungi il parametro per l'ordinamento per chilometraggio
-        // }else{
-        //   url += '?sortBy=annoProduzione';
-        // }
-
+        
         const response = await fetch(url, {
           method: 'GET',
           headers: {
@@ -110,7 +100,7 @@ export default {
       }
     },
     visualizzaDettagli(index) {
-      const idAuto = this.auto[index].idAuto; // Ottieni l'id dell'auto selezionata utilizzando l'indice
+      const idAuto = this.auto[index].idAuto;
       console.log(idAuto);
       this.$router.push({ name: 'Dettagli auto', params: { idAuto: idAuto } });
     }
