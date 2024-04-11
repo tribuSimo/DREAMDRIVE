@@ -1,14 +1,16 @@
 <template>
   <v-app>
     <navbar></navbar>
-    <v-select label="Ordina" :items="['Nessuno', 'Prezzo', 'Anno produzione', 'Chilometraggio']" class="combo"  v-model = "filtro" @update:modelValue="ordinaCombo()"></v-select>  
-    
-        <v-checkbox class="checkbox" label="Usata"></v-checkbox>
-   <v-container class="containerSearch">
+    <v-select label="Ordina" :items="['Nessuno', 'Prezzo', 'Anno produzione', 'Chilometraggio']" class="combo"
+      v-model="filtro" @update:modelValue="ordinaCombo()"></v-select>
+
+    <v-checkbox class="checkbox" label="Usata"></v-checkbox>
+    <v-container class="containerSearch">
       <v-row>
         <v-col v-for="(auto, index) in auto" :key="index" cols="3" class="text-left">
-          <v-card class="card" @click="visualizzaDettagli()" outlined>
-            <v-img :width="300" aspect-ratio="16/9" cover src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"></v-img>
+          <v-card class="card" @click="visualizzaDettagli(index)" outlined>
+            <v-img :width="300" aspect-ratio="16/9" cover
+              src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"></v-img>
             <v-card-title>{{ auto.marca }} {{ auto.modello }}</v-card-title>
             <v-card-text>
               <div>Potenza: {{ auto.potenza }} cv</div>
@@ -17,14 +19,14 @@
               <div>Usata: {{ auto.usata ? 'Sì' : 'No' }}</div>
               <div>Prezzo: {{ auto.prezzo }} €</div>
               <div>Carburante: {{ auto.carburante }}</div>
-              
+
             </v-card-text>
           </v-card>
 
         </v-col>
       </v-row>
     </v-container>
-    
+
     <finePagina></finePagina>
   </v-app>
 </template>
@@ -42,13 +44,11 @@ export default {
   data() {
     return {
       auto: [],
-      valuePrice:[20,100],
-      value: [20, 100],
       filtro: null,
     };
   },
   created() {
-    if(localStorage.getItem('token'))
+    if (localStorage.getItem('token'))
       this.caricaAuto();
     else
       router.push('/login');
@@ -74,14 +74,12 @@ export default {
         console.error('Errore nel caricamento delle auto:', error);
       }
     },
-    async ordinaCombo(){
-      
-
+    async ordinaCombo() {
       try {
         const token = localStorage.getItem('token');
         let url = 'http://localhost:3000/api/auto';
 
-        if(this.filtro !== "Nessuno" && this.filtro !== ""){
+        if (this.filtro !== "Nessuno" && this.filtro !== "") {
           url += '?sortBy=' + encodeURIComponent(this.filtro);
         }
 
@@ -112,6 +110,11 @@ export default {
       } catch (error) {
         console.error('Errore nel caricamento delle auto:', error);
       }
+    },
+    visualizzaDettagli(index) {
+      const idAuto = this.auto[index].idAuto; // Ottieni l'id dell'auto selezionata utilizzando l'indice
+      console.log(idAuto);
+      this.$router.push({ name: 'Dettagli auto', params: { idAuto: idAuto } });
     }
   }
 };
@@ -122,36 +125,39 @@ export default {
   width: 75%;
   margin: 20px auto;
 }
-.nav_Drawer{
+
+.nav_Drawer {
   margin-top: 0px;
 
 }
-.card
-{
 
+.card {
   margin-left: 50px;
   transition: transform 1s ease, border-color 0.7s ease;
 }
-.card:hover{
+
+.card:hover {
   transform: scale(1.1);
   border-color: #888;
-  
+
 }
+
 .text-left {
   text-align: left;
 }
 
-.search{
- margin-top: 100px;
-}
-.combo{
-  margin-top:79px;
-  width: 300px;
-  margin-left:225px;
+.search {
+  margin-top: 100px;
 }
 
-.checkbox{
-  margin-left:225px;
+.combo {
+  margin-top: 79px;
+  width: 300px;
+  margin-left: 225px;
+}
+
+.checkbox {
+  margin-left: 225px;
   height: 60px;
 }
 </style>
