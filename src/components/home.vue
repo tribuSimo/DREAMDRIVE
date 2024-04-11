@@ -10,7 +10,7 @@
         <v-col v-for="(auto, index) in auto" :key="index" cols="3" class="text-left">
           <v-card class="card" @click="visualizzaDettagli(index)" outlined>
             <v-img :width="300" aspect-ratio="16/9" cover
-            v-if="auto.immagini" :src="'../../public/' + auto.immagini.split(',')[0]"></v-img>
+            v-if="auto.immagini && auto.immagini.length > 0" :src="auto.immagini.split(',')[0]"></v-img>
             <v-card-title>{{ auto.marca }} {{ auto.modello }}</v-card-title>
             <v-card-text>
               <div>Potenza: {{ auto.potenza }} cv</div>
