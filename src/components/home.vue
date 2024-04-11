@@ -101,7 +101,6 @@ export default {
     },
     visualizzaDettagli(index) {
       const idAuto = this.auto[index].idAuto;
-      console.log(idAuto);
       this.$router.push({ name: 'Dettagli auto', params: { idAuto: idAuto } });
     }
   }
