@@ -19,10 +19,8 @@
               <div>Usata: {{ auto.usata ? 'Sì' : 'No' }}</div>
               <div>Prezzo: {{ auto.prezzo }} €</div>
               <div>Carburante: {{ auto.carburante }}</div>
-
             </v-card-text>
           </v-card>
-
         </v-col>
       </v-row>
     </v-container>
