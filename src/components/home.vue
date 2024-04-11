@@ -10,7 +10,7 @@
         <v-col v-for="(auto, index) in auto" :key="index" cols="3" class="text-left">
           <v-card class="card" @click="visualizzaDettagli(index)" outlined>
             <v-img :width="300" aspect-ratio="16/9" cover
-              src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"></v-img>
+              src="../../public/toyotaCorolla1.jpg"></v-img>
             <v-card-title>{{ auto.marca }} {{ auto.modello }}</v-card-title>
             <v-card-text>
               <div>Potenza: {{ auto.potenza }} cv</div>

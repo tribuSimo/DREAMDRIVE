@@ -13,6 +13,7 @@
               <div>Usata: {{ auto[0].usata ? 'Sì' : 'No' }}</div>
               <div>Prezzo: {{ auto[0].prezzo }} €</div>
               <div>Carburante: {{ auto[0].carburante }}</div>
+              <div>Colore: {{ auto[0].colore }}</div>
             </v-card-text>
           </v-card>
         </v-col>
