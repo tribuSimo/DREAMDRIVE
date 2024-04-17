@@ -5,6 +5,11 @@
       <v-row v-if="auto.length > 0">
         <v-col cols="12">
           <v-card outlined>
+            <v-carousel>
+              <v-carousel-item v-for="(image, index) in auto[0].immagini.split(',')" :key="index">
+                <v-img :src="`/${image.trim()}`" aspect-ratio="16/9"></v-img>
+              </v-carousel-item>
+            </v-carousel>
             <v-card-title>{{ auto[0].marca }} {{ auto[0].modello }}</v-card-title>
             <v-card-text>
               <div>Potenza: {{ auto[0].potenza }} cv</div>
@@ -27,6 +32,8 @@
     <finePagina></finePagina>
   </v-app>
 </template>
+
+
   
 <script>
 import navbar from './navbar.vue';

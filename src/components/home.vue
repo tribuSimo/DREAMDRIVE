@@ -4,7 +4,7 @@
     <v-select label="Ordina" :items="['Nessuno', 'Prezzo', 'Anno produzione', 'Chilometraggio']" class="combo"
       v-model="filtro" @update:modelValue="ordinaCombo()"></v-select>
 
-    <v-checkbox class="checkbox" label="Usata"></v-checkbox>
+    <v-checkbox class="checkbox" v-model="mostraUsate" @update:modelValue="visualizzaUsate()" label="Usata"></v-checkbox>
     <v-container class="containerSearch">
       <v-row>
         <v-col v-for="(auto, index) in auto" :key="index" cols="3" class="text-left">
@@ -17,7 +17,7 @@
               <div>Potenza: {{ auto.potenza }} cv</div>
               <div>Chilometraggio: {{ auto.chilometraggio }} km</div>
               <div>Anno di produzione: {{ auto.annoProduzione }}</div>
-              <div>Usata: {{ auto.usata ? 'Sì' : 'No' }}</div>
+              <div>Usata: {{ auto.usata && auto.usata.data[0] === 1 ? 'Sì' : 'No' }}</div>
               <div>Prezzo: {{ auto.prezzo }} €</div>
               <div>Carburante: {{ auto.carburante }}</div>
             </v-card-text>
@@ -43,6 +43,7 @@ export default {
     return {
       auto: [],
       filtro: null,
+      mostraUsate: false
     };
   },
   created() {
@@ -95,6 +96,35 @@ export default {
         } else {
           console.error('Errore nel caricamento delle auto:', response.statusText);
         }
+      } catch (error) {
+        console.error('Errore nel caricamento delle auto:', error);
+      }
+    },
+    async visualizzaUsate(){
+      try {
+        const token = localStorage.getItem('token');
+        let url = 'http://localhost:3000/api/auto';
+
+        if (this.mostraUsate === true ) {
+          url += '?usata=' + encodeURIComponent(this.mostraUsate);
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              'Authorization': `${token}`
+            }
+          });
+
+          if (response.ok) {
+            this.auto = await response.json();
+            console.log('ecco le auto:', this.auto);
+          } else {
+            console.error('Errore nel caricamento delle auto:', response.statusText);
+          }
+        }
+        else
+          this.caricaAuto();
+        
       } catch (error) {
         console.error('Errore nel caricamento delle auto:', error);
       }
