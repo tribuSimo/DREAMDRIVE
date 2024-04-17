@@ -33,6 +33,8 @@ app.get('/api/auto', verificaCliente, (req, res) => {
     q += 'INNER JOIN colori ON auto.idColore = colori.idColore '
     q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
     q += 'WHERE AUTO.disponibile = 1 '
+    if(req.body.sortBy === 'Usata')
+        q += 'AND AUTO.usata = 1 '
     q += 'group by auto.idAuto '; 
 
     // Controlla se è presente il parametro di query sortBy e aggiorna la query di conseguenza
