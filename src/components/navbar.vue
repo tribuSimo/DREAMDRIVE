@@ -3,7 +3,7 @@
      <v-app-bar app color="white" >
       <v-container class="nav-container">
         <v-row class="nav">
-          <v-img src="logo.jpg" max-width="50" max-height="50" contain />
+          <v-img src="/logo.jpg" max-width="50" max-height="50" contain />
           <v-btn to="/home" class="nav-button">
             Auto
           </v-btn>

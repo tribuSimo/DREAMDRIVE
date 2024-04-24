@@ -4,6 +4,8 @@ import login from './components/login.vue';
 import registrazione from './components/registrazione.vue';
 import home from './components/home.vue';
 import dettagliAuto from './components/dettagliAuto.vue';
+import effettuaPrenotazioni from './components/effettuaPrenotazioni.vue';
+import prenotazioni from './components/prenotazioni.vue';
 
 
 const routes = [
@@ -35,6 +37,16 @@ const routes = [
     name : 'Dettagli auto',
     component : dettagliAuto
   },
+  {
+    path: '/effettuaPrenotazioni/:idAuto',
+    name : 'Effettua Prenotazioni',
+    component: effettuaPrenotazioni
+  },
+  {
+    path: '/prenotazioni/:idUtente',
+    name : 'Prenotazioni',
+    component: prenotazioni
+  }
 ];
 
 const router = createRouter({

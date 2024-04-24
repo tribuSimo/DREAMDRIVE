@@ -2,9 +2,11 @@
   <v-app>
     <navbar></navbar>
     <v-select label="Ordina" :items="['Nessuno', 'Prezzo', 'Anno produzione', 'Chilometraggio']" class="combo"
-      v-model="filtro" @update:modelValue="ordinaCombo()"></v-select>
+      v-model="filtro" @update:modelValue="ordinaCombo()">
+    </v-select>
+    <v-select label="Marca" class="combo" :items="marche" v-model="marcaSelezionata"></v-select>
 
-    <v-checkbox class="checkbox" v-model="mostraUsate" @update:modelValue="visualizzaUsate()" label="Usata"></v-checkbox>
+    <v-checkbox class="checkbox" v-model="mostraUsate" label="Usata"></v-checkbox>
     <v-container class="containerSearch">
       <v-row>
         <v-col v-for="(auto, index) in auto" :key="index" cols="3" class="text-left">
@@ -43,14 +45,25 @@ export default {
     return {
       auto: [],
       filtro: null,
-      mostraUsate: false
+      mostraUsate: false,
+      marche: [],
+      marcaSelezionata: null,
     };
   },
   created() {
-    if (localStorage.getItem('token'))
+    if (localStorage.getItem('token')) {
       this.caricaAuto();
-    else
+      this.visualizzaMarche();
+    } else {
       router.push('/login');
+    }
+  },
+  watch: {
+    mostraUsate(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.visualizzaUsate();
+      }
+    }
   },
   methods: {
     async caricaAuto() {
@@ -81,7 +94,7 @@ export default {
         if (this.filtro !== "Nessuno" && this.filtro !== "") {
           url += '?sortBy=' + encodeURIComponent(this.filtro);
         }
-        
+
         const response = await fetch(url, {
           method: 'GET',
           headers: {
@@ -100,13 +113,11 @@ export default {
         console.error('Errore nel caricamento delle auto:', error);
       }
     },
-    async visualizzaUsate(){
+    async visualizzaUsate() {
       try {
-        const token = localStorage.getItem('token');
-        let url = 'http://localhost:3000/api/auto';
-
-        if (this.mostraUsate === true ) {
-          url += '?usata=' + encodeURIComponent(this.mostraUsate);
+        if (this.mostraUsate === true) {
+          const token = localStorage.getItem('token');
+          let url = 'http://localhost:3000/api/autoUsate';
           const response = await fetch(url, {
             method: 'GET',
             headers: {
@@ -117,22 +128,44 @@ export default {
 
           if (response.ok) {
             this.auto = await response.json();
-            console.log('ecco le auto:', this.auto);
+            console.log('Ecco le auto usate:', this.auto);
           } else {
-            console.error('Errore nel caricamento delle auto:', response.statusText);
+            console.error('Errore nel caricamento delle auto usate:', response.statusText);
           }
+        } else {
+          // Se la checkbox non è selezionata, carica tutte le auto
+          await this.caricaAuto();
         }
-        else
-          this.caricaAuto();
-        
       } catch (error) {
         console.error('Errore nel caricamento delle auto:', error);
+      }
+    },
+    async visualizzaMarche() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:3000/api/marche', {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            'Authorization': `${token}`
+          }
+        });
+        if (response.ok) {
+          const marcheJson = await response.json();
+          // Converti l'array JSON delle marche in un array di oggetti con chiavi 'text' e 'value'
+          this.marche = marcheJson.map(marca => (marca.marca));
+          console.log('ecco le marche:', this.marche);
+        } else {
+          console.error('Errore nel caricamento delle marche:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Errore nel caricamento delle marche:', error);
       }
     },
     visualizzaDettagli(index) {
       const idAuto = this.auto[index].idAuto;
       this.$router.push({ name: 'Dettagli auto', params: { idAuto: idAuto } });
-    }
+    },
   }
 };
 </script>
@@ -145,7 +178,6 @@ export default {
 
 .nav_Drawer {
   margin-top: 0px;
-
 }
 
 .card {
@@ -156,7 +188,6 @@ export default {
 .card:hover {
   transform: scale(1.1);
   border-color: #888;
-
 }
 
 .text-left {

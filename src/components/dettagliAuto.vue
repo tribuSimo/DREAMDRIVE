@@ -21,6 +21,8 @@
               <div>Colore: {{ auto[0].colore }}</div>
             </v-card-text>
           </v-card>
+          <v-btn @click="continuaPagamento()" class="btnDetails" block>Continua con acquisto</v-btn>
+          <v-btn @click="returnCatalog()" class="btnDetails" block>Ritorna al catalogo</v-btn>
         </v-col>
       </v-row>
       <v-row v-else>
@@ -77,6 +79,14 @@ export default {
       } catch (error) {
         console.error('Errore nel caricamento dei dettagli dell\'auto:', error);
       }
+    },
+
+    returnCatalog() {
+      router.push("/home");
+    },
+    
+    continuaPagamento(){
+      this.$router.push({ name: 'Effettua Prenotazioni', params: { idAuto : this.auto.idAuto} });
     }
   }
 };
@@ -85,6 +95,13 @@ export default {
 <style scoped>
 .container {
   margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.btnDetails{
+  margin-top: 15px;
+  background-color:#0d6efd;
+  color:white
 }
 </style>
   
