@@ -101,7 +101,8 @@ export default {
 .btnDetails{
   margin-top: 15px;
   background-color:#0d6efd;
-  color:white
+  color:white;
+  width: 200px;
 }
 </style>
   

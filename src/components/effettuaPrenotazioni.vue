@@ -1,73 +1,150 @@
 <template>
-    <v-app>
-      <navbar></navbar>
-      
-      <div class="container">
-        <!-- Testo "Riepilogo" posizionato in alto a destra -->
-        <h1 class="riepilogo_title">RIEPILOGO</h1>
-        <h3 class="riepilogo_marcaModello">{{ auto[0].marca }} {{ auto[0].modello }}</h3>
-        <h3 class="riepilogo_potenza" >Potenza: {{ auto[0].potenza }} cv</h3>
-        <h3 class="riepilogo_chilometraggio">Chilometraggio: {{ auto[0].chilometraggio }} km</h3>
-        <h3 class="riepilogo_anno">Anno di produzione: {{ auto[0].annoProduzione }}</h3>
-        <!-- Altri dettagli dell'auto -->
-      </div>
-  
-      <!-- Div a destra con testo h1 e bottone -->
-      <div class="right-div">
-        <h1 class="riepilogo_Prezzo">Prezzo: {{ auto[0].prezzo }} €</h1>
-        <v-btn class="btnPrenota rounded-xl">Prenota Incontro</v-btn>
-      </div>
-  
-      <finePagina></finePagina>
-    </v-app>
-  </template>
-  
-  <script>
-  import navbar from './navbar.vue';
-  import finePagina from './footer.vue';
-  import router from '@/router';
-  
-  export default {
-    components: {
-      navbar,
-      finePagina
-    },
-    data() {
-      return {
-        auto: {}
-      };
-    },
-    created() {
-      if (localStorage.getItem('token'))
-        this.caricaAuto(this.$route.params.idAuto);
-      else
-        router.push('/login');
-    },
-    methods: {
-      async caricaAuto(idAuto) {
-        try {
-          const token = localStorage.getItem('token');
-          const response = await fetch(`http://localhost:3000/api/auto/${idAuto}`, {
-            method: 'GET',
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              'Authorization': `${token}`
-            }
-          });
-          if (response.ok) {
-            this.auto = await response.json();
-            console.log('Dettagli dell\'auto:', this.auto);
-          } else {
-            console.error('Errore nel caricamento dei dettagli dell\'auto:', response.statusText);
+  <v-app>
+    <navbar></navbar>
+
+    <div class="container">
+      <!-- Testo "Riepilogo" posizionato in alto a destra -->
+      <h1 class="riepilogo_title">RIEPILOGO</h1>
+      <h3 class="riepilogo_marcaModello">{{ auto[0].marca }} {{ auto[0].modello }}</h3>
+      <h3 class="riepilogo_potenza">Potenza: {{ auto[0].potenza }} cv</h3>
+      <h3 class="riepilogo_chilometraggio">Chilometraggio: {{ auto[0].chilometraggio }} km</h3>
+      <h3 class="riepilogo_anno">Anno di produzione: {{ auto[0].annoProduzione }}</h3>
+      <!-- Altri dettagli dell'auto -->
+    </div>
+
+    <!-- Div a destra con testo h1 e bottone -->
+    <div class="right-div">
+      <h1 class="riepilogo_Prezzo">Prezzo: {{ auto[0].prezzo }} €</h1>
+      <v-btn class="btnPrenota rounded-xl" @click="apriDialog">Prenota Incontro</v-btn>
+    </div>
+
+    <finePagina></finePagina>
+
+    <!-- Dialog -->
+    <v-dialog v-model="dialogVisibile" max-width="600">
+      <template v-slot:activator="{ on }">
+        <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
+      </template>
+      <v-card>
+        <v-card-title class="headline">Scegli un Orario</v-card-title>
+        <v-card-text>
+          <v-btn-toggle v-model="orarioSelezionato" color="primary" class="text-center">
+            <v-btn :value="orario" v-for="orario in orari" :key="orario" color="primary">{{ orario }}</v-btn>
+          </v-btn-toggle>
+          <v-date-picker v-model="dataSelezionata" class="mt-4"></v-date-picker>
+        </v-card-text>
+        <v-card-actions class="justify-center">
+          <v-btn color="blue darken-1" @click="prenota">Prenota</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-app>
+</template>
+
+<script>
+import navbar from './navbar.vue';
+import finePagina from './footer.vue';
+import router from '@/router';
+
+export default {
+  components: {
+    navbar,
+    finePagina
+  },
+  data() {
+    return {
+      auto: [{
+        "idAuto": "",
+        "targa": "",
+        "descrizione": "",
+        "potenza": "",
+        "chilometraggio": "",
+        "annoProduzione": "",
+        "cambio": "",
+        "peso": "",
+        "usata": false,
+        "prezzo": "",
+        "marca": "",
+        "carburante": "",
+        "modello": "",
+        "colore": "",
+        "immagini": ""
+      }],
+      dialogVisibile: false,
+      orarioSelezionato: null,
+      dataSelezionata: null,
+      orari: ['9:00', '12:00', '15:00']
+    };
+  },
+  created() {
+    if (localStorage.getItem('token'))
+      this.caricaAuto(this.$route.params.idAuto);
+    else
+      router.push('/login');
+  },
+  methods: {
+    async caricaAuto(idAuto) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:3000/api/auto/${idAuto}`, {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            'Authorization': `${token}`
           }
-        } catch (error) {
-          console.error('Errore nel caricamento dei dettagli dell\'auto:', error);
+        });
+        if (response.ok) {
+          this.auto = await response.json();
+          console.log('Dettagli dell\'auto:', this.auto[0]);
+        } else {
+          console.error('Errore nel caricamento dei dettagli dell\'auto:', response.statusText);
         }
-      },
+      } catch (error) {
+        console.error('Errore nel caricamento dei dettagli dell\'auto:', error);
+      }
+    },
+    apriDialog() {
+      this.dialogVisibile = true;
+    },
+    async prenota() {
+      
+    try {
+      const dt = new Date(this.dataSelezionata);
+      console.log(dt.toDateString());
+      // const formattedDate = moment(this.dataSelezionata);
+    
+      //     if (!formattedDate.isValid())
+      //       throw new Error('Formato data non valido');
+
+      //     const formattedDateString = formattedDate.format('YYYY-MM-DD');
+      // const token = localStorage.getItem('token');
+      //   const response = await fetch('http://localhost:3000/api/prenotazione', {
+      //       method: 'POST',
+      //       body: new URLSearchParams({
+      //           idAuto: this.auto[0].idAuto,
+      //           orario: this.orarioSelezionato,
+      //           dataGG: formattedDateString
+      //       }).toString(),
+      //       headers: {
+      //           "Content-Type":"application/x-www-form-urlencoded",
+      //           'Authorization': `${token}`
+      //       }
+      //   });
+      //   if (!response.ok) {
+      //       throw new Error('Errore durante la prenotazione');
+      //   }
+      //   console.log('Prenotazione effettuata con successo');
+    } catch (error) {
+        console.error('Errore durante la prenotazione:', error);
     }
-  };
-  </script>
-  
+    // Chiudi la dialog dopo la prenotazione
+    this.dialogVisibile = false;
+}
+
+  }
+};
+</script>
+
   <style scoped>
   /* Stile per posizionare il testo "Riepilogo" in alto a destra */
   .riepilogo_title {

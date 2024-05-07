@@ -208,3 +208,22 @@ app.post('/api/registrazione', (req, res) => {
 app.listen(port, () => {
     console.log(`Server in esecuzione sulla porta ${port}`);
 });
+
+app.post('/api/prenotazione', verificaCliente, (req, res) => {
+    const { idAuto, orario, dataGG } = req.body;
+
+    // Verifica se tutti i campi necessari sono stati forniti
+    if (!idAuto || !orario || !dataGG) {
+        return res.status(400).send('Tutti i campi sono obbligatori');
+    }
+
+    // Query per inserire i dati nella tabella delle prenotazioni
+    const query = 'INSERT INTO prenotazioni (idAuto, orario, dataGG) VALUES (?, ?, ?)';
+    pool.query(query, [idAuto, orario, dataGG], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante la prenotazione');
+        }
+        res.send('Prenotazione effettuata con successo');
+    });
+});
