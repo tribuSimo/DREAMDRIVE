@@ -42,6 +42,7 @@
 import navbar from './navbar.vue';
 import finePagina from './footer.vue';
 import router from '@/router';
+import moment from 'moment';
 
 export default {
   components: {
@@ -106,31 +107,36 @@ export default {
     async prenota() {
       
     try {
-      const dt = new Date(this.dataSelezionata);
-      console.log(dt.toDateString());
-      // const formattedDate = moment(this.dataSelezionata);
+      
+      const formattedDate = moment(this.dataSelezionata);
     
-      //     if (!formattedDate.isValid())
-      //       throw new Error('Formato data non valido');
+          if (!formattedDate.isValid())
+            throw new Error('Formato data non valido');
 
-      //     const formattedDateString = formattedDate.format('YYYY-MM-DD');
-      // const token = localStorage.getItem('token');
-      //   const response = await fetch('http://localhost:3000/api/prenotazione', {
-      //       method: 'POST',
-      //       body: new URLSearchParams({
-      //           idAuto: this.auto[0].idAuto,
-      //           orario: this.orarioSelezionato,
-      //           dataGG: formattedDateString
-      //       }).toString(),
-      //       headers: {
-      //           "Content-Type":"application/x-www-form-urlencoded",
-      //           'Authorization': `${token}`
-      //       }
-      //   });
-      //   if (!response.ok) {
-      //       throw new Error('Errore durante la prenotazione');
-      //   }
-      //   console.log('Prenotazione effettuata con successo');
+          const formattedDateString = formattedDate.format('YYYY-MM-DD');
+          const token = localStorage.getItem('token');
+          const response = await fetch('http://localhost:3000/api/prenotazione', {
+            method: 'POST',
+            body: new URLSearchParams({
+                idAuto: this.auto[0].idAuto,
+                orario: this.orarioSelezionato,
+                dataGG: formattedDateString
+            }).toString(),
+            headers: {
+                "Content-Type":"application/x-www-form-urlencoded",
+                'Authorization': `${token}`
+            }
+        });
+        if (!response.ok) {
+          
+            throw new Error('Errore durante la prenotazione');
+            
+        }
+        else
+        {
+          //router.push("/prenotazioni:1");
+        }
+        console.log('Prenotazione effettuata con successo'); 
     } catch (error) {
         console.error('Errore durante la prenotazione:', error);
     }

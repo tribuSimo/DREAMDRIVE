@@ -140,6 +140,39 @@ app.get('/api/utenti/:id', verificaAdmin, (req, res) => {
         res.send(results);
     });
 });
+app.post('/api/prenotazione', verificaCliente, (req, res) => {
+    const { idAuto, orario, dataGG } = req.body;
+
+    // Verifica se tutti i campi necessari sono stati forniti
+    if (!idAuto || !orario || !dataGG) {
+        return res.status(400).send('Tutti i campi sono obbligatori');
+    }
+
+    // Query per inserire i dati nella tabella delle prenotazioni
+    const query = 'INSERT INTO prenotazioni (idAuto, idUtente,ora, dataGiorno,stato) VALUES (?, ?, ?)';
+    pool.query(query, [idAuto, orario, dataGG,"In attesa"], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante la prenotazione');
+        }
+        res.send('Prenotazione effettuata con successo');
+    });
+});
+
+app.get('/api/GetPrenotazioni:idUtente', verificaCliente, (req, res) => {
+    const idUtente = req.params.idUtente;
+    // Query per inserire i dati nella tabella delle prenotazioni
+    const query = `SELECT marca, modello, dataGiorno, ora, stato FROM prenotazioni, auto, modelli, marche ` +
+    `where prenotazioni.idUtente = ${idUtente} AND prenotazioni.idAuto = auto.idAuto AND ` +
+    `auto.idMarca = marche.idMarca AND auto.idModello = modelli.idModello `  ;
+    pool.query(query, (error) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante la prenotazione');
+        }
+        res.send('Prenotazione effettuata con successo');
+    });
+});
 
 app.post('/api/utenti', verificaAdmin, (req, res) => {
     const { email, password, dataNascita } = req.body;
