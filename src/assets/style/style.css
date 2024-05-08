@@ -53,3 +53,44 @@
 .dataPicker{
   margin-top: 5px;
 }
+/* Stile del corpo della pagina */
+body {
+  background-color: #f8f9fa; /* Bianco fumo */
+  color: #343a40; /* Nero */
+  font-family: Arial, sans-serif; /* Font predefinito */
+}
+
+/* Stile della barra di navigazione */
+.navbar {
+  background-color: #343a40; /* Nero */
+  color: #ffffff; /* Bianco */
+}
+
+/* Stile del footer */
+.footer {
+  background-color: #343a40; /* Nero */
+  color: #ffffff; /* Bianco */
+}
+
+/* Stile delle card che visualizzano le auto */
+.card {
+  background-color: #ffffff; /* Bianco */
+  color: #343a40; /* Nero */
+  border: 1px solid #e9ecef; /* Grigio chiaro */
+}
+
+/* Stile del testo */
+.text {
+  color: #343a40; /* Nero */
+}
+
+/* Stile dei pulsanti */
+.button {
+  background-color: #dc3545; /* Rosso */
+  color: #ffffff; /* Bianco */
+}
+
+/* Stile dei link */
+.link {
+  color: #ffc107; /* Oro */
+}

@@ -46,7 +46,6 @@ app.get('/api/auto', verificaCliente, (req, res) => {
         q += 'ORDER BY auto.idAuto';
     }    // Aggiungi altri controlli per altri campi di ordinamento se necessario
 
-    console.log(q);
     pool.query(q, (error, results) => {
         if (error) throw error;
         res.send(results);
@@ -76,7 +75,6 @@ app.get('/api/autoUsate', verificaCliente, (req, res) => {
         q += 'ORDER BY auto.idAuto';
     }    // Aggiungi altri controlli per altri campi di ordinamento se necessario
 
-    console.log(q);
     pool.query(q, (error, results) => {
         if (error) throw error;
         res.send(results);
@@ -96,6 +94,25 @@ app.get('/api/auto/:idAuto', verificaCliente, (req, res) => {
     q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
     q += 'WHERE auto.idAuto = ? AND auto.disponibile = 1';  // Utilizziamo un placeholder per l'id dell'auto
     pool.query(q, [idAuto], (error, results) => {
+        if(error) throw error;
+        res.send(results);
+    });
+});
+
+app.get('/api/autoMarca/:marca', verificaCliente, (req, res) => {
+    const marca = req.params.marca;
+    let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio, '
+    q += 'auto.annoProduzione, auto.cambio, auto.peso, auto.usata, auto.prezzo, marche.marca, carburanti.carburante, '
+    q += 'modelli.modello, colori.colore, GROUP_CONCAT(immagini.immagine) AS immagini '
+    q += 'FROM auto '
+    q += 'INNER JOIN marche ON auto.idMarca = marche.idMarca '
+    q += 'INNER JOIN carburanti ON auto.idCarburante = carburanti.idCarburante '
+    q += 'INNER JOIN modelli ON auto.idModello = modelli.idModello '
+    q += 'INNER JOIN colori ON auto.idColore = colori.idColore '
+    q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
+    q += 'WHERE marche.marca = ? AND auto.disponibile = 1';
+
+    pool.query(q, [marca], (error, results) => {
         if(error) throw error;
         res.send(results);
     });
