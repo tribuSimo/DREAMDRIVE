@@ -218,14 +218,16 @@ export default {
 }
 
 .gold-card {
-  background-color: #ffd700; /* Oro */
+  background-color: #ffff;
+  border: 1px solid black;
   margin-left: 50px;
+  margin-bottom: 10px;
   transition: transform 1s ease, border-color 0.7s ease;
 }
 
 .gold-card:hover {
   transform: scale(1.1);
-  border-color: #888;
+  border-color: #ff3231;
 }
 
 .text-left {
