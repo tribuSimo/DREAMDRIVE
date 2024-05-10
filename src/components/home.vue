@@ -23,7 +23,8 @@
       <v-row>
         <v-col cols="12" sm="6" md="4" v-for="(auto, index) in auto" :key="index">
           <v-card class="card" @click="visualizzaDettagli(index)" outlined>
-            <v-img :src="auto.immagini && auto.immagini.length > 0 ? auto.immagini.split(',')[0] : 'workInProgress.jpg'" aspect-ratio="16/9" cover></v-img>
+            <v-img :src="auto.immagini && auto.immagini.length > 0 ? auto.immagini.split(',')[0] : 'workInProgress.jpg'"
+              aspect-ratio="16/9" cover></v-img>
             <v-card-title>{{ auto.marca }} {{ auto.modello }}</v-card-title>
             <v-card-text>
               <div>Potenza: {{ auto.potenza }} cv</div>
