@@ -70,7 +70,7 @@ body,
 .nav-button:hover {
   color: white;
   text-shadow: 1px 1px #000000;
-  background-color: rgb(224, 160, 21);
+  background-color: #ffa500;
 }
 
 .nav_v-text-field {
@@ -90,5 +90,9 @@ body,
 /* Imposta l'altezza della barra di navigazione */
 .v-toolbar__content {
   min-height: 50px; /* Imposta l'altezza desiderata */
+}
+.navbar{
+  background-color: #294c80 !important;
+  color: #ffffff !important;
 }
 </style>

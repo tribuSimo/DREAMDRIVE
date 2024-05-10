@@ -19,10 +19,10 @@
               <div>Prezzo: {{ auto[0].prezzo }} €</div>
               <div>Carburante: {{ auto[0].carburante }}</div>
               <div>Colore: {{ auto[0].colore }}</div>
+              <v-btn @click="continuaPagamento()" class="btnDetails" block>Continua con acquisto</v-btn>
+              <v-btn @click="returnCatalog()" class="btnDetails" block>Ritorna al catalogo</v-btn>
             </v-card-text>
           </v-card>
-          <v-btn @click="continuaPagamento()" class="btnDetails" block>Continua con acquisto</v-btn>
-          <v-btn @click="returnCatalog()" class="btnDetails" block>Ritorna al catalogo</v-btn>
         </v-col>
       </v-row>
       <v-row v-else>
@@ -94,13 +94,13 @@ export default {
 
 <style scoped>
 .container {
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 165px;
+  margin-bottom: 95px;
 }
 
 .btnDetails{
-  margin-top: 15px;
-  background-color:#0d6efd;
+  margin-top: 10px;
+  background-color:#ffa500;
   color:white;
   width: 200px;
 }

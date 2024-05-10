@@ -22,7 +22,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" sm="6" md="4" v-for="(auto, index) in auto" :key="index">
-          <v-card class="gold-card" @click="visualizzaDettagli(index)" outlined>
+          <v-card class="card" @click="visualizzaDettagli(index)" outlined>
             <v-img :src="auto.immagini && auto.immagini.length > 0 ? auto.immagini.split(',')[0] : 'workInProgress.jpg'" aspect-ratio="16/9" cover></v-img>
             <v-card-title>{{ auto.marca }} {{ auto.modello }}</v-card-title>
             <v-card-text>
@@ -217,17 +217,19 @@ export default {
   margin-top: 0px;
 }
 
-.gold-card {
-  background-color: #ffff;
-  border: 1px solid black;
+.card {
+  background-color: #f0f4f8;
+  color: #000000;
+  border: 2px solid #d1d8e0;
   margin-left: 50px;
   margin-bottom: 10px;
-  transition: transform 1s ease, border-color 0.7s ease;
+  transition: transform 1s ease, border-color 0.7s ease, background-color 0.7s ease, color 0.7s ease;
 }
 
-.gold-card:hover {
+.card:hover {
   transform: scale(1.1);
-  border-color: #ff3231;
+  background-color: #f0f0f0;
+  border-color: #b0b0b0;
 }
 
 .text-left {

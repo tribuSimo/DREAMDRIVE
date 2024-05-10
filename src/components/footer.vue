@@ -1,5 +1,5 @@
 <template>
-  <v-footer class="bg-black text-white text-center d-flex flex-column">
+  <v-footer id="footer" class="bg-black text-white text-center d-flex flex-column">
     <div>
       <v-btn v-for="icon in icons" :key="icon" :icon="icon" class="mx-4" variant="text"></v-btn>
     </div>
@@ -28,3 +28,9 @@ export default {
   }),
 }
 </script>
+<style>
+#footer{
+  background-color: #294c80 !important;
+  color: #ffffff !important;
+}
+</style>

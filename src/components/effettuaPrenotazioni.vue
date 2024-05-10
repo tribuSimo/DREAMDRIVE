@@ -193,7 +193,7 @@ export default {
   }
   /* Stile per il prezzo con bordo sfocato */
 .riepilogo_Prezzo {
-  border: 2px solid #0d6efd; /* Bordo sfocato */
+  border: 2px solid #ffa500; /* Bordo sfocato */
   border-radius: 10px;
   padding: 10px; /* Spazio interno */
   backdrop-filter: blur(5px); /* Effetto di sfocatura */
@@ -202,7 +202,7 @@ export default {
 
 .btnPrenota{
     margin-top: 20px;
-    background-color: #0d6efd;
+    background-color: #ffa500;
     color: white;
     width: 200px;
 }
