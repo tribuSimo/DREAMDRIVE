@@ -9,7 +9,7 @@
         <v-btn to="/nuove-uscite" class="nav-button">
           Nuove Uscite
         </v-btn>
-        <v-btn to="/prenotazioni" class="nav-button">
+        <v-btn @click="raggiungiPrenotazioni()" class="nav-button">
           Prenotazioni
         </v-btn>
         <v-btn to="/notifiche" class="nav-button">
@@ -19,7 +19,8 @@
           Logout
         </v-btn>
         <div class="div-search">
-          <v-text-field class="nav_v-text-field" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined dense></v-text-field>
+          <v-text-field class="nav_v-text-field" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined
+            dense></v-text-field>
         </div>
       </v-row>
     </v-container>
@@ -31,6 +32,13 @@ import router from '@/router';
 
 export default {
   name: "App",
+  created() {
+    if (localStorage.getItem('token')) {
+      this.prendiID();
+    } else {
+      router.push('/login');
+    }
+  },
   data: () => ({
     items: [
       { title: 'Click Me' },
@@ -38,11 +46,41 @@ export default {
       { title: 'Click Me' },
       { title: 'Click Me 2' },
     ],
+    idUtente: null
   }),
   methods: {
     logout() {
       localStorage.clear();
       router.push("/login");
+    },
+    async prendiID() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:3000/api/getUserID', {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            'Authorization': `${token}`
+          }
+        });
+        if (response.ok) {
+          let data = await response.json();
+          this.idUtente = data.userId;
+          console.log('ID utente:', this.idUtente);
+        } else {
+          console.error('Errore nel caricamento di idUtente:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Errore nella richiesta per idUtente', error);
+      }
+    },
+    raggiungiPrenotazioni() {
+      if (this.idUtente) {
+        // Esegue il reindirizzamento alla pagina delle prenotazioni con l'ID dell'utente come parametro
+        router.push({ name: 'Prenotazioni', params: { idUtente: this.idUtente } });
+      } else {
+        console.error('ID utente non disponibile');
+      }
     }
   }
 };
@@ -89,9 +127,11 @@ body,
 
 /* Imposta l'altezza della barra di navigazione */
 .v-toolbar__content {
-  min-height: 50px; /* Imposta l'altezza desiderata */
+  min-height: 50px;
+  /* Imposta l'altezza desiderata */
 }
-.navbar{
+
+.navbar {
   background-color: #294c80 !important;
   color: #ffffff !important;
 }

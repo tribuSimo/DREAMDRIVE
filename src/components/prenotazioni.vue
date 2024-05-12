@@ -1,45 +1,65 @@
 <template>
-    <v-app>
-      <navbar></navbar>
-      
-      <v-table height="300px">
-        <thead>
-          <tr>
-            <th class="text-left">
-             Nome auto
-            </th>
-            <th class="text-left">
-             Data
-            </th>
-             <th class="text-left">
-             Orario
-            </th>
-             <th class="text-left">
-             Stato
-            </th>
-          </tr>
-        </thead>
+  <v-app>
+    <navbar></navbar>
+    <div v-if="dati.length === 0" class="no-data-message">
+      <h3>Non ci sono prenotazioni attive a tuo nome al momento.</h3>
+    </div>
+    <v-table class="tabella" v-else>
+      <thead>
+        <tr>
+          <th class="text-center">
+            <b>Nome auto</b>
+          </th>
+          <th class="text-center">
+            <b>Data Ora</b>
+          </th>
+          <th class="text-center">
+            <b>Stato</b>
+          </th>
+          <th class="text-center">
+            <b>Azioni</b>
+          </th>
+        </tr>
+      </thead>
       <tbody>
-      <tr
-        v-for="item in dati"
-        :key="item.name"
-      >
-        <td>{{ item.nome }}</td>
-        <td>{{ item.data }}</td>
-        <td>{{ item.orario }}</td>
-        <td>{{ item.stato }}</td>
-      </tr>
-    </tbody>
-  </v-table>
-  
-      <finePagina></finePagina>
-    </v-app>
-  </template>
-  
+        <tr v-for="item in dati" :key="item.name">
+          <td><b>{{ item.marca }} {{ item.modello }}</b></td>
+          <td><b>{{ formatDateTime(item.data_ora) }}</b></td>
+          <td>
+            <v-chip :color="getChipColor(item.stato)" variant="flat"><b>{{ item.stato }}</b></v-chip>
+          </td>
+          <td>
+            <!-- Aggiorna il pulsante Disdici -->
+            <v-btn color="error" @click="dialog = true; selectedPrenotazione = item">Disdici</v-btn>
+          </td>
+        </tr>
+      </tbody>
+    </v-table>
+
+    <finePagina></finePagina>
+
+    <!-- Aggiungi il dialog di conferma -->
+    <v-dialog v-model="dialog" max-width="500">
+      <v-card>
+        <v-card-title class="headline">Conferma disdetta</v-card-title>
+        <v-card-text>
+          Sei sicuro di voler disdire l'appuntamento?
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" @click="dialog = false">Annulla</v-btn>
+          <v-btn color="error"
+            @click="disdiciPrenotazione(selectedPrenotazione.idPrenotazione); dialog = false">Conferma</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-app>
+</template>
+
 <script>
 import navbar from './navbar.vue';
 import finePagina from './footer.vue';
 import router from '@/router';
+import moment from 'moment';
 
 export default {
   components: {
@@ -48,100 +68,112 @@ export default {
   },
   data() {
     return {
-      dati: {} // Aggiungi un array vuoto per contenere i dati della tabella
+      dati: {}, // Aggiungi un array vuoto per contenere i dati della tabella
+      dialog: false, // Aggiungi una variabile per controllare la visualizzazione del dialog di conferma
+      selectedPrenotazione: null // Aggiungi una variabile per memorizzare la prenotazione selezionata
     };
   },
   created() {
     if (localStorage.getItem('token'))
-      this.caricaAuto(this.$route.params.idUtente);
+      this.caricaPrenotazioni(this.$route.params.idUtente);
     else
       router.push('/login');
   },
   methods: {
-  async caricaPrenotazioni(idUtente) {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3000/api/GetPrenotazioni/${idUtente}`, {
-        method: 'GET',
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          'Authorization': `${token}`
+    async caricaPrenotazioni(idUtente) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:3000/api/GetPrenotazioni/${idUtente}`, {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            'Authorization': `${token}`
+          }
+        });
+        if (response.ok) {
+          this.dati = await response.json();
+          console.log('Dettagli prenotazioni:', this.dati);
+        } else {
+          console.error('Errore nel caricamento delle prenotazioni:', response.statusText);
         }
-      });
-      if (response.ok) {
-        this.dati = await response.json();
-        console.log('Dettagli prenotazioni:', this.dati);
-      } else {
-        console.error('Errore nel caricamento delle prenotazioni:', response.statusText);
+      } catch (error) {
+        console.error('Errore nel caricamento delle prenotazioni:', error);
       }
-    } catch (error) {
-      console.error('Errore nel caricamento delle prenotazioni:', error);
+    },
+    async disdiciPrenotazione(idPrenotazione) {
+      try {
+        console.log(idPrenotazione);
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:3000/api/disdiciPrenotazione/${idPrenotazione}`, {
+          method: 'DELETE',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            'Authorization': `${token}`
+          }
+        });
+        if (response.ok) {
+          // Ricarica le prenotazioni dopo aver disdetto una
+          this.caricaPrenotazioni(this.$route.params.idUtente);
+          console.log('Prenotazione disdetta con successo');
+        } else {
+          console.error('Errore nella disdetta della prenotazione:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Errore nella disdetta della prenotazione:', error);
+      }
+    },
+    formatDateTime(dateTime) {
+      return moment(dateTime).format('DD/MM/YYYY HH:mm:ss');
+    },
+    getChipColor(status) {
+      // Assegna un colore diverso in base allo stato della prenotazione
+      switch (status) {
+        case 'In attesa':
+          return 'yellow';
+        case 'Accettata':
+          return 'primary';
+        case 'Effettuata':
+          return 'green';
+        default:
+          return '';
+      }
     }
-  },
-}
-
+  }
 };
 </script>
 
-  
-  <style scoped>
-  /* Stile per posizionare il testo "Riepilogo" in alto a destra */
-  .riepilogo_title {
-    font-size: 40px;
-    font-weight: bold;
-    position: absolute;
-    top: 150px; /* Regola l'altezza dal top */
-    left: 10%; /* Regola la distanza dal bordo destro */
-  }
-
-  /* Stile per posizionare gli altri dettagli dell'auto in alto a sinistra */
-  .riepilogo_marcaModello {
-    position: absolute;
-    top: 220px; /* Regola l'altezza dal top */
-    left: 10%; /* Regola la distanza dal bordo sinistro */
-  }
-  
-  .riepilogo_potenza {
-    position: absolute;
-    top: 260px; /* Regola l'altezza dal top */
-    left: 10%; /* Regola la distanza dal bordo sinistro */
-  }
-  
-  .riepilogo_chilometraggio {
-    position: absolute;
-    top: 300px; /* Regola l'altezza dal top */
-    left: 10%; /* Regola la distanza dal bordo sinistro */
-  }
-  
-  .riepilogo_anno {
-    position: absolute;
-    top: 340px; /* Regola l'altezza dal top */
-    left: 10%; /* Regola la distanza dal bordo sinistro */
-  }
-  
-  /* Stile per posizionare il nuovo div a destra */
-  .right-div {
-    position: absolute;
-    top: 150px; /* Regola l'altezza dal top */
-    right: 10%; /* Regola la distanza dal bordo destro */
-    width: 30%; /* Regola la larghezza del div */
-    padding: 20px; /* Opzionale: spazio interno per il div */
-  }
-  /* Stile per il prezzo con bordo sfocato */
-.riepilogo_Prezzo {
-  border: 2px solid #0d6efd; /* Bordo sfocato */
-  border-radius: 10px;
-  padding: 10px; /* Spazio interno */
-  backdrop-filter: blur(5px); /* Effetto di sfocatura */
-  -webkit-backdrop-filter: blur(5px); /* Effetto di sfocatura per browser Webkit */
+<style scoped>
+.no-data-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  color: grey;
 }
 
-.btnPrenota{
-    margin-top: 20px;
-    background-color: #0d6efd;
-    color: white;
-    width: 200px;
+/* Stile per la larghezza della tabella */
+.tabella {
+  margin-top: 60px;
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  /* Combina i bordi delle celle */
 }
 
-  </style>
-  
+/* Stile per i bordi della tabella e delle celle */
+.tabella th,
+.tabella td {
+  border: 1px solid #dddddd;
+  /* Aggiungi bordo grigio */
+  padding: 8px;
+  /* Aggiungi spazio interno */
+  text-align: center;
+  /* Allinea il testo al centro */
+}
+
+/* Stile per il pulsante Disdici */
+.v-btn.error {
+  color: white;
+}
+</style>

@@ -140,17 +140,18 @@ app.get('/api/utenti/:id', verificaAdmin, (req, res) => {
         res.send(results);
     });
 });
+
 app.post('/api/prenotazione', verificaCliente, (req, res) => {
-    const { idAuto, orario, dataGG } = req.body;
+    const { idAuto, idUtente, dataOra } = req.body;
 
     // Verifica se tutti i campi necessari sono stati forniti
-    if (!idAuto || !orario || !dataGG) {
+    if (!idAuto || !idUtente || !dataOra) {
         return res.status(400).send('Tutti i campi sono obbligatori');
     }
-
+    console.log(dataOra);
     // Query per inserire i dati nella tabella delle prenotazioni
-    const query = 'INSERT INTO prenotazioni (idAuto, idUtente,ora, dataGiorno,stato) VALUES (?, ?, ?)';
-    pool.query(query, [idAuto, orario, dataGG,"In attesa"], (error, results) => {
+    const query = 'INSERT INTO prenotazioni (idAuto, idUtente, data_ora, stato) VALUES (?, ?, ?, ?)';
+    pool.query(query, [idAuto, idUtente, dataOra, "In attesa"], (error, results) => {
         if (error) {
             console.error(error);
             return res.status(500).send('Errore durante la prenotazione');
@@ -159,18 +160,48 @@ app.post('/api/prenotazione', verificaCliente, (req, res) => {
     });
 });
 
-app.get('/api/GetPrenotazioni:idUtente', verificaCliente, (req, res) => {
+app.get('/api/GetPrenotazioni/:idUtente', verificaCliente, (req, res) => {
     const idUtente = req.params.idUtente;
-    // Query per inserire i dati nella tabella delle prenotazioni
-    const query = `SELECT marca, modello, dataGiorno, ora, stato FROM prenotazioni, auto, modelli, marche ` +
-    `where prenotazioni.idUtente = ${idUtente} AND prenotazioni.idAuto = auto.idAuto AND ` +
-    `auto.idMarca = marche.idMarca AND auto.idModello = modelli.idModello `  ;
-    pool.query(query, (error) => {
+    // Query per ottenere i dati delle prenotazioni per l'utente specificato
+    const query = `
+        SELECT idPrenotazione, marca, modello, data_ora, stato 
+        FROM prenotazioni
+        INNER JOIN auto ON prenotazioni.idAuto = auto.idAuto
+        INNER JOIN modelli ON auto.idModello = modelli.idModello
+        INNER JOIN marche ON auto.idMarca = marche.idMarca
+        WHERE prenotazioni.idUtente = ?`;
+    pool.query(query, [idUtente], (error, results) => {
         if (error) {
             console.error(error);
-            return res.status(500).send('Errore durante la prenotazione');
+            return res.status(500).send('Errore durante il recupero delle prenotazioni');
         }
-        res.send('Prenotazione effettuata con successo');
+        // Invia i risultati delle prenotazioni come risposta
+        res.json(results);
+    });
+});
+
+app.delete('/api/disdiciPrenotazione/:idPrenotazione', verificaCliente, (req, res) => {
+    const idPrenotazione = req.params.idPrenotazione;
+
+    // Verifica se l'id della prenotazione è stato fornito
+    if (!idPrenotazione) {
+        return res.status(400).send('ID prenotazione non fornito');
+    }
+
+    // Query per eliminare la prenotazione dal database
+    const query = 'DELETE FROM prenotazioni WHERE idPrenotazione = ?';
+    pool.query(query, [idPrenotazione], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante la disdetta della prenotazione');
+        }
+
+        // Verifica se la prenotazione è stata eliminata correttamente
+        if (results.affectedRows === 0) {
+            return res.status(404).send('Prenotazione non trovata');
+        }
+
+        res.send('Prenotazione disdetta con successo');
     });
 });
 
@@ -213,7 +244,7 @@ app.post('/api/login', (req, res) => {
                 return res.status(401).send('Errore nel recuperare la password');
             else if(same) {
                 // Genera un token di autenticazione
-                const token = jwt.sign({ id: user.id, email: user.email, role: user.idRuolo }, 'secret', { expiresIn: '1y' });
+                const token = jwt.sign({ email: user.email, role: user.idRuolo }, 'secret', { expiresIn: '1y' });
                 // Restituisci il token di autenticazione al client
                 res.send(token);
             } else {
@@ -254,6 +285,43 @@ app.post('/api/registrazione', (req, res) => {
             });
     });
 });
+
+app.get('/api/getUserID', verificaCliente, (req, res) => {
+    const token = req.headers.authorization;
+
+    if (!token) {
+        return res.status(401).send('Token non fornito');
+    }
+
+    // Verifica e decodifica il token
+    jwt.verify(token, 'secret', (err, decodedToken) => {
+        if (err) {
+            console.error(err);
+            return res.status(401).send('Token non valido');
+        }
+
+        // Estrae l'email dell'utente dal token decodificato
+        const email = decodedToken.email;
+
+        // Cerca l'ID dell'utente in base all'email
+        pool.query('SELECT idUtente FROM utenti WHERE email = ?', [email], (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).send('Errore durante la ricerca dell\'ID dell\'utente');
+            }
+
+            // Se l'utente non è stato trovato, restituisci uno stato 404
+            if (results.length === 0) {
+                return res.status(404).send('Utente non trovato');
+            }
+
+            // Estrae l'ID dell'utente dai risultati della query e lo restituisce come risposta
+            const userId = results[0].idUtente;
+            res.send({ userId });
+        });
+    });
+});
+
 
 app.listen(port, () => {
     console.log(`Server in esecuzione sulla porta ${port}`);

@@ -59,6 +59,7 @@ export default {
       mostraUsate: false,
       marche: [],
       marcaSelezionata: null,
+      idUtente: null
     };
   },
   created() {
