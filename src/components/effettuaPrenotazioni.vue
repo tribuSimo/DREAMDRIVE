@@ -97,7 +97,6 @@ export default {
         if (response.ok) {
           let data = await response.json();
           this.idUtente = data.userId;
-          console.log('ID utente:', this.idUtente);
         } else {
           console.error('Errore nel caricamento di idUtente prenotazione:', response.statusText);
         }
@@ -117,7 +116,6 @@ export default {
         });
         if (response.ok) {
           this.auto = await response.json();
-          console.log('Dettagli dell\'auto:', this.auto[0]);
         } else {
           console.error('Errore nel caricamento dei dettagli dell\'auto:', response.statusText);
         }
@@ -146,17 +144,13 @@ export default {
         if (!formattedDateTime.isValid())
           throw new Error('Formato data e ora non validi');
 
-        // Utilizza la data e l'ora convertite come necessario
         const dateTimeSQL = formattedDateTime.format('YYYY-MM-DD HH:mm:ss');
-        console.log(dateTimeSQL);
-
         const token = localStorage.getItem('token');
 
         const params = new URLSearchParams();
         params.append('idAuto', this.auto[0].idAuto);
         params.append('idUtente', this.idUtente);
-        params.append('dataOra', dateTimeSQL);  // Utilizza la data e l'ora nel formato SQL valido
-
+        params.append('dataOra', dateTimeSQL); 
         const response = await fetch('http://localhost:3000/api/prenotazione', {
           method: 'POST',
           body: params,

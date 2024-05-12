@@ -92,7 +92,6 @@ export default {
         });
         if (response.ok) {
           this.dati = await response.json();
-          console.log('Dettagli prenotazioni:', this.dati);
         } else {
           console.error('Errore nel caricamento delle prenotazioni:', response.statusText);
         }
@@ -102,7 +101,6 @@ export default {
     },
     async disdiciPrenotazione(idPrenotazione) {
       try {
-        console.log(idPrenotazione);
         const token = localStorage.getItem('token');
         const response = await fetch(`http://localhost:3000/api/disdiciPrenotazione/${idPrenotazione}`, {
           method: 'DELETE',

@@ -90,7 +90,6 @@ export default {
         });
         if (response.ok) {
           this.auto = await response.json();
-          console.log('ecco le auto:', this.auto);
         } else {
           console.error('Errore nel caricamento delle auto:', response.statusText);
         }
@@ -117,7 +116,6 @@ export default {
 
         if (response.ok) {
           this.auto = await response.json();
-          console.log('ecco le auto:', this.auto);
         } else {
           console.error('Errore nel caricamento delle auto:', response.statusText);
         }
@@ -140,7 +138,6 @@ export default {
 
           if (response.ok) {
             this.auto = await response.json();
-            console.log('Ecco le auto usate:', this.auto);
           } else {
             console.error('Errore nel caricamento delle auto usate:', response.statusText);
           }
@@ -166,7 +163,6 @@ export default {
           const marcheJson = await response.json();
           // Aggiungi la marca "Nessuna" all'inizio dell'array
           this.marche = ['Nessuna', ...marcheJson.map(marca => marca.marca)];
-          console.log('ecco le marche:', this.marche);
         } else {
           console.error('Errore nel caricamento delle marche:', response.statusText);
         }
@@ -196,7 +192,6 @@ export default {
 
           if (response.ok) {
             this.auto = await response.json();
-            console.log('ecco le auto:', this.auto);
           } else {
             console.error('Errore nel caricamento delle auto:', response.statusText);
           }

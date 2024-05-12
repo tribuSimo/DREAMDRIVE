@@ -60,7 +60,7 @@ export default {
             password: this.password
           }).toString(),
           headers: {
-            "Content-Type":"application/x-www-form-urlencoded"
+            "Content-Type": "application/x-www-form-urlencoded"
           }
         });
         console.log(response);
@@ -69,7 +69,6 @@ export default {
         }
 
         const token = await response.text(); // Assume che il token sia restituito come stringa dal server
-        console.log(token);
         // Esempio di salvataggio del token nello storage locale
         localStorage.setItem('token', token);
 

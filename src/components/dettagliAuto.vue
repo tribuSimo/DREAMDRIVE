@@ -19,7 +19,7 @@
               <div>Prezzo: {{ auto[0].prezzo }} €</div>
               <div>Carburante: {{ auto[0].carburante }}</div>
               <div>Colore: {{ auto[0].colore }}</div>
-              <v-btn @click="continuaPagamento()" class="btnDetails" block>Continua con acquisto</v-btn>
+              <v-btn @click="effettuaPrenotazione()" class="btnDetails" block>Effettua prenotazione</v-btn>
               <v-btn @click="returnCatalog()" class="btnDetails" block>Ritorna al catalogo</v-btn>
             </v-card-text>
           </v-card>
@@ -72,7 +72,6 @@ export default {
         });
         if (response.ok) {
           this.auto = await response.json();
-          console.log('Dettagli dell\'auto:', this.auto);
         } else {
           console.error('Errore nel caricamento dei dettagli dell\'auto:', response.statusText);
         }
@@ -85,7 +84,7 @@ export default {
       router.push("/home");
     },
     
-    continuaPagamento(){
+    effettuaPrenotazione(){
       this.$router.push({ name: 'Effettua Prenotazioni', params: { idAuto : this.auto.idAuto} });
     }
   }
