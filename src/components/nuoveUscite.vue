@@ -1,34 +1,34 @@
 <template>
-    <v-app>
-      <navbar></navbar>
-      <v-container class="containerSearch">
-        <v-row v-if="auto.length > 0">
-          <v-col cols="12" sm="6" md="4" v-for="(auto, index) in auto" :key="index">
-            <v-card class="card" @click="visualizzaDettagli(index)" outlined>
-              <v-img :src="auto.immagini && auto.immagini.length > 0 ? auto.immagini.split(',')[0] : 'workInProgress.jpg'"
-                aspect-ratio="16/9" cover></v-img>
-              <v-card-title>{{ auto.marca }} {{ auto.modello }}</v-card-title>
-              <v-card-text>
-                <div>Potenza: {{ auto.potenza }} cv</div>
-                <div>Chilometraggio: {{ auto.chilometraggio }} km</div>
-                <div>Anno di produzione: {{ auto.annoProduzione }}</div>
-                <div>Usata: {{ auto.usata && auto.usata.data[0] === 1 ? 'Sì' : 'No' }}</div>
-                <div>Prezzo: {{ auto.prezzo }} €</div>
-                <div>Carburante: {{ auto.carburante }}</div>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row v-else>
-          <v-col cols="12">
-            <p class="no-new-release">Nessuna nuova uscita</p>
-          </v-col>
-        </v-row>
-      </v-container>
-      <finePagina></finePagina>
-    </v-app>
-  </template>
-  
+  <v-app>
+    <navbar></navbar>
+    <v-container class="containerSearch">
+      <v-row v-if="auto.length > 0">
+        <v-col cols="12" sm="6" md="4" v-for="(auto, index) in auto" :key="index">
+          <v-card class="card" @click="visualizzaDettagli(index)" outlined>
+            <v-img :src="auto.immagini && auto.immagini.length > 0 ? auto.immagini.split(',')[0] : 'workInProgress.jpg'"
+              aspect-ratio="16/9" cover></v-img>
+            <v-card-title>{{ auto.marca }} {{ auto.modello }}</v-card-title>
+            <v-card-text>
+              <div>Potenza: {{ auto.potenza }} cv</div>
+              <div>Chilometraggio: {{ auto.chilometraggio }} km</div>
+              <div>Anno di produzione: {{ auto.annoProduzione }}</div>
+              <div>Usata: {{ auto.usata && auto.usata.data[0] === 1 ? 'Sì' : 'No' }}</div>
+              <div>Prezzo: {{ auto.prezzo }} €</div>
+              <div>Carburante: {{ auto.carburante }}</div>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row v-else>
+        <v-col cols="12">
+          <p class="no-new-release">Nessuna nuova uscita</p>
+        </v-col>
+      </v-row>
+    </v-container>
+    <finePagina></finePagina>
+  </v-app>
+</template>
+
 <script>
 import navbar from './navbar.vue';
 import finePagina from './footer.vue';
@@ -50,14 +50,13 @@ export default {
     };
   },
   created() {
-    if (localStorage.getItem('token'))
-    {
-        this.caricaAuto();
-    }else{
-        router.push('/login');
+    if (localStorage.getItem('token')) {
+      this.caricaAuto();
+    } else {
+      router.push('/login');
     }
-        
-    
+
+
   },
   watch: {
     mostraUsate(newValue, oldValue) {
@@ -101,11 +100,12 @@ export default {
   margin: 20px auto;
   margin-top: 80px;
 }
+
 .no-new-release {
-  font-size: 24px; 
+  font-size: 24px;
   font-family: 'Roboto', sans-serif;
-  color: #555;  
-  text-align: center; 
+  color: #555;
+  text-align: center;
   padding-bottom: 800px;
 }
 
