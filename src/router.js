@@ -6,6 +6,7 @@ import home from './components/home.vue';
 import dettagliAuto from './components/dettagliAuto.vue';
 import effettuaPrenotazioni from './components/effettuaPrenotazioni.vue';
 import prenotazioni from './components/prenotazioni.vue';
+import nuoveUscite from './components/nuoveUscite.vue';
 
 
 const routes = [
@@ -46,6 +47,11 @@ const routes = [
     path: '/prenotazioni/:idUtente',
     name : 'Prenotazioni',
     component: prenotazioni
+  },
+  {
+    path: '/nuoveUscite',
+    name : 'Nuove Uscite',
+    component: nuoveUscite
   }
 ];
 

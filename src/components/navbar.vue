@@ -6,7 +6,7 @@
         <v-btn to="/home" class="nav-button">
           Auto
         </v-btn>
-        <v-btn to="/nuove-uscite" class="nav-button">
+        <v-btn to="/nuoveUscite" class="nav-button">
           Nuove Uscite
         </v-btn>
         <v-btn @click="raggiungiPrenotazioni()" class="nav-button">

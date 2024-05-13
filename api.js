@@ -51,6 +51,42 @@ app.get('/api/auto', verificaCliente, (req, res) => {
         res.send(results);
     });
 });
+app.get('/api/nuoveAuto', verificaCliente, (req, res) => {
+    let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio,'
+    q += 'auto.annoProduzione, auto.cambio, auto.peso, auto.usata, auto.prezzo, marche.marca, carburanti.carburante,'
+    q += 'modelli.modello, colori.colore, GROUP_CONCAT(immagini.immagine) AS immagini '
+    q += 'FROM auto '
+    q += 'INNER JOIN marche ON auto.idMarca = marche.idMarca '
+    q += 'INNER JOIN carburanti ON auto.idCarburante = carburanti.idCarburante '
+    q += 'INNER JOIN modelli ON auto.idModello = modelli.idModello '
+    q += 'INNER JOIN colori ON auto.idColore = colori.idColore '
+    q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
+    q += 'WHERE auto.disponibile = 1 AND YEAR(auto.dataAcquisto) = YEAR(CURRENT_DATE()) AND MONTH(auto.dataAcquisto) >= MONTH(CURRENT_DATE())-1 '
+    q += 'group by auto.idAuto ';
+
+    // Controlla se è presente il parametro di query sortBy e aggiorna la query di conseguenza
+    if (req.query.sortBy === 'Prezzo') {
+        q += 'ORDER BY auto.prezzo'; // Ordina per prezzo
+    } else if (req.query.sortBy === 'Chilometraggio') {
+        q += 'ORDER BY auto.chilometraggio'; // Ordina per chilometraggio
+    } else if (req.query.sortBy === 'Anno produzione') {
+        q += 'ORDER BY auto.annoProduzione';
+    } else {
+        q += 'ORDER BY auto.idAuto';
+    }    // Aggiungi altri controlli per altri campi di ordinamento se necessario
+
+    pool.query(q, (error, results) => {
+        if (error) {
+            console.error('Errore nel caricamento delle auto:', error);
+            res.status(500).send('Errore interno del server');
+        } else {
+            console.log(results);
+            res.send(results);
+        }
+    });
+})
+
+
 app.get('/api/autoUsate', verificaCliente, (req, res) => {
     let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio,'
     q += 'auto.annoProduzione, auto.cambio, auto.peso, auto.usata, auto.prezzo, marche.marca, carburanti.carburante,'
