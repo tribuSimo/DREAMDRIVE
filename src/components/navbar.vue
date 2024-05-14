@@ -1,33 +1,49 @@
 <template>
-  <header class="navbar-header">
+  <div>
+    <!-- Icona del menu a tendina per dispositivi mobili -->
+    <v-btn icon @click="toggleSidebar" class="hidden-sm-and-up menu-icon">
+      <v-icon>mdi-menu</v-icon>
+    </v-btn>
 
-  </header>
-  <v-app-bar app class="navbar" color="white">
-    <v-container class="nav-container">
-      <v-row class="nav">
-        <v-img src="/logo.jpg" max-width="50" max-height="50" contain />
-        <v-btn to="/home" class="nav-button">
-          Auto
-        </v-btn>
-        <v-btn to="/nuoveUscite" class="nav-button">
-          Nuove Uscite
-        </v-btn>
-        <v-btn @click="raggiungiPrenotazioni()" class="nav-button">
-          Prenotazioni
-        </v-btn>
-        <v-btn to="/notifiche" class="nav-button">
-          Notifiche
-        </v-btn>
-        <v-btn @click="logout()" class="nav-button">
-          Logout
-        </v-btn>
-        <div class="div-search">
-          <v-text-field class="nav_v-text-field" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined
-            dense></v-text-field>
-        </div>
-      </v-row>
-    </v-container>
-  </v-app-bar>
+    <!-- Navigation drawer per dispositivi mobili -->
+    <v-navigation-drawer v-if="isMobile" v-model="sidebar" app>
+      <v-list dense>
+        <v-list-item v-for="item in menuItems" :key="item.title" :to="item.path">
+          <v-list-item-content>{{ item.title }}   </v-list-item-content>
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar app class="navbar" color="white" v-else>
+      <v-container class="nav-container">
+        <v-row class="nav">
+          <v-img src="/logo.jpg" max-width="50" max-height="50" contain />
+          <v-btn to="/home" class="nav-button">
+            Auto <v-icon class="nav-icon">mdi-car</v-icon>
+          </v-btn>
+          <v-btn to="/nuoveUscite" class="nav-button">
+            Nuove Uscite <v-icon class="nav-icon">mdi-new-box</v-icon>
+          </v-btn>
+          <v-btn @click="raggiungiPrenotazioni()" class="nav-button">
+            Prenotazioni <v-icon class="nav-icon">mdi-calendar-check</v-icon>
+          </v-btn>
+          <v-btn to="/notifiche" class="nav-button">
+            Notifiche <v-icon class="nav-icon">mdi-bell</v-icon>
+          </v-btn>
+          <v-btn @click="logout()" class="nav-button">
+            Logout <v-icon class="nav-icon">mdi-logout</v-icon>
+          </v-btn>
+          <div class="div-search">
+            <v-text-field class="nav_v-text-field" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined
+              dense></v-text-field>
+          </div>
+        </v-row>
+      </v-container>
+    </v-app-bar>
+  </div>
 </template>
 
 <script>
@@ -35,16 +51,20 @@ import router from '@/router';
 
 export default {
   name: "App",
-  created() {
-    if (localStorage.getItem('token')) {
-      this.prendiID();
-    } else {
-      router.push('/login');
-    }
+  data() {
+    return {
+      sidebar: false,
+      idUtente: null,
+      menuItems: [
+        { title: 'Home', icon: 'mdi-home', path: '/home' },
+        { title: 'Nuove Uscite', icon: 'mdi-new-box', path: '/nuoveUscite' },
+        { title: 'Prenotazioni', icon: 'mdi-calendar-check', action: 'raggiungiPrenotazioni' },
+        { title: 'Notifiche', icon: 'mdi-bell', path: '/notifiche' },
+        { title: 'Logout', icon: 'mdi-logout', action: 'logout' }
+      ],
+      isMobile: false
+    };
   },
-  data: () => ({
-    idUtente: null
-  }),
   methods: {
     logout() {
       localStorage.clear();
@@ -73,12 +93,29 @@ export default {
     },
     raggiungiPrenotazioni() {
       if (this.idUtente) {
-        // Esegue il reindirizzamento alla pagina delle prenotazioni con l'ID dell'utente come parametro
         router.push({ name: 'Prenotazioni', params: { idUtente: this.idUtente } });
       } else {
         console.error('ID utente non disponibile');
       }
+    },
+    checkMobile() {
+      this.isMobile = window.innerWidth <= 768;
+    },
+    toggleSidebar() {
+      this.sidebar = !this.sidebar;
     }
+  },
+  created() {
+    if (localStorage.getItem('token')) {
+      this.prendiID();
+    } else {
+      router.push('/login');
+    }
+    this.checkMobile();
+    window.addEventListener('resize', this.checkMobile);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.checkMobile);
   }
 };
 </script>
@@ -131,5 +168,47 @@ body,
 .navbar {
   background-color: #294c80 !important;
   color: #ffffff !important;
+}
+
+.v-navigation-drawer {
+  background-color: #294c80;
+  color: #fff;
+}
+
+/* Stile per gli item nella lista */
+.v-list-item {
+  cursor: pointer;
+}
+
+/* Stile per l'icona e il contenuto degli item nella lista */
+.v-list-item-icon,
+.v-list-item-content {
+  color: #fff;
+}
+
+.menu-icon {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 8px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+}
+
+.menu-container {
+  width: 100%;
+  height: 50px;
+  background-color: #294c80;
+  padding: 8px;
+  z-index: 999;
+}
+
+.nav-icon {
+  color: white;
+  /* Colore iniziale delle icone */
+  transition: color 0.3s;
+  /* Aggiungi una transizione al cambio di colore */
+  margin-left: 5px;
 }
 </style>

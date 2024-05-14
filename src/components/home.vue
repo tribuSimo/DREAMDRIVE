@@ -239,7 +239,7 @@ export default {
 
 .custom-select {
   margin-top: 73px;
-  width: 100%;
+  width: 23vw;
 }
 
 /* Stile personalizzato per la checkbox */
