@@ -1,4 +1,7 @@
 <template>
+  <header class="navbar-header">
+
+  </header>
   <v-app-bar app class="navbar" color="white">
     <v-container class="nav-container">
       <v-row class="nav">
