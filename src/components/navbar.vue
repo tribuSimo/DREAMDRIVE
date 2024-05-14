@@ -4,7 +4,6 @@
     <v-btn icon @click="toggleSidebar" class="hidden-sm-and-up menu-icon">
       <v-icon>mdi-menu</v-icon>
     </v-btn>
-
     <!-- Navigation drawer per dispositivi mobili -->
     <v-navigation-drawer v-if="isMobile" v-model="sidebar" app>
       <v-list dense>
