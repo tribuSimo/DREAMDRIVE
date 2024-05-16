@@ -33,16 +33,16 @@ app.get('/api/auto', verificaCliente, (req, res) => {
     q += 'INNER JOIN colori ON auto.idColore = colori.idColore '
     q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
     q += 'WHERE AUTO.disponibile = 1 '
-    q += 'group by auto.idAuto '; 
+    q += 'group by auto.idAuto ';
 
     // Controlla se è presente il parametro di query sortBy e aggiorna la query di conseguenza
     if (req.query.sortBy === 'Prezzo') {
         q += 'ORDER BY auto.prezzo'; // Ordina per prezzo
     } else if (req.query.sortBy === 'Chilometraggio') {
         q += 'ORDER BY auto.chilometraggio'; // Ordina per chilometraggio
-    }else if(req.query.sortBy === 'Anno produzione'){
+    } else if (req.query.sortBy === 'Anno produzione') {
         q += 'ORDER BY auto.annoProduzione';
-    }else{
+    } else {
         q += 'ORDER BY auto.idAuto';
     }    // Aggiungi altri controlli per altri campi di ordinamento se necessario
 
@@ -98,7 +98,7 @@ app.get('/api/autoUsate', verificaCliente, (req, res) => {
     q += 'INNER JOIN colori ON auto.idColore = colori.idColore '
     q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
     q += 'WHERE auto.disponibile = 1 AND auto.usata = 1 ' // Aggiunta la clausola per visualizzare solo le auto usate
-    q += 'GROUP BY auto.idAuto '; 
+    q += 'GROUP BY auto.idAuto ';
 
     // Controlla se è presente il parametro di query sortBy e aggiorna la query di conseguenza
     if (req.query.sortBy === 'Prezzo') {
@@ -130,7 +130,7 @@ app.get('/api/auto/:idAuto', verificaCliente, (req, res) => {
     q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
     q += 'WHERE auto.idAuto = ? AND auto.disponibile = 1';  // Utilizziamo un placeholder per l'id dell'auto
     pool.query(q, [idAuto], (error, results) => {
-        if(error) throw error;
+        if (error) throw error;
         res.send(results);
     });
 });
@@ -149,7 +149,7 @@ app.get('/api/autoMarca/:marca', verificaCliente, (req, res) => {
     q += 'WHERE marche.marca = ? AND auto.disponibile = 1';
 
     pool.query(q, [marca], (error, results) => {
-        if(error) throw error;
+        if (error) throw error;
         res.send(results);
     });
 });
@@ -157,12 +157,24 @@ app.get('/api/autoMarca/:marca', verificaCliente, (req, res) => {
 app.get('/api/marche', (req, res) => {
     let q = 'SELECT * FROM marche';
     pool.query(q, (error, results) => {
-        if(error) throw error;
+        if (error) throw error;
         res.send(results);
     });
 })
+app.get('/api/notifiche/:idUtente', verificaCliente, (req, res) => {
+    const idUtente = req.params.idUtente;
+    //le notifiche avranno i seguenti tipi: conferma appuntamento, promemoria appuntamento, disdetta appuntamento, aggiornamenti auto
+    const query = 'SELECT * FROM notifiche WHERE idUtente = ?';
+    pool.query(query, [idUtente], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante il recupero delle notifiche');
+        }
+        res.send(results);
+    });
+});
 
-app.get('/api/utenti',verificaAdmin, (req, res) => {
+app.get('/api/utenti', verificaAdmin, (req, res) => {
     pool.query('SELECT * FROM utenti', (error, results) => {
         if (error) throw error;
         res.send(results);
@@ -192,9 +204,35 @@ app.post('/api/prenotazione', verificaCliente, (req, res) => {
             console.error(error);
             return res.status(500).send('Errore durante la prenotazione');
         }
+        notifica('', '', 2);//inserisco il tipo di notifica e il messaggio di tale notifica 
+        //e il tipo di utente che la deve ricevere
         res.send('Prenotazione effettuata con successo');
     });
 });
+function notifica(tipo, messaggio, idRuolo) {
+    const query = 'SELECT * FROM utenti WHERE idRuolo = ?';
+    pool.query(query, [idRuolo], (error, results) => {
+        if (error) {
+            console.error('Errore durante il recupero degli utenti:', error);
+            return;
+        }
+
+        // Invia notifica a ciascun utente del ruolo specificato
+        results.forEach(utente => {
+            inviaNotifica(utente.idUtente, tipo, messaggio);
+        });
+    });
+}
+function inviaNotifica(idUtente, tipo, messaggio) {
+    const query = 'INSERT INTO notifiche (idUtente, tipo, messaggio) VALUES (?, ?, ?)';
+    pool.query(query, [idUtente, tipo, messaggio], (error, results) => {
+        if (error) {
+            console.error('Errore durante l\'inserimento della notifica nel database:', error);
+            return;
+        }
+        //implementa l'invio della mail qui
+    });
+}
 
 app.get('/api/GetPrenotazioni/:idUtente', verificaCliente, (req, res) => {
     const idUtente = req.params.idUtente;
@@ -262,7 +300,7 @@ app.post('/api/login', (req, res) => {
     pool.query('SELECT * FROM utenti WHERE email = ?', [email], async (error, results) => {
         console.log("Funziona query")
         if (error) {
-            
+
             console.error(error);
             return res.status(500).send('Errore durante l\'autenticazione');
         }
@@ -276,9 +314,9 @@ app.post('/api/login', (req, res) => {
         // Verifica la password
         await bcrypt.compare(password, user.password, (err, same) => {
             console.log(same);
-            if(err)
+            if (err)
                 return res.status(401).send('Errore nel recuperare la password');
-            else if(same) {
+            else if (same) {
                 // Genera un token di autenticazione
                 const token = jwt.sign({ email: user.email, role: user.idRuolo }, 'secret', { expiresIn: '1y' });
                 // Restituisci il token di autenticazione al client
@@ -286,7 +324,7 @@ app.post('/api/login', (req, res) => {
             } else {
                 res.status(401).send('Credenziali non valide');
             }
-        }); 
+        });
     });
 });
 
@@ -363,21 +401,4 @@ app.listen(port, () => {
     console.log(`Server in esecuzione sulla porta ${port}`);
 });
 
-app.post('/api/prenotazione', verificaCliente, (req, res) => {
-    const { idAuto, orario, dataGG } = req.body;
 
-    // Verifica se tutti i campi necessari sono stati forniti
-    if (!idAuto || !orario || !dataGG) {
-        return res.status(400).send('Tutti i campi sono obbligatori');
-    }
-
-    // Query per inserire i dati nella tabella delle prenotazioni
-    const query = 'INSERT INTO prenotazioni (idAuto, orario, dataGG) VALUES (?, ?, ?)';
-    pool.query(query, [idAuto, orario, dataGG], (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).send('Errore durante la prenotazione');
-        }
-        res.send('Prenotazione effettuata con successo');
-    });
-});
