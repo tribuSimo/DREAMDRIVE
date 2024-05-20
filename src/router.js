@@ -7,7 +7,7 @@ import dettagliAuto from './components/dettagliAuto.vue';
 import effettuaPrenotazioni from './components/effettuaPrenotazioni.vue';
 import prenotazioni from './components/prenotazioni.vue';
 import nuoveUscite from './components/nuoveUscite.vue';
-
+import notifiche from './components/notifiche.vue';
 
 const routes = [
   {
@@ -52,6 +52,11 @@ const routes = [
     path: '/nuoveUscite',
     name : 'Nuove Uscite',
     component: nuoveUscite
+  },
+  {
+    path: '/notifiche',
+    name : 'Notifiche',
+    component: notifiche
   }
 ];
 

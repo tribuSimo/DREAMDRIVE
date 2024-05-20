@@ -22,7 +22,7 @@
             </v-row>
             <v-row v-else>
                 <v-col cols="12">
-                    <p class="no-new-release">Nessuna nuova uscita</p>
+                    <p class="no-new-release">Nessuna notifica brutto idiota</p>
                 </v-col>
             </v-row>
         </v-container>
