@@ -70,7 +70,7 @@ export default {
         async caricaAuto() {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch('http://localhost:3000/api/nuoveAuto', {
+                const response = await fetch(`${window.dreamdrive_cfg.api}/nuoveAuto`, {
                     method: 'GET',
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",

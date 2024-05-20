@@ -87,7 +87,7 @@ export default {
     async prendiID() {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/getUserID', {
+        const response = await fetch(`${window.dreamdrive_cfg.api}/getUserID`, {
           method: 'GET',
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -107,7 +107,7 @@ export default {
     async caricaAuto(idAuto) {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/auto/${idAuto}`, {
+        const response = await fetch(`${window.dreamdrive_cfg.api}/auto/${idAuto}`, {
           method: 'GET',
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -151,7 +151,7 @@ export default {
         params.append('idAuto', this.auto[0].idAuto);
         params.append('idUtente', this.idUtente);
         params.append('dataOra', dateTimeSQL); 
-        const response = await fetch('http://localhost:3000/api/prenotazione', {
+        const response = await fetch(`${window.dreamdrive_cfg.api}/prenotazione`, {
           method: 'POST',
           body: params,
           headers: {

@@ -18,6 +18,10 @@ const vuetify = createVuetify({
   },
 })
 
+window.dreamdrive_cfg = {
+  api: "http://localhost:3000/api"
+};
+
 createApp(App)
   .use(router) // Usa il router
   .use(vuetify) // Usa Vuetify

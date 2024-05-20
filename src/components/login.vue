@@ -53,7 +53,7 @@ export default {
     async login() {
       // Implementazione del login
       try {
-        const response = await fetch('http://localhost:3000/api/login', {
+        const response = await fetch(`${window.dreamdrive_cfg.api}/login`, {
           method: 'POST',
           body: new URLSearchParams({
             email: this.email,

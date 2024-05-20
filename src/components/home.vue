@@ -81,7 +81,7 @@ export default {
     async caricaAuto() {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/auto', {
+        const response = await fetch(`${window.dreamdrive_cfg.api}/auto`, {
           method: 'GET',
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -100,7 +100,7 @@ export default {
     async ordinaCombo() {
       try {
         const token = localStorage.getItem('token');
-        let url = 'http://localhost:3000/api/auto';
+        let url = `${window.dreamdrive_cfg.api}/auto`;
 
         if (this.filtro !== "Nessuno" && this.filtro !== "") {
           url += '?sortBy=' + encodeURIComponent(this.filtro);
@@ -127,7 +127,7 @@ export default {
       try {
         if (this.mostraUsate === true) {
           const token = localStorage.getItem('token');
-          let url = 'http://localhost:3000/api/autoUsate';
+          let url = `${window.dreamdrive_cfg.api}/autoUsate`;
           const response = await fetch(url, {
             method: 'GET',
             headers: {
@@ -152,7 +152,7 @@ export default {
     async visualizzaMarche() {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/marche', {
+        const response = await fetch(`${window.dreamdrive_cfg.api}/marche`, {
           method: 'GET',
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -180,7 +180,7 @@ export default {
           this.caricaAuto();
         } else {
           const token = localStorage.getItem('token');
-          let url = `http://localhost:3000/api/autoMarca/${this.marcaSelezionata}`;
+          let url = `${window.dreamdrive_cfg.api}/autoMarca/${this.marcaSelezionata}`;
 
           const response = await fetch(url, {
             method: 'GET',

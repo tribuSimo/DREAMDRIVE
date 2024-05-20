@@ -83,7 +83,7 @@ export default {
     async caricaPrenotazioni(idUtente) {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/GetPrenotazioni/${idUtente}`, {
+        const response = await fetch(`${window.dreamdrive_cfg.api}/GetPrenotazioni/${idUtente}`, {
           method: 'GET',
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -102,7 +102,7 @@ export default {
     async disdiciPrenotazione(idPrenotazione) {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/disdiciPrenotazione/${idPrenotazione}`, {
+        const response = await fetch(`${window.dreamdrive_cfg.api}/disdiciPrenotazione/${idPrenotazione}`, {
           method: 'DELETE',
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",

@@ -64,7 +64,7 @@ export default {
     async caricaAuto(idAuto) {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/auto/${idAuto}`, {
+        const response = await fetch(`${window.dreamdrive_cfg.api}/auto/${idAuto}`, {
           method: 'GET',
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",

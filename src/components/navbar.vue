@@ -72,7 +72,7 @@ export default {
     async prendiID() {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/getUserID', {
+        const response = await fetch(`${window.dreamdrive_cfg.api}/getUserID`, {
           method: 'GET',
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",

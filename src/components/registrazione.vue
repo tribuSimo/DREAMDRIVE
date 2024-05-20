@@ -78,7 +78,7 @@
 
           const formattedDateString = formattedDate.format('YYYY-MM-DD');
   
-          const response = await fetch('http://localhost:3000/api/registrazione', {
+          const response = await fetch(`${window.dreamdrive_cfg.api}/registrazione`, {
             method: 'POST',
             body: new URLSearchParams({
               email: this.email,
