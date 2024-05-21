@@ -37,7 +37,7 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+      <v-alert title="Errore" v-if="errorMessage" color="error" closable>
         {{ errorMessage }}
       </v-alert>
     </v-container>

@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <navbar></navbar>
-    <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+    <v-alert title="Errore" v-if="errorMessage" color="error" closable>
       {{ errorMessage }}
     </v-alert>
     <div v-if="dati.length === 0" class="no-data-message">

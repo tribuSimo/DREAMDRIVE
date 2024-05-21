@@ -1,8 +1,5 @@
 <template>
   <div>
-    <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
-      {{ errorMessage }}
-    </v-alert>
     <v-img class="mx-auto my-6" src="logo.jpg" width="150px" height="150px"></v-img>
 
     <v-card class="loginCard" elevation="8" max-width="448" rounded="lg">
@@ -28,6 +25,9 @@
               <v-icon icon="mdi-chevron-right"></v-icon></router-link>
           </v-card-text>
         </v-form>
+        <v-alert title="Errore" v-if="errorMessage" color="error" closable>
+          {{ errorMessage }}
+        </v-alert>
       </v-card-text>
     </v-card>
   </div>

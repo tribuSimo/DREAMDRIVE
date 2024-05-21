@@ -44,7 +44,7 @@
     </v-app-bar>
 
     <!-- Aggiungi v-alert per mostrare errori -->
-    <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+    <v-alert title="Errore" v-if="errorMessage" color="error" closable>
       {{ errorMessage }}
     </v-alert>
   </div>

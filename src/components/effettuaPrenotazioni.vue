@@ -3,7 +3,7 @@
     <navbar></navbar>
 
     <div class="container">
-      <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+      <v-alert title="Errore" v-if="errorMessage" color="error" closable>
         {{ errorMessage }}
       </v-alert>
       <!-- Testo "Riepilogo" posizionato in alto a destra -->
@@ -158,7 +158,7 @@ export default {
         const params = new URLSearchParams();
         params.append('idAuto', this.auto[0].idAuto);
         params.append('idUtente', this.idUtente);
-        params.append('dataOra', dateTimeSQL); 
+        params.append('dataOra', dateTimeSQL);
         const response = await fetch(`${window.dreamdrive_cfg.api}/prenotazione`, {
           method: 'POST',
           body: params,

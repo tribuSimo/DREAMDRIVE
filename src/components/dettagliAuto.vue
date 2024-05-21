@@ -2,7 +2,7 @@
   <v-app>
     <navbar></navbar>
     <v-container class="container">
-      <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+      <v-alert title="Errore" v-if="errorMessage" color="error" closable>
         {{ errorMessage }}
       </v-alert>
       <v-row v-if="auto.length > 0">

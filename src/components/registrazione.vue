@@ -1,8 +1,5 @@
 <template>
   <div>
-    <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
-      {{ errorMessage }}
-    </v-alert>
     <v-img class="mx-auto my-6" src="logo.jpg" width="150px" height="150px"></v-img>
 
     <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
@@ -42,6 +39,9 @@
             </router-link>
           </v-card-text>
         </v-form>
+        <v-alert title="Errore" v-if="errorMessage" color="error" closable>
+          {{ errorMessage }}
+        </v-alert>
       </v-card-text>
     </v-card>
   </div>
@@ -77,9 +77,10 @@ export default {
       try {
         const formattedDate = moment(this.dataNascita);
 
-        if (!formattedDate.isValid())
+        if (!formattedDate.isValid()) {
+          this.errorMessage = 'Formato data non valido';
           throw new Error('Formato data non valido');
-
+        }
         const formattedDateString = formattedDate.format('YYYY-MM-DD');
 
         const response = await fetch(`${window.dreamdrive_cfg.api}/registrazione`, {
@@ -101,8 +102,8 @@ export default {
 
       } catch (error) {
         // Gestione degli errori in caso di fallimento della richiesta
-        console.error('Errore la richiesta di registrazione:', error);
-        this.errorMessage = 'Errore durante la richiesta di registrazione ' + error.message;
+        console.error('Errore la richiesta di registrazione: ', error);
+        this.errorMessage = 'Errore durante la richiesta di registrazione: ' + error.message;
       }
     },
     showDatePicker() {
