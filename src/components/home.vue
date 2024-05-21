@@ -37,6 +37,9 @@
           </v-card>
         </v-col>
       </v-row>
+      <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+        {{ errorMessage }}
+      </v-alert>
     </v-container>
     <finePagina></finePagina>
   </v-app>
@@ -59,7 +62,8 @@ export default {
       mostraUsate: false,
       marche: [],
       marcaSelezionata: null,
-      idUtente: null
+      idUtente: null,
+      errorMessage: ''
     };
   },
   created() {
@@ -92,9 +96,11 @@ export default {
           this.auto = await response.json();
         } else {
           console.error('Errore nel caricamento delle auto:', response.statusText);
+          this.errorMessage = 'Errore nel caricamento delle auto: ' + response.statusText;
         }
       } catch (error) {
         console.error('Errore nel caricamento delle auto:', error);
+        this.errorMessage = 'Errore nella richiesta delle auto' + error.message;
       }
     },
     async ordinaCombo() {
@@ -117,10 +123,12 @@ export default {
         if (response.ok) {
           this.auto = await response.json();
         } else {
-          console.error('Errore nel caricamento delle auto:', response.statusText);
+          console.error('Errore nel caricamento delle auto ordinate:', response.statusText);
+          this.errorMessage = 'Errore nel caricamento delle auto ordinate: ' + response.statusText;
         }
       } catch (error) {
-        console.error('Errore nel caricamento delle auto:', error);
+        console.error('Errore nella richiesta delle auto:', error);
+        this.errorMessage = 'Errore nella richiesta delle auto ordinate: ' + error.message;
       }
     },
     async visualizzaUsate() {
@@ -140,13 +148,15 @@ export default {
             this.auto = await response.json();
           } else {
             console.error('Errore nel caricamento delle auto usate:', response.statusText);
+            this.errorMessage = 'Errore nel caricamento delle auto usate: ' + response.statusText;
           }
         } else {
           // Se la checkbox non è selezionata, carica tutte le auto
           await this.caricaAuto();
         }
       } catch (error) {
-        console.error('Errore nel caricamento delle auto:', error);
+        console.error('Errore nella richiesta delle auto usate:', error);
+        this.errorMessage = 'Errore nella richiesta delle auto usate: ' + error.message;
       }
     },
     async visualizzaMarche() {
@@ -165,9 +175,11 @@ export default {
           this.marche = ['Nessuna', ...marcheJson.map(marca => marca.marca)];
         } else {
           console.error('Errore nel caricamento delle marche:', response.statusText);
+          this.errorMessage = 'Errore nel caricamento delle marche: ' + response.statusText;
         }
       } catch (error) {
         console.error('Errore nel caricamento delle marche:', error);
+        this.errorMessage = 'Errore nella richiesta delle marche: ' + error.message;
       }
     },
     visualizzaDettagli(index) {
@@ -193,11 +205,13 @@ export default {
           if (response.ok) {
             this.auto = await response.json();
           } else {
-            console.error('Errore nel caricamento delle auto:', response.statusText);
+            console.error('Errore nel caricamento delle auto ordinate per marca:', response.statusText);
+            this.errorMessage = 'Errore nel caricamento delle auto ordinate per marca: ' + response.statusText;
           }
         }
       } catch (error) {
-        console.error('Errore nel caricamento delle auto:', error);
+        console.error('Errore nella richiesta del caricamento delle auto ordinate per marca:', error);
+        this.errorMessage = 'Errore nella richiesta del caricamento delle auto ordinate per marca: ' + error.message;
       }
     }
   }

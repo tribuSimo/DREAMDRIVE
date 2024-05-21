@@ -2,10 +2,13 @@
   <v-app>
     <navbar></navbar>
     <v-container class="container">
+      <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+        {{ errorMessage }}
+      </v-alert>
       <v-row v-if="auto.length > 0">
         <v-col cols="12">
           <v-card outlined>
-            <v-carousel v-if="auto[0].immagini != null ">
+            <v-carousel v-if="auto[0].immagini != null">
               <v-carousel-item v-for="(image, index) in auto[0].immagini.split(',')" :key="index">
                 <v-img :src="`/${image.trim()}`" aspect-ratio="16/9"></v-img>
               </v-carousel-item>
@@ -36,8 +39,6 @@
   </v-app>
 </template>
 
-
-  
 <script>
 import navbar from './navbar.vue';
 import finePagina from './footer.vue';
@@ -50,7 +51,8 @@ export default {
   },
   data() {
     return {
-      auto: {}
+      auto: {},
+      errorMessage: ''
     };
   },
   created() {
@@ -74,19 +76,19 @@ export default {
         if (response.ok) {
           this.auto = await response.json();
         } else {
-          console.error('Errore nel caricamento dei dettagli dell\'auto:', response.statusText);
+          this.errorMessage = 'Errore nel caricamento dei dettagli dell\'auto: ' + response.statusText;
         }
       } catch (error) {
-        console.error('Errore nel caricamento dei dettagli dell\'auto:', error);
+        this.errorMessage = 'Errore nel caricamento dei dettagli dell\'auto: ' + error.message;
       }
     },
 
     returnCatalog() {
       router.push("/home");
     },
-    
-    effettuaPrenotazione(){
-      this.$router.push({ name: 'Effettua Prenotazioni', params: { idAuto : this.auto.idAuto} });
+
+    effettuaPrenotazione() {
+      this.$router.push({ name: 'Effettua Prenotazioni', params: { idAuto: this.auto.idAuto } });
     }
   }
 };
@@ -98,11 +100,10 @@ export default {
   margin-bottom: 95px;
 }
 
-.btnDetails{
+.btnDetails {
   margin-top: 10px;
-  background-color:#ffa500;
-  color:white;
+  background-color: #ffa500;
+  color: white;
   width: 200px;
 }
 </style>
-  

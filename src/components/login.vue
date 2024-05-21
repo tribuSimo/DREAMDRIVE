@@ -1,5 +1,8 @@
 <template>
   <div>
+    <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+      {{ errorMessage }}
+    </v-alert>
     <v-img class="mx-auto my-6" src="logo.jpg" width="150px" height="150px"></v-img>
 
     <v-card class="loginCard" elevation="8" max-width="448" rounded="lg">
@@ -47,6 +50,7 @@ export default {
         v => !!v || 'Il campo Password è richiesto',
         v => (v && v.length >= 8) || 'La password deve contenere almeno 8 caratteri',
       ],
+      errorMessage: ''
     };
   },
   methods: {
@@ -63,8 +67,8 @@ export default {
             "Content-Type": "application/x-www-form-urlencoded"
           }
         });
-        console.log(response);
         if (!response.ok) {
+          this.errorMessage = 'Errore durante il login';
           throw new Error('Errore durante il login');
         }
 
@@ -76,6 +80,7 @@ export default {
       } catch (error) {
         // Gestione degli errori in caso di fallimento della richiesta
         console.error('Errore durante il login:', error);
+        this.errorMessage = 'Errore durante il login' + error.message;
       }
     },
     toggleVisibility() {

@@ -7,8 +7,8 @@
     <!-- Navigation drawer per dispositivi mobili -->
     <v-navigation-drawer v-if="isMobile" v-model="sidebar" app>
       <v-list dense>
-        <v-list-item v-for="item in menuItems" :key="item.title" :to="item.path">
-          <v-list-item-content>{{ item.title }}   </v-list-item-content>
+        <v-list-item v-for="item in menuItems" :key="item.title" :to="item.path" @click="handleMenuClick(item)">
+          <v-list-item-content>{{ item.title }}</v-list-item-content>
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -42,8 +42,14 @@
         </v-row>
       </v-container>
     </v-app-bar>
+
+    <!-- Aggiungi v-alert per mostrare errori -->
+    <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+      {{ errorMessage }}
+    </v-alert>
   </div>
 </template>
+
 
 <script>
 import router from '@/router';
@@ -54,6 +60,7 @@ export default {
     return {
       sidebar: false,
       idUtente: null,
+      errorMessage: '', // Aggiungi una proprietà per il messaggio di errore
       menuItems: [
         { title: 'Home', icon: 'mdi-home', path: '/home' },
         { title: 'Nuove Uscite', icon: 'mdi-new-box', path: '/nuoveUscite' },
@@ -84,17 +91,17 @@ export default {
           this.idUtente = data.userId;
           console.log('ID utente:', this.idUtente);
         } else {
-          console.error('Errore nel caricamento di idUtente:', response.statusText);
+          this.errorMessage = 'Errore nel caricamento di idUtente: ' + response.statusText;
         }
       } catch (error) {
-        console.error('Errore nella richiesta per idUtente', error);
+        this.errorMessage = 'Errore nella richiesta per idUtente: ' + error.message;
       }
     },
     raggiungiPrenotazioni() {
       if (this.idUtente) {
         router.push({ name: 'Prenotazioni', params: { idUtente: this.idUtente } });
       } else {
-        console.error('ID utente non disponibile');
+        this.errorMessage = 'ID utente non disponibile';
       }
     },
     checkMobile() {
@@ -102,6 +109,13 @@ export default {
     },
     toggleSidebar() {
       this.sidebar = !this.sidebar;
+    },
+    handleMenuClick(item) {
+      if (item.action) {
+        this[item.action]();
+      } else if (item.path) {
+        router.push(item.path);
+      }
     }
   },
   created() {
@@ -118,6 +132,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 body,

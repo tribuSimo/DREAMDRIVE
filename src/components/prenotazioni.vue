@@ -1,6 +1,9 @@
 <template>
   <v-app>
     <navbar></navbar>
+    <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+      {{ errorMessage }}
+    </v-alert>
     <div v-if="dati.length === 0" class="no-data-message">
       <h3>Non ci sono prenotazioni attive a tuo nome al momento.</h3>
     </div>
@@ -70,7 +73,8 @@ export default {
     return {
       dati: {}, // Aggiungi un array vuoto per contenere i dati della tabella
       dialog: false, // Aggiungi una variabile per controllare la visualizzazione del dialog di conferma
-      selectedPrenotazione: null // Aggiungi una variabile per memorizzare la prenotazione selezionata
+      selectedPrenotazione: null, // Aggiungi una variabile per memorizzare la prenotazione selezionata
+      errorMessage: ''
     };
   },
   created() {
@@ -94,9 +98,11 @@ export default {
           this.dati = await response.json();
         } else {
           console.error('Errore nel caricamento delle prenotazioni:', response.statusText);
+          this.errorMessage = 'Errore nel caricamento delle prenotazioni: ' + response.statusText;
         }
       } catch (error) {
-        console.error('Errore nel caricamento delle prenotazioni:', error);
+        console.error('Errore nella richiesta di caricamento delle prenotazioni:', error);
+        this.errorMessage = 'Errore nella richiesta di caricamento delle prenotazioni: ' + error.message;
       }
     },
     async disdiciPrenotazione(idPrenotazione) {
@@ -115,9 +121,11 @@ export default {
           console.log('Prenotazione disdetta con successo');
         } else {
           console.error('Errore nella disdetta della prenotazione:', response.statusText);
+          this.errorMessage = 'Errore nella disdetta della prenotazione: ' + response.statusText;
         }
       } catch (error) {
-        console.error('Errore nella disdetta della prenotazione:', error);
+        console.error('Errore nella richiesta di disdetta della prenotazione:', error);
+        this.errorMessage = 'Errore nella richiesta di disdetta della prenotazione: ' + error.message;
       }
     },
     formatDateTime(dateTime) {

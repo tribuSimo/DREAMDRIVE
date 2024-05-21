@@ -3,6 +3,9 @@
     <navbar></navbar>
 
     <div class="container">
+      <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+        {{ errorMessage }}
+      </v-alert>
       <!-- Testo "Riepilogo" posizionato in alto a destra -->
       <h1 class="riepilogo_title">RIEPILOGO</h1>
       <h3 class="riepilogo_marcaModello">{{ auto[0].marca }} {{ auto[0].modello }}</h3>
@@ -72,7 +75,8 @@ export default {
       orarioSelezionato: null,
       dataSelezionata: null,
       orari: ['9:00', '12:00', '15:00'],
-      idUtente: null
+      idUtente: null,
+      errorMessage: ''
     };
   },
   created() {
@@ -99,9 +103,11 @@ export default {
           this.idUtente = data.userId;
         } else {
           console.error('Errore nel caricamento di idUtente prenotazione:', response.statusText);
+          this.errorMessage = 'Errore nel caricamento di idUtente prenotazione: ' + response.statusText;
         }
       } catch (error) {
         console.error('Errore nella richiesta per idUtente', error);
+        this.errorMessage = 'Errore nella richiesta per idUtente', error.message
       }
     },
     async caricaAuto(idAuto) {
@@ -118,9 +124,11 @@ export default {
           this.auto = await response.json();
         } else {
           console.error('Errore nel caricamento dei dettagli dell\'auto:', response.statusText);
+          this.errorMessage = 'Errore nel caricamento dei dettagli dell\'auto: ' + response.statusText;
         }
       } catch (error) {
-        console.error('Errore nel caricamento dei dettagli dell\'auto:', error);
+        console.error('Errore nella richiesta dei dettagli dell\'auto:', error);
+        this.errorMessage = 'Errore nella richiesta dei dettagli dell\'auto: ' + error.message;
       }
     },
     apriDialog() {
@@ -160,12 +168,14 @@ export default {
           }
         });
         if (!response.ok) {
+          this.errorMessage = 'Errore durante la prenotazione';
           throw new Error('Errore durante la prenotazione');
         } else {
           console.log('Prenotazione effettuata con successo');
         }
       } catch (error) {
-        console.error('Errore durante la prenotazione:', error);
+        console.error('Errore invio richiesta prenotazione:', error);
+        this.errorMessage = 'Errore invio richiesta prenotazione: ' + error.message;
       }
       this.dialogVisibile = false;
     }

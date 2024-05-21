@@ -2,6 +2,9 @@
   <v-app>
     <navbar></navbar>
     <v-container class="containerSearch">
+      <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+        {{ errorMessage }}
+      </v-alert>
       <v-row v-if="auto.length > 0">
         <v-col cols="12" sm="6" md="4" v-for="(auto, index) in auto" :key="index">
           <v-card class="card" @click="visualizzaDettagli(index)" outlined>
@@ -46,7 +49,8 @@ export default {
       mostraUsate: false,
       marche: [],
       marcaSelezionata: null,
-      idUtente: null
+      idUtente: null,
+      errorMessage: ''
     };
   },
   created() {
@@ -81,9 +85,11 @@ export default {
           console.log(this.auto);
         } else {
           console.error('Errore nel caricamento delle auto:', response.statusText);
+          this.errorMessage = 'Errore nel caricamento delle auto: ' + response.statusText;
         }
       } catch (error) {
-        console.error('Errore nel caricamento delle auto:', error);
+        console.error('Errore nella richiesta di caricamento delle auto:', error);
+        this.errorMessage = 'Errore nella richiesta di caricamento delle auto: ' + error.message;
       }
     },
     visualizzaDettagli(index) {

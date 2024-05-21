@@ -1,5 +1,8 @@
 <template>
   <div>
+    <v-alert v-if="errorMessage" type="error" dismissible @input="errorMessage = ''">
+      {{ errorMessage }}
+    </v-alert>
     <v-img class="mx-auto my-6" src="logo.jpg" width="150px" height="150px"></v-img>
 
     <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
@@ -43,78 +46,80 @@
     </v-card>
   </div>
 </template>
-  
-<script>
-  import '../assets/style/style.css';
-  import moment from 'moment';
-  export default {
-    name: 'registrazione',
-    data() {
-      return {
-        email: '',
-        password: '',
-        dataNascita: null,
-        visible : false,
-        emailRules: [
-          v => !!v || 'Il campo Email è richiesto',
-          v => /.+@.+\..+/.test(v) || 'L\'indirizzo email non è valido',
-        ],
-        passwordRules: [
-          v => !!v || 'Il campo Password è richiesto',
-          v => (v && v.length >= 8) || 'La password deve contenere almeno 8 caratteri',
-        ],
-        datePickerDialog: false,
-        dialogMaxWidth: 400,
-      };
-    },
-    methods: {
-      async registrazione() {
-        // Implementazione del login
-        try {
-          const formattedDate = moment(this.dataNascita);
-    
-          if (!formattedDate.isValid())
-            throw new Error('Formato data non valido');
 
-          const formattedDateString = formattedDate.format('YYYY-MM-DD');
-  
-          const response = await fetch(`${window.dreamdrive_cfg.api}/registrazione`, {
-            method: 'POST',
-            body: new URLSearchParams({
-              email: this.email,
-              password: this.password,
-              dataNascita: formattedDateString
-            }).toString(),
-            headers: {
-              "Content-Type":"application/x-www-form-urlencoded"
-            }
-          });
-          console.log(response);
-          if (!response.ok) {
-            throw new Error('Errore durante la registrazione');
-          }else
-            this.$router.push("/login");
-  
-        } catch (error) {
-          // Gestione degli errori in caso di fallimento della richiesta
-          console.error('Errore durante il login:', error);
-        }
-      },
-      showDatePicker() {
-        this.datePickerDialog = true;
-      },
-      updateDialogMaxWidth() {
-        // Aggiorna la larghezza massima della dialog in base alla larghezza del date picker
-        this.$nextTick(() => {
-          const datePicker = this.$refs.datePicker.$el;
-          if (datePicker) {
-            this.dialogMaxWidth = datePicker.offsetWidth + 40; // Aggiungi una spaziatura di 20px su ciascun lato
+<script>
+import '../assets/style/style.css';
+import moment from 'moment';
+export default {
+  name: 'registrazione',
+  data() {
+    return {
+      email: '',
+      password: '',
+      dataNascita: null,
+      visible: false,
+      emailRules: [
+        v => !!v || 'Il campo Email è richiesto',
+        v => /.+@.+\..+/.test(v) || 'L\'indirizzo email non è valido',
+      ],
+      passwordRules: [
+        v => !!v || 'Il campo Password è richiesto',
+        v => (v && v.length >= 8) || 'La password deve contenere almeno 8 caratteri',
+      ],
+      datePickerDialog: false,
+      dialogMaxWidth: 400,
+      errorMessage: ''
+    };
+  },
+  methods: {
+    async registrazione() {
+      // Implementazione del login
+      try {
+        const formattedDate = moment(this.dataNascita);
+
+        if (!formattedDate.isValid())
+          throw new Error('Formato data non valido');
+
+        const formattedDateString = formattedDate.format('YYYY-MM-DD');
+
+        const response = await fetch(`${window.dreamdrive_cfg.api}/registrazione`, {
+          method: 'POST',
+          body: new URLSearchParams({
+            email: this.email,
+            password: this.password,
+            dataNascita: formattedDateString
+          }).toString(),
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
           }
         });
-      },
-      toggleVisibility() {
-        this.visible = !this.visible;
-      },
-    }
-  };
-  </script>
+        if (!response.ok) {
+          this.errorMessage = 'Errore durante la registrazione';
+          throw new Error('Errore durante la registrazione');
+        } else
+          this.$router.push("/login");
+
+      } catch (error) {
+        // Gestione degli errori in caso di fallimento della richiesta
+        console.error('Errore la richiesta di registrazione:', error);
+        this.errorMessage = 'Errore durante la richiesta di registrazione ' + error.message;
+      }
+    },
+    showDatePicker() {
+      this.datePickerDialog = true;
+    },
+    updateDialogMaxWidth() {
+      // Aggiorna la larghezza massima della dialog in base alla larghezza del date picker
+      this.$nextTick(() => {
+        const datePicker = this.$refs.datePicker.$el;
+        if (datePicker) {
+          this.dialogMaxWidth = datePicker.offsetWidth + 40; // Aggiungi una spaziatura di 20px su ciascun lato
+        }
+      });
+    },
+    toggleVisibility() {
+      this.visible = !this.visible;
+    },
+  }
+};
+</script>
