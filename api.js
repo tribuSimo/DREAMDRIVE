@@ -234,6 +234,21 @@ function inviaNotifica(idUtente, tipo, messaggio) {
     });
 }
 
+
+app.delete('/api/eliminaNotifica:idNotifica', verificaCliente, (req, res) => {
+    const idNotifica = req.params.idNotifica;
+    const query = 'DELETE notifiche WHERE idNotifica = ?';
+    pool.query(query, [idNotifica], (error) => {
+        if (error) {
+            console.error('Errore durante l\'inserimento della notifica nel database:', error);
+            return;
+        }
+        res.send('Cancellazione effettuata consuccesso');
+
+    });
+
+})
+
 app.get('/api/GetPrenotazioni/:idUtente', verificaCliente, (req, res) => {
     const idUtente = req.params.idUtente;
     // Query per ottenere i dati delle prenotazioni per l'utente specificato
@@ -400,5 +415,3 @@ app.get('/api/getUserID', verificaCliente, (req, res) => {
 app.listen(port, () => {
     console.log(`Server in esecuzione sulla porta ${port}`);
 });
-
-

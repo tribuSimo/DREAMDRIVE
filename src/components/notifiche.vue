@@ -2,29 +2,9 @@
     <v-app>
         <navbar></navbar>
         <v-container class="containerSearch">
-            <v-row v-if="auto.length > 0">
-                <v-col cols="12" sm="6" md="4" v-for="(auto, index) in auto" :key="index">
-                    <v-card class="card" @click="visualizzaDettagli(index)" outlined>
-                        <v-img
-                            :src="auto.immagini && auto.immagini.length > 0 ? auto.immagini.split(',')[0] : 'workInProgress.jpg'"
-                            aspect-ratio="16/9" cover></v-img>
-                        <v-card-title>{{ auto.marca }} {{ auto.modello }}</v-card-title>
-                        <v-card-text>
-                            <div>Potenza: {{ auto.potenza }} cv</div>
-                            <div>Chilometraggio: {{ auto.chilometraggio }} km</div>
-                            <div>Anno di produzione: {{ auto.annoProduzione }}</div>
-                            <div>Usata: {{ auto.usata && auto.usata.data[0] === 1 ? 'Sì' : 'No' }}</div>
-                            <div>Prezzo: {{ auto.prezzo }} €</div>
-                            <div>Carburante: {{ auto.carburante }}</div>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-            </v-row>
-            <v-row v-else>
-                <v-col cols="12">
-                    <p class="no-new-release">Nessuna notifica brutto idiota</p>
-                </v-col>
-            </v-row>
+            <div class="divNotifiche" v-html="html">
+
+            </div>
         </v-container>
         <finePagina></finePagina>
     </v-app>
@@ -42,35 +22,23 @@ export default {
     },
     data() {
         return {
-            auto: [],
-            filtro: null,
-            mostraUsate: false,
-            marche: [],
-            marcaSelezionata: null,
-            idUtente: null
+            messaggi: [],
         };
     },
     created() {
         if (localStorage.getItem('token')) {
-            this.caricaAuto();
+            this.caricaMessaggi();
         } else {
             router.push('/login');
         }
 
 
     },
-    watch: {
-        mostraUsate(newValue, oldValue) {
-            if (newValue !== oldValue) {
-                this.visualizzaUsate();
-            }
-        }
-    },
     methods: {
-        async caricaAuto() {
+        async caricaMessaggi() {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`${window.dreamdrive_cfg.api}/nuoveAuto`, {
+                const response = await fetch(`${window.dreamdrive_cfg.api}/notifiche/${idUtente}`, {
                     method: 'GET',
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
@@ -78,73 +46,54 @@ export default {
                     }
                 });
                 if (response.ok) {
-                    this.auto = await response.json();
-                    console.log(this.auto);
+                    this.messaggi = await response.json();
+                    console.log(this.messaggi);
                 } else {
-                    console.error('Errore nel caricamento delle auto:', response.statusText);
+                    console.error('Errore nel caricamento del messaggio:', response.statusText);
                 }
             } catch (error) {
-                console.error('Errore nel caricamento delle auto:', error);
+                console.error('Errore nel caricamento del messaggio:', error);
             }
         },
-        visualizzaDettagli(index) {
-            const idAuto = this.auto[index].idAuto;
-            this.$router.push({ name: 'Dettagli auto', params: { idAuto: idAuto } });
-        }
+
+        async eliminaMessaggi() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${window.dreamdrive_cfg.api}/notifiche/${idUtente}`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        'Authorization': `${token}`
+                    }
+                });
+                if (response.ok) {
+                    this.messaggi = await response.json();
+                    console.log(this.messaggi);
+                } else {
+                    console.error('Errore nel caricamento del messaggio:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Errore nel caricamento del messaggio:', error);
+            }
+        },
+
     }
 };
 </script>
 
 <style scoped>
 .containerSearch {
-    width: 75%;
+    width: 100%;
     margin: 20px auto;
     margin-top: 80px;
 }
 
-.no-new-release {
-    font-size: 24px;
-    font-family: 'Roboto', sans-serif;
-    color: #555;
-    text-align: center;
-    padding-bottom: 800px;
-}
-
-.nav_Drawer {
-    margin-top: 0px;
-}
-
-.card {
-    background-color: #f0f4f8;
-    color: #000000;
-    border: 2px solid #d1d8e0;
-    margin-left: 50px;
-    margin-bottom: 10px;
-    transition: transform 1s ease, border-color 0.7s ease, background-color 0.7s ease, color 0.7s ease;
-}
-
-.card:hover {
-    transform: scale(1.1);
-    background-color: #f0f0f0;
-    border-color: #b0b0b0;
-}
-
-.text-left {
-    text-align: left;
-}
-
-.search {
-    margin-top: 100px;
-}
-
-.custom-select {
-    margin-top: 73px;
-    width: 100%;
-}
-
-/* Stile personalizzato per la checkbox */
-.custom-checkbox {
-    margin-top: 75px;
-    /* Aggiungi spazio sopra solo per la checkbox */
+.divNotifiche {
+    margin: 10vh auto;
+    width: 15vw;
+    height: 20vh;
+    border: 2px solid black;
+    border-radius: 7%;
+    margin-bottom: 20vw;
 }
 </style>
