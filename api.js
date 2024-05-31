@@ -67,6 +67,7 @@ app.get('/api/auto', verificaCliente, (req, res) => {
         res.send(results);
     });
 });
+
 app.get('/api/nuoveAuto', verificaCliente, (req, res) => {
     let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio,'
     q += 'auto.annoProduzione, auto.cambio, auto.peso, auto.usata, auto.prezzo, marche.marca, carburanti.carburante,'
@@ -109,7 +110,6 @@ app.get('/api/nuoveAuto', verificaCliente, (req, res) => {
         }
     });
 })
-
 
 app.get('/api/autoUsate', verificaCliente, (req, res) => {
     let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio,'
@@ -184,7 +184,8 @@ app.get('/api/marche', (req, res) => {
         if (error) throw error;
         res.send(results);
     });
-})
+});
+
 app.get('/api/notifiche/:idUtente', verificaCliente, (req, res) => {
     const idUtente = req.params.idUtente;
     //le notifiche avranno i seguenti tipi: conferma appuntamento, promemoria appuntamento, disdetta appuntamento, aggiornamenti auto
@@ -233,6 +234,7 @@ app.post('/api/prenotazione', verificaCliente, (req, res) => {
         res.send('Prenotazione effettuata con successo');
     });
 });
+
 function notifica(tipo, messaggio, idRuolo) {
     const query = 'SELECT * FROM utenti WHERE idRuolo = ?';
     pool.query(query, [idRuolo], (error, results) => {
