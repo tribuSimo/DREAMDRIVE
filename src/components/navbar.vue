@@ -29,7 +29,7 @@
           <v-btn @click="raggiungiPrenotazioni()" class="nav-button">
             Prenotazioni <v-icon class="nav-icon">mdi-calendar-check</v-icon>
           </v-btn>
-          <v-btn to="/notifiche" class="nav-button">
+          <v-btn @click="raggiungiNotifiche()" class="nav-button">
             Notifiche <v-icon class="nav-icon">mdi-bell</v-icon>
           </v-btn>
           <v-btn @click="logout()" class="nav-button">
@@ -100,6 +100,13 @@ export default {
     raggiungiPrenotazioni() {
       if (this.idUtente) {
         router.push({ name: 'Prenotazioni', params: { idUtente: this.idUtente } });
+      } else {
+        this.errorMessage = 'ID utente non disponibile';
+      }
+    },
+    raggiungiNotifiche() {
+      if (this.idUtente) {
+        router.push({ name: 'Notifiche', params: { idUtente: this.idUtente } });
       } else {
         this.errorMessage = 'ID utente non disponibile';
       }

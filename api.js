@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const port = 3000;
@@ -20,6 +21,13 @@ const pool = mysql.createPool({
     user: 'root',
     password: '',
     database: 'concessionario'
+});
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'dreamdrive.concessionario@gmail.com',
+        pass: 'Concessionario05'
+    }
 });
 
 app.get('/api/auto', verificaCliente, (req, res) => {
@@ -219,11 +227,11 @@ function notifica(tipo, messaggio, idRuolo) {
 
         // Invia notifica a ciascun utente del ruolo specificato
         results.forEach(utente => {
-            inviaNotifica(utente.idUtente, tipo, messaggio);
+            inviaNotifica(utente.idUtente, tipo, messaggio, utente.email);
         });
     });
 }
-function inviaNotifica(idUtente, tipo, messaggio) {
+function inviaNotifica(idUtente, tipo, messaggio, email) {
     const query = 'INSERT INTO notifiche (idUtente, tipo, messaggio) VALUES (?, ?, ?)';
     pool.query(query, [idUtente, tipo, messaggio], (error, results) => {
         if (error) {
@@ -231,9 +239,22 @@ function inviaNotifica(idUtente, tipo, messaggio) {
             return;
         }
         //implementa l'invio della mail qui
+        const mailOptions = {
+            from: 'dreamdrive.concessionario@gmail.com', // Sostituisci con la tua email
+            to: email,
+            subject: 'Nuova Notifica da dreamdrive',
+            text: messaggio
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Errore durante l\'invio dell\'email:', error);
+            } else {
+                console.log('Email inviata: ' + info.response);
+            }
+        });
     });
 }
-
 
 app.delete('/api/eliminaNotifica:idNotifica', verificaCliente, (req, res) => {
     const idNotifica = req.params.idNotifica;
@@ -244,7 +265,6 @@ app.delete('/api/eliminaNotifica:idNotifica', verificaCliente, (req, res) => {
             return;
         }
         res.send('Cancellazione effettuata consuccesso');
-
     });
 
 })

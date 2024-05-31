@@ -54,7 +54,7 @@ const routes = [
     component: nuoveUscite
   },
   {
-    path: '/notifiche',
+    path: '/notifiche/:idUtente',
     name : 'Notifiche',
     component: notifiche
   }

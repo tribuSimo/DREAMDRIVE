@@ -69,7 +69,7 @@ export default {
     navbar,
     finePagina
   },
-  data() {
+  data() {this.$route.params.idUtente
     return {
       dati: {}, // Aggiungi un array vuoto per contenere i dati della tabella
       dialog: false, // Aggiungi una variabile per controllare la visualizzazione del dialog di conferma
