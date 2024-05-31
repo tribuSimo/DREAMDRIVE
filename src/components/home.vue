@@ -3,20 +3,15 @@
     <navbar></navbar>
     <v-container class="containerSearch">
       <v-row>
-        <v-col cols="4"> <!-- Utilizzo la metà della larghezza disponibile per ciascun elemento -->
-          <!-- Stile personalizzato per la select -->
+        <v-col cols="4">
           <v-select label="Ordina" :items="['Nessuno', 'Prezzo', 'Anno produzione', 'Chilometraggio']"
-            class="custom-select" v-model="filtro" @update:modelValue="ordinaCombo()">
-          </v-select>
+            class="custom-select" v-model="filtro" @change="ordinaCombo"></v-select>
         </v-col>
-
         <v-col cols="4">
-          <!-- Stile personalizzato per la select -->
           <v-select label="Marca" class="custom-select" :items="marche" v-model="marcaSelezionata"
-            @update:modelValue="ordinaMarca()"></v-select>
+            @change="ordinaMarca"></v-select>
         </v-col>
         <v-col cols="4">
-          <!-- Stile personalizzato per la checkbox -->
           <v-checkbox class="custom-checkbox" v-model="mostraUsate" label="Usata"></v-checkbox>
         </v-col>
       </v-row>
@@ -85,31 +80,23 @@ export default {
     async caricaAuto() {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${window.dreamdrive_cfg.api}/auto`, {
-          method: 'GET',
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            'Authorization': `${token}`
-          }
-        });
-        if (response.ok) {
-          this.auto = await response.json();
-        } else {
-          console.error('Errore nel caricamento delle auto:', response.statusText);
-          this.errorMessage = 'Errore nel caricamento delle auto: ' + response.statusText;
-        }
-      } catch (error) {
-        console.error('Errore nel caricamento delle auto:', error);
-        this.errorMessage = 'Errore nella richiesta delle auto' + error.message;
-      }
-    },
-    async ordinaCombo() {
-      try {
-        const token = localStorage.getItem('token');
         let url = `${window.dreamdrive_cfg.api}/auto`;
+        const params = new URLSearchParams();
 
-        if (this.filtro !== "Nessuno" && this.filtro !== "") {
-          url += '?sortBy=' + encodeURIComponent(this.filtro);
+        if (this.filtro && this.filtro !== "Nessuno") {
+          params.append('sortBy', this.filtro);
+        }
+
+        if (this.mostraUsate) {
+          params.append('usata', 'true');
+        }
+
+        if (this.marcaSelezionata && this.marcaSelezionata !== 'Nessuna') {
+          params.append('marca', this.marcaSelezionata);
+        }
+
+        if (params.toString()) {
+          url += `?${params.toString()}`;
         }
 
         const response = await fetch(url, {
@@ -123,41 +110,22 @@ export default {
         if (response.ok) {
           this.auto = await response.json();
         } else {
-          console.error('Errore nel caricamento delle auto ordinate:', response.statusText);
-          this.errorMessage = 'Errore nel caricamento delle auto ordinate: ' + response.statusText;
+          console.error('Errore nel caricamento delle auto:', response.statusText);
+          this.errorMessage = 'Errore nel caricamento delle auto: ' + response.statusText;
         }
       } catch (error) {
-        console.error('Errore nella richiesta delle auto:', error);
-        this.errorMessage = 'Errore nella richiesta delle auto ordinate: ' + error.message;
+        console.error('Errore nel caricamento delle auto:', error);
+        this.errorMessage = 'Errore nella richiesta delle auto: ' + error.message;
       }
     },
+    async ordinaCombo() {
+      this.caricaAuto();
+    },
     async visualizzaUsate() {
-      try {
-        if (this.mostraUsate === true) {
-          const token = localStorage.getItem('token');
-          let url = `${window.dreamdrive_cfg.api}/autoUsate`;
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              'Authorization': `${token}`
-            }
-          });
-
-          if (response.ok) {
-            this.auto = await response.json();
-          } else {
-            console.error('Errore nel caricamento delle auto usate:', response.statusText);
-            this.errorMessage = 'Errore nel caricamento delle auto usate: ' + response.statusText;
-          }
-        } else {
-          // Se la checkbox non è selezionata, carica tutte le auto
-          await this.caricaAuto();
-        }
-      } catch (error) {
-        console.error('Errore nella richiesta delle auto usate:', error);
-        this.errorMessage = 'Errore nella richiesta delle auto usate: ' + error.message;
-      }
+      this.caricaAuto();
+    },
+    async ordinaMarca() {
+      this.caricaAuto();
     },
     async visualizzaMarche() {
       try {
@@ -186,34 +154,6 @@ export default {
       const idAuto = this.auto[index].idAuto;
       this.$router.push({ name: 'Dettagli auto', params: { idAuto: idAuto } });
     },
-    async ordinaMarca() {
-      try {
-        if (this.marcaSelezionata === 'Nessuna') {
-          this.caricaAuto();
-        } else {
-          const token = localStorage.getItem('token');
-          let url = `${window.dreamdrive_cfg.api}/autoMarca/${this.marcaSelezionata}`;
-
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              'Authorization': `${token}`
-            }
-          });
-
-          if (response.ok) {
-            this.auto = await response.json();
-          } else {
-            console.error('Errore nel caricamento delle auto ordinate per marca:', response.statusText);
-            this.errorMessage = 'Errore nel caricamento delle auto ordinate per marca: ' + response.statusText;
-          }
-        }
-      } catch (error) {
-        console.error('Errore nella richiesta del caricamento delle auto ordinate per marca:', error);
-        this.errorMessage = 'Errore nella richiesta del caricamento delle auto ordinate per marca: ' + error.message;
-      }
-    }
   }
 };
 </script>

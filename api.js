@@ -40,21 +40,29 @@ app.get('/api/auto', verificaCliente, (req, res) => {
     q += 'INNER JOIN modelli ON auto.idModello = modelli.idModello '
     q += 'INNER JOIN colori ON auto.idColore = colori.idColore '
     q += 'LEFT JOIN immagini ON auto.idAuto = immagini.idAuto '
-    q += 'WHERE AUTO.disponibile = 1 '
-    q += 'group by auto.idAuto ';
+    q += 'WHERE auto.disponibile = 1 ';
+
+    // Aggiungi filtri dinamicamente
+    if (req.query.usata === 'true') {
+        q += 'AND auto.usata = 1 ';
+    }
+
+    if (req.query.marca) {
+        q += 'AND marche.marca = ? ';
+    }
 
     // Controlla se è presente il parametro di query sortBy e aggiorna la query di conseguenza
     if (req.query.sortBy === 'Prezzo') {
-        q += 'ORDER BY auto.prezzo'; // Ordina per prezzo
+        q += 'ORDER BY auto.prezzo';
     } else if (req.query.sortBy === 'Chilometraggio') {
-        q += 'ORDER BY auto.chilometraggio'; // Ordina per chilometraggio
+        q += 'ORDER BY auto.chilometraggio';
     } else if (req.query.sortBy === 'Anno produzione') {
         q += 'ORDER BY auto.annoProduzione';
     } else {
         q += 'ORDER BY auto.idAuto';
-    }    // Aggiungi altri controlli per altri campi di ordinamento se necessario
+    }
 
-    pool.query(q, (error, results) => {
+    pool.query(q, [req.query.marca], (error, results) => {
         if (error) throw error;
         res.send(results);
     });
@@ -72,16 +80,24 @@ app.get('/api/nuoveAuto', verificaCliente, (req, res) => {
     q += 'WHERE auto.disponibile = 1 AND YEAR(auto.dataAcquisto) = YEAR(CURRENT_DATE()) AND MONTH(auto.dataAcquisto) >= MONTH(CURRENT_DATE())-1 '
     q += 'group by auto.idAuto ';
 
+    if (req.query.usata === 'true') {
+        q += 'AND auto.usata = 1 ';
+    }
+
+    if (req.query.marca) {
+        q += 'AND marche.marca = ? ';
+    }
+
     // Controlla se è presente il parametro di query sortBy e aggiorna la query di conseguenza
     if (req.query.sortBy === 'Prezzo') {
-        q += 'ORDER BY auto.prezzo'; // Ordina per prezzo
+        q += 'ORDER BY auto.prezzo';
     } else if (req.query.sortBy === 'Chilometraggio') {
-        q += 'ORDER BY auto.chilometraggio'; // Ordina per chilometraggio
+        q += 'ORDER BY auto.chilometraggio';
     } else if (req.query.sortBy === 'Anno produzione') {
         q += 'ORDER BY auto.annoProduzione';
     } else {
         q += 'ORDER BY auto.idAuto';
-    }    // Aggiungi altri controlli per altri campi di ordinamento se necessario
+    }
 
     pool.query(q, (error, results) => {
         if (error) {
