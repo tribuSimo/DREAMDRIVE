@@ -65,7 +65,7 @@ export default {
         { title: 'Home', icon: 'mdi-home', path: '/home' },
         { title: 'Nuove Uscite', icon: 'mdi-new-box', path: '/nuoveUscite' },
         { title: 'Prenotazioni', icon: 'mdi-calendar-check', action: 'raggiungiPrenotazioni' },
-        { title: 'Notifiche', icon: 'mdi-bell', path: '/notifiche' },
+        { title: 'Notifiche', icon: 'mdi-bell',action: 'raggiungiNotifiche' },
         { title: 'Logout', icon: 'mdi-logout', action: 'logout' }
       ],
       isMobile: false
