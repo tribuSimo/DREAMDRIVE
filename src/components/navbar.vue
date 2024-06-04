@@ -13,6 +13,11 @@
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
         </v-list-item>
+        <v-list-item>
+          <v-text-field v-model="searchQuery" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined dense
+            @change="executeSearch">
+          </v-text-field>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -36,8 +41,9 @@
             Logout <v-icon class="nav-icon">mdi-logout</v-icon>
           </v-btn>
           <div class="div-search">
-            <v-text-field class="nav_v-text-field" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined
-              dense></v-text-field>
+            <v-text-field v-model="searchQuery" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined dense
+              @change="executeSearch">
+            </v-text-field>
           </div>
         </v-row>
       </v-container>
@@ -50,7 +56,6 @@
   </div>
 </template>
 
-
 <script>
 import router from '@/router';
 
@@ -60,12 +65,13 @@ export default {
     return {
       sidebar: false,
       idUtente: null,
-      errorMessage: '', // Aggiungi una proprietà per il messaggio di errore
+      errorMessage: '',
+      searchQuery: '', // Aggiungi la proprietà per il testo di ricerca
       menuItems: [
         { title: 'Home', icon: 'mdi-home', path: '/home' },
         { title: 'Nuove Uscite', icon: 'mdi-new-box', path: '/nuoveUscite' },
         { title: 'Prenotazioni', icon: 'mdi-calendar-check', action: 'raggiungiPrenotazioni' },
-        { title: 'Notifiche', icon: 'mdi-bell',action: 'raggiungiNotifiche' },
+        { title: 'Notifiche', icon: 'mdi-bell', action: 'raggiungiNotifiche' },
         { title: 'Logout', icon: 'mdi-logout', action: 'logout' }
       ],
       isMobile: false
@@ -123,6 +129,11 @@ export default {
       } else if (item.path) {
         router.push(item.path);
       }
+    },
+    executeSearch() {
+      // Implementa la logica di ricerca qui
+      console.log('Eseguo ricerca per:', this.searchQuery);
+      // Puoi chiamare un'API o filtrare i dati locali in base a searchQuery
     }
   },
   created() {
@@ -139,7 +150,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 body,

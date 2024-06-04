@@ -2,7 +2,10 @@
     <v-app>
         <navbar></navbar>
         <v-container class="containerSearch">
-            <v-row class="justify-center">
+            <v-alert title="Errore" v-if="errorMessage" color="error" closable>
+                {{ errorMessage }}
+            </v-alert>
+            <v-row class="justify-center" v-if="messaggi.length > 0">
                 <v-col cols="12" md="8">
                     <v-card class="pa-3">
                         <v-card-title>
@@ -10,7 +13,8 @@
                         </v-card-title>
                         <v-card-text>
                             <div v-for="notifica in messaggi" :key="notifica.idNotifica"
-                                :class="['message-bubble', getNotificationClass(notifica.tipo)]">
+                                :class="['message-bubble', getNotificationClass(notifica.tipo)]"
+                                @click="showDeleteDialog(notifica)">
                                 <v-row>
                                     <v-col>
                                         <div class="message-content">
@@ -22,19 +26,35 @@
                                                 }}</div>
                                         </div>
                                     </v-col>
-                                    <v-col class="col-auto" v-if="notifica.tipo === 'user'">
-                                        <v-btn icon small @click="eliminaMessaggio(notifica.idNotifica)">
-                                            <v-icon>mdi-delete</v-icon>
-                                        </v-btn>
-                                    </v-col>
                                 </v-row>
                             </div>
                         </v-card-text>
                     </v-card>
                 </v-col>
             </v-row>
+            <v-row v-else>
+                <v-col cols="12">
+                    <p class="no-new-release">Nessuna nuova notifica</p>
+                </v-col>
+            </v-row>
         </v-container>
         <finePagina></finePagina>
+
+        <!-- Aggiungi il dialog di conferma eliminazione -->
+        <v-dialog v-model="dialog" max-width="500">
+            <v-card>
+                <v-card-title class="headline">Conferma eliminazione</v-card-title>
+                <v-card-text>
+                    Sei sicuro di voler eliminare questa notifica?
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" text @click="dialog = false">Annulla</v-btn>
+                    <v-btn color="error" text
+                        @click="eliminaMessaggio(selectedNotifica.idNotifica); dialog = false">Conferma</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-app>
 </template>
 
@@ -51,6 +71,9 @@ export default {
     data() {
         return {
             messaggi: [],
+            errorMessage: '',
+            dialog: false,
+            selectedNotifica: null,
         };
     },
     created() {
@@ -75,10 +98,16 @@ export default {
                     this.messaggi = await response.json();
                 } else {
                     console.error('Errore nel caricamento del messaggio:', response.statusText);
+                    this.errorMessage = "Errore nel caricamento del messaggio: " + response.statusText;
                 }
             } catch (error) {
                 console.error('Errore nel caricamento del messaggio:', error);
+                this.errorMessage = "Errore nel caricamento del messaggio: " + error.message;
             }
+        },
+        showDeleteDialog(notifica) {
+            this.selectedNotifica = notifica;
+            this.dialog = true;
         },
         async eliminaMessaggio(idNotifica) {
             try {
@@ -87,16 +116,18 @@ export default {
                     method: 'DELETE',
                     headers: {
                         "Content-Type": "application/json",
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `${token}`
                     }
                 });
                 if (response.ok) {
                     this.messaggi = this.messaggi.filter(notifica => notifica.idNotifica !== idNotifica);
                 } else {
                     console.error('Errore nella cancellazione della notifica:', response.statusText);
+                    this.errorMessage = "Errore nella cancellazione del messaggio: " + response.statusText;
                 }
             } catch (error) {
-                console.error('Errore nella cancellazione della notifica:', error);
+                console.error('Errore nella chiamata di cancellazione della notifica:', error);
+                this.errorMessage = "Errore nella chiamata di cancellazione del messaggio: " + error.message;
             }
         },
         getNotificationClass(tipo) {
@@ -134,6 +165,7 @@ export default {
 <style scoped>
 .containerSearch {
     width: 100%;
+    height: 100%;
     margin: 20px auto;
     margin-top: 80px;
 }
@@ -144,8 +176,14 @@ export default {
     margin-bottom: 10px;
     padding: 5px;
     border-radius: 20px;
-    max-width: 50%;
+    max-width: 55%;
     word-wrap: break-word;
+    transition: transform 0.2s, background-color 0.2s;
+    cursor: pointer;
+}
+
+.message-bubble:hover {
+    transform: scale(1.05);
 }
 
 .conferma-appuntamento {
@@ -168,6 +206,22 @@ export default {
     border-left: 5px solid #17a2b8;
 }
 
+.conferma-appuntamento:hover {
+    background-color: #c3e6cb;
+}
+
+.promemoria-appuntamento:hover {
+    background-color: #ffeeba;
+}
+
+.disdetta-appuntamento:hover {
+    background-color: #f5c6cb;
+}
+
+.aggiornamenti-auto:hover {
+    background-color: #bee5eb;
+}
+
 .message-content {
     display: flex;
     flex-direction: column;
@@ -187,5 +241,13 @@ export default {
     font-size: 0.75rem;
     color: gray;
     text-align: right;
+}
+
+.no-new-release {
+    font-size: 24px;
+    font-family: 'Roboto', sans-serif;
+    color: #555;
+    text-align: center;
+    padding-bottom: 800px;
 }
 </style>

@@ -2,33 +2,38 @@
   <v-app>
     <navbar></navbar>
     <v-container class="containerSearch">
-      <v-row>
-        <v-col cols="4">
+      <v-row class="d-flex justify-space-between flex-wrap mb-4">
+        <v-col cols="12" md="4" class="filter-item">
           <v-select label="Ordina" :items="['Nessuno', 'Prezzo', 'Anno produzione', 'Chilometraggio']"
             class="custom-select" v-model="filtro"></v-select>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="12" md="4" class="filter-item">
           <v-select label="Marca" class="custom-select" :items="marche" v-model="marcaSelezionata"></v-select>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="12" md="4" class="filter-item">
           <v-checkbox class="custom-checkbox" v-model="mostraUsate" label="Usata"></v-checkbox>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="auto.length > 0">
         <v-col cols="12" sm="6" md="4" v-for="(auto, index) in auto" :key="index">
           <v-card class="card" @click="visualizzaDettagli(index)" outlined>
             <v-img :src="auto.immagini && auto.immagini.length > 0 ? auto.immagini.split(',')[0] : 'workInProgress.jpg'"
               aspect-ratio="16/9" cover></v-img>
-            <v-card-title>{{ auto.marca }} {{ auto.modello }}</v-card-title>
+            <v-card-title><strong>{{ auto.marca }} {{ auto.modello }}</strong></v-card-title>
             <v-card-text>
-              <div>Potenza: {{ auto.potenza }} cv</div>
-              <div>Chilometraggio: {{ auto.chilometraggio }} km</div>
-              <div>Anno di produzione: {{ auto.annoProduzione }}</div>
-              <div>Usata: {{ auto.usata && auto.usata.data[0] === 1 ? 'Sì' : 'No' }}</div>
-              <div>Prezzo: {{ auto.prezzo }} €</div>
-              <div>Carburante: {{ auto.carburante }}</div>
+              <div><strong>Potenza:</strong> {{ auto.potenza }} cv</div>
+              <div><strong>Chilometraggio:</strong> {{ auto.chilometraggio }} km</div>
+              <div><strong>Anno di produzione:</strong> {{ auto.annoProduzione }}</div>
+              <div><strong>Usata:</strong> {{ auto.usata && auto.usata.data[0] === 1 ? 'Sì' : 'No' }}</div>
+              <div><strong>Prezzo:</strong> {{ auto.prezzo }} €</div>
+              <div><strong>carburante:</strong> {{ auto.carburante }}</div>
             </v-card-text>
           </v-card>
+        </v-col>
+      </v-row>
+      <v-row v-else>
+        <v-col cols="12">
+          <p class="no-new-release">Nessuna auto disponibile</p>
         </v-col>
       </v-row>
       <v-alert title="Errore" v-if="errorMessage" color="error" closable>
@@ -56,7 +61,7 @@ export default {
       marche: [],
       idUtente: null,
       errorMessage: '',
-      inner_filtro : "Nessuno",
+      inner_filtro: "Nessuno",
       inner_marca: "Nessuna"
     };
   },
@@ -86,14 +91,13 @@ export default {
       }
     },
     marcaSelezionata: {
-      get(){
+      get() {
         return this.inner_marca;
       },
-      set(val){
+      set(val) {
         this.inner_marca = val;
         this.caricaAuto();
       }
-    
     }
   },
   methods: {
@@ -138,14 +142,7 @@ export default {
         this.errorMessage = 'Errore nella richiesta delle auto: ' + error.message;
       }
     },
-    ordinaCombo() {
-      console.log("ordinacombo");
-      //this.caricaAuto();
-    },
-     visualizzaUsate() {
-      this.caricaAuto();
-    },
-     ordinaMarca() {
+    visualizzaUsate() {
       this.caricaAuto();
     },
     async visualizzaMarche() {
@@ -174,52 +171,53 @@ export default {
     visualizzaDettagli(index) {
       const idAuto = this.auto[index].idAuto;
       this.$router.push({ name: 'Dettagli auto', params: { idAuto: idAuto } });
-    },
+    }
   }
 };
 </script>
 
 <style scoped>
 .containerSearch {
-  width: 75%;
-  margin: 20px auto;
+  width: 100%;
+  margin-top: 10vh
 }
 
-.nav_Drawer {
-  margin-top: 0px;
+.custom-select,
+.custom-checkbox {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .custom-select,
+  .custom-checkbox {
+    width: auto;
+  }
 }
 
 .card {
   background-color: #f0f4f8;
   color: #000000;
   border: 2px solid #d1d8e0;
-  margin-left: 50px;
-  margin-bottom: 10px;
+  margin: 2vh auto;
   transition: transform 1s ease, border-color 0.7s ease, background-color 0.7s ease, color 0.7s ease;
 }
 
 .card:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   background-color: #f0f0f0;
   border-color: #b0b0b0;
 }
 
-.text-left {
-  text-align: left;
+.v-alert {
+  margin-top: 20px;
 }
 
-.search {
-  margin-top: 100px;
+.no-new-release {
+  font-size: 24px;
+  font-family: 'Roboto', sans-serif;
+  color: #555;
+  text-align: center;
+  padding-bottom: 800px;
 }
 
-.custom-select {
-  margin-top: 10vh;
-  width: 23vw;
-}
-
-/* Stile personalizzato per la checkbox */
-.custom-checkbox {
-  margin-top: 10vh;
-  /* Aggiungi spazio sopra solo per la checkbox */
-}
 </style>
