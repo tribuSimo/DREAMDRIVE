@@ -5,11 +5,10 @@
       <v-row>
         <v-col cols="4">
           <v-select label="Ordina" :items="['Nessuno', 'Prezzo', 'Anno produzione', 'Chilometraggio']"
-            class="custom-select" v-model="filtro" @change="ordinaCombo"></v-select>
+            class="custom-select" v-model="filtro"></v-select>
         </v-col>
         <v-col cols="4">
-          <v-select label="Marca" class="custom-select" :items="marche" v-model="marcaSelezionata"
-            @change="ordinaMarca"></v-select>
+          <v-select label="Marca" class="custom-select" :items="marche" v-model="marcaSelezionata"></v-select>
         </v-col>
         <v-col cols="4">
           <v-checkbox class="custom-checkbox" v-model="mostraUsate" label="Usata"></v-checkbox>
@@ -53,12 +52,12 @@ export default {
   data() {
     return {
       auto: [],
-      filtro: null,
       mostraUsate: false,
       marche: [],
-      marcaSelezionata: null,
       idUtente: null,
-      errorMessage: ''
+      errorMessage: '',
+      inner_filtro : "Nessuno",
+      inner_marca: "Nessuna"
     };
   },
   created() {
@@ -76,13 +75,34 @@ export default {
       }
     }
   },
+  computed: {
+    filtro: {
+      get() {
+        return this.inner_filtro;
+      },
+      set(val) {
+        this.inner_filtro = val;
+        this.caricaAuto();
+      }
+    },
+    marcaSelezionata: {
+      get(){
+        return this.inner_marca;
+      },
+      set(val){
+        this.inner_marca = val;
+        this.caricaAuto();
+      }
+    
+    }
+  },
   methods: {
     async caricaAuto() {
       try {
         const token = localStorage.getItem('token');
         let url = `${window.dreamdrive_cfg.api}/auto`;
         const params = new URLSearchParams();
-
+        console.log(this.filtro);
         if (this.filtro && this.filtro !== "Nessuno") {
           params.append('sortBy', this.filtro);
         }
@@ -118,13 +138,14 @@ export default {
         this.errorMessage = 'Errore nella richiesta delle auto: ' + error.message;
       }
     },
-    async ordinaCombo() {
+    ordinaCombo() {
+      console.log("ordinacombo");
+      //this.caricaAuto();
+    },
+     visualizzaUsate() {
       this.caricaAuto();
     },
-    async visualizzaUsate() {
-      this.caricaAuto();
-    },
-    async ordinaMarca() {
+     ordinaMarca() {
       this.caricaAuto();
     },
     async visualizzaMarche() {

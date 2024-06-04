@@ -18,7 +18,7 @@
                                                 <v-icon>{{ getNotificationIcon(notifica.tipo) }}</v-icon>
                                             </div>
                                             <div class="message-text">{{ notifica.messaggio }}</div>
-                                            <div class="message-time">{{ new Date(notifica.timestamp).toLocaleString()
+                                            <div class="message-time">{{ new Date(notifica.dataOra).toLocaleString()
                                                 }}</div>
                                         </div>
                                     </v-col>
@@ -68,7 +68,7 @@ export default {
                     method: 'GET',
                     headers: {
                         "Content-Type": "application/json",
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `${token}`
                     }
                 });
                 if (response.ok) {
@@ -142,9 +142,9 @@ export default {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-    padding: 10px;
+    padding: 5px;
     border-radius: 20px;
-    max-width: 70%;
+    max-width: 50%;
     word-wrap: break-word;
 }
 
