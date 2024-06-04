@@ -18,7 +18,7 @@
     <!-- Div a destra con testo h1 e bottone -->
     <div class="right-div">
       <h1 class="riepilogo_Prezzo">Prezzo: {{ auto[0].prezzo }} €</h1>
-      <v-btn class="btnPrenota rounded-xl" @click="apriDialog">Prenota Incontro</v-btn>
+      <v-btn class="btnPrenota rounded-xl" @click="apriDialog">Prenota</v-btn>
     </div>
 
     <finePagina></finePagina>
