@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Icona del menu a tendina per dispositivi mobili -->
-    <v-btn icon @click="toggleSidebar" class="hidden-sm-and-up menu-icon">
+    <v-btn icon @click="toggleSidebar" class="menu-icon" v-if="isMobile">
       <v-icon>mdi-menu</v-icon>
     </v-btn>
     <!-- Navigation drawer per dispositivi mobili -->
@@ -118,7 +118,7 @@ export default {
       }
     },
     checkMobile() {
-      this.isMobile = window.innerWidth <= 768;
+      this.isMobile = window.innerWidth <= 1024;
     },
     toggleSidebar() {
       this.sidebar = !this.sidebar;

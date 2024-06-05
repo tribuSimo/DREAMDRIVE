@@ -1,29 +1,40 @@
 <template>
   <v-app>
     <navbar></navbar>
-
-    <div class="container">
-      <v-alert title="Errore" v-if="errorMessage" color="error" closable>
+    <v-container class="container">
+      <v-alert v-if="errorMessage" color="error" dismissible>
         {{ errorMessage }}
       </v-alert>
-      <!-- Testo "Riepilogo" posizionato in alto a destra -->
-      <h1 class="riepilogo_title">RIEPILOGO</h1>
-      <h3 class="riepilogo_marcaModello">{{ auto[0].marca }} {{ auto[0].modello }}</h3>
-      <h3 class="riepilogo_potenza">Potenza: {{ auto[0].potenza }} cv</h3>
-      <h3 class="riepilogo_chilometraggio">Chilometraggio: {{ auto[0].chilometraggio }} km</h3>
-      <h3 class="riepilogo_anno">Anno di produzione: {{ auto[0].annoProduzione }}</h3>
-      <!-- Altri dettagli dell'auto -->
-    </div>
-
-    <!-- Div a destra con testo h1 e bottone -->
-    <div class="right-div">
-      <h1 class="riepilogo_Prezzo">Prezzo: {{ auto[0].prezzo }} €</h1>
-      <v-btn class="btnPrenota rounded-xl" @click="apriDialog">Prenota</v-btn>
-    </div>
-
+      <v-row justify="center">
+        <v-col cols="12" md="8">
+          <v-card class="riepilogo-card">
+            <v-row>
+              <v-col cols="12">
+                <h1 class="riepilogo_title">RIEPILOGO</h1>
+              </v-col>
+              <v-col cols="12">
+                <h3 class="riepilogo_marcaModello">{{ auto[0].marca }} {{ auto[0].modello }}</h3>
+              </v-col>
+              <v-col cols="12">
+                <h3 class="riepilogo_potenza">Potenza: {{ auto[0].potenza }} cv</h3>
+              </v-col>
+              <v-col cols="12">
+                <h3 class="riepilogo_chilometraggio">Chilometraggio: {{ auto[0].chilometraggio }} km</h3>
+              </v-col>
+              <v-col cols="12">
+                <h3 class="riepilogo_anno">Anno di produzione: {{ auto[0].annoProduzione }}</h3>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="8" class="text-center">
+          <h1 class="riepilogo_Prezzo">Prezzo: {{ auto[0].prezzo }} €</h1>
+          <v-btn class="btnPrenota rounded-xl" @click="apriDialog">Prenota</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
     <finePagina></finePagina>
 
-    <!-- Dialog -->
     <v-dialog v-model="dialogVisibile" max-width="600">
       <v-card>
         <v-card-title class="headline">Scegli un Orario</v-card-title>
@@ -179,86 +190,46 @@ export default {
       }
       this.dialogVisibile = false;
     }
-
   }
 };
 </script>
 
 <style scoped>
-/* Stile per posizionare il testo "Riepilogo" in alto a destra */
 .riepilogo_title {
-  font-size: 40px;
+  font-size: 32px;
   font-weight: bold;
-  position: absolute;
-  top: 150px;
-  /* Regola l'altezza dal top */
-  left: 10%;
-  /* Regola la distanza dal bordo destro */
+  margin-bottom: 10px;
 }
 
-/* Stile per posizionare gli altri dettagli dell'auto in alto a sinistra */
-.riepilogo_marcaModello {
-  position: absolute;
-  top: 220px;
-  /* Regola l'altezza dal top */
-  left: 10%;
-  /* Regola la distanza dal bordo sinistro */
+.riepilogo-card {
+  border: 2px solid black;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
 
-.riepilogo_potenza {
-  position: absolute;
-  top: 260px;
-  /* Regola l'altezza dal top */
-  left: 10%;
-  /* Regola la distanza dal bordo sinistro */
-}
-
-.riepilogo_chilometraggio {
-  position: absolute;
-  top: 300px;
-  /* Regola l'altezza dal top */
-  left: 10%;
-  /* Regola la distanza dal bordo sinistro */
-}
-
+.riepilogo_marcaModello,
+.riepilogo_potenza,
+.riepilogo_chilometraggio,
 .riepilogo_anno {
-  position: absolute;
-  top: 340px;
-  /* Regola l'altezza dal top */
-  left: 10%;
-  /* Regola la distanza dal bordo sinistro */
+  font-size: 18px;
+  margin-bottom: 5px;
 }
 
-/* Stile per posizionare il nuovo div a destra */
-.right-div {
-  position: absolute;
-  top: 150px;
-  /* Regola l'altezza dal top */
-  right: 10%;
-  /* Regola la distanza dal bordo destro */
-  width: 30%;
-  /* Regola la larghezza del div */
-  padding: 20px;
-  /* Opzionale: spazio interno per il div */
-}
-
-/* Stile per il prezzo con bordo sfocato */
 .riepilogo_Prezzo {
   border: 2px solid #ffa500;
-  /* Bordo sfocato */
   border-radius: 10px;
-  padding: 10px;
-  /* Spazio interno */
   backdrop-filter: blur(5px);
-  /* Effetto di sfocatura */
   -webkit-backdrop-filter: blur(5px);
-  /* Effetto di sfocatura per browser Webkit */
+  font-size: 24px;
+  margin-top: 20px;
 }
 
 .btnPrenota {
   margin-top: 20px;
   background-color: #ffa500;
   color: white;
-  width: 200px;
+  width: 100%;
+  max-width: 200px;
 }
 </style>
