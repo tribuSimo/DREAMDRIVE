@@ -21,9 +21,9 @@
         <v-col cols="12" sm="6" md="4" v-for="(auto, index) in auto" :key="index">
           <v-card class="card" @click="visualizzaDettagli(index)" outlined>
             <v-img :src="auto.immagini && auto.immagini.length > 0 ? auto.immagini.split(',')[0] : 'workInProgress.jpg'"
-              aspect-ratio="16/9" cover></v-img>
-            <v-card-title><strong>{{ auto.marca }} {{ auto.modello }}</strong></v-card-title>
-            <v-card-text>
+              aspect-ratio="16/9" class="card-image" cover></v-img>
+            <v-card-title class="card-title"><strong>{{ auto.marca }} {{ auto.modello }}</strong></v-card-title>
+            <v-card-text class="card-text">
               <div><strong>Potenza:</strong> {{ auto.potenza }} cv</div>
               <div><strong>Chilometraggio:</strong> {{ auto.chilometraggio }} km</div>
               <div><strong>Anno di produzione:</strong> {{ auto.annoProduzione }}</div>
@@ -197,12 +197,31 @@ export default {
   border: 2px solid #d1d8e0;
   margin: 2vh auto;
   transition: transform 1s ease, border-color 0.7s ease, background-color 0.7s ease, color 0.7s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* Ensure the card takes full height */
 }
 
 .card:hover {
   transform: scale(1.05);
   background-color: #f0f0f0;
   border-color: #b0b0b0;
+}
+
+.card-image {
+  height: 200px;
+  /* Set a fixed height for the image */
+  object-fit: cover;
+  /* Ensure the image covers the area */
+}
+
+.card-title,
+.card-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .v-alert {
