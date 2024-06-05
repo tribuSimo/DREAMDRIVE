@@ -99,7 +99,7 @@ app.get('/api/nuoveAuto', verificaCliente, (req, res) => {
         q += 'ORDER BY auto.idAuto';
     }
 
-    pool.query(q, (error, results) => {
+    pool.query(q, [req.query.marca], (error, results) => {
         if (error) {
             console.error('Errore nel caricamento delle auto:', error);
             res.status(500).send('Errore interno del server');
