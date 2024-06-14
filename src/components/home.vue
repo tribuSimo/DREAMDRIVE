@@ -103,7 +103,6 @@ export default {
   },
   methods: {
     prendiCerca(searchQuery){
-      console.log("ciao");
       this.cercaQuery = searchQuery;
       this.caricaAuto();
     },

@@ -352,11 +352,9 @@ app.post('/api/utenti', verificaAdmin, (req, res) => {
 
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
-    console.log(email, password);
 
     // Query per cercare l'utente nel database
     pool.query('SELECT * FROM utenti WHERE email = ?', [email], async (error, results) => {
-        console.log("Funziona query")
         if (error) {
 
             console.error(error);
@@ -368,7 +366,6 @@ app.post('/api/login', (req, res) => {
         }
 
         const user = results[0];
-        console.log(user.password);
         // Verifica la password
         await bcrypt.compare(password, user.password, (err, same) => {
             console.log(same);
@@ -416,6 +413,27 @@ app.post('/api/registrazione', (req, res) => {
                 res.send('Registrazione completata con successo');
             });
     });
+});
+
+app.get('/api/verificaRuolo', async (req, res) => {
+    const token = req.header('Authorization');
+    
+    // Verifica se il token è presente
+    if (!token) {
+        return res.status(401).json({ message: 'Token di autenticazione non fornito' });
+    }
+
+    try {
+        // Verifica il token utilizzando la chiave segreta
+        const decoded = jwt.verify(token, 'secret');
+        // Aggiungi le informazioni utente decodificate all'oggetto della richiesta
+        req.user = decoded;
+        // Restituisci il ruolo utente
+        res.json({ role: decoded.role });
+    } catch (error) {
+        // In caso di errore nella verifica del token
+        return res.status(401).json({ message: 'Token di autenticazione non valido' });
+    }
 });
 
 app.get('/api/getUserID', verificaCliente, (req, res) => {

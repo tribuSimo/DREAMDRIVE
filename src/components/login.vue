@@ -73,19 +73,48 @@ export default {
         }
 
         const token = await response.text(); // Assume che il token sia restituito come stringa dal server
+        console.log(token);
+        const ruolo = await this.verificaRuolo(token);
+        console.log(ruolo);
         // Esempio di salvataggio del token nello storage locale
         localStorage.setItem('token', token);
-
-        router.push("/home");
+        // Reindirizza solo dopo aver ottenuto correttamente il ruolo
+        if (parseInt(ruolo.role) === 1)
+          router.push("/home");
+        else if (parseInt(ruolo.role) === 2)
+          router.push("/admin/dashboard");
+        else if (parseInt(ruolo.role) === 0)
+          this.errorMessage = 'Errore nella verifica del ruolo';
       } catch (error) {
         // Gestione degli errori in caso di fallimento della richiesta
         console.error('Errore durante il login:', error);
         this.errorMessage = 'Errore durante il login' + error.message;
       }
     },
+
     toggleVisibility() {
       this.visible = !this.visible;
     },
+    async verificaRuolo(token) {
+      try {
+        const response = await fetch(`${window.dreamdrive_cfg.api}/verificaRuolo`, {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            'Authorization': `${token}`
+          }
+        });
+        if (response.ok) {
+          let ruolo = await response.json(); // Attendere la risoluzione del testo della risposta
+          return ruolo;
+        } else
+          return 0;
+      } catch (error) {
+        console.error('Errore durante la verifica del ruolo:', error);
+        this.errorMessage = 'Errore durante la verifica del ruolo' + error.message;
+      }
+    }
+
   }
 };
 </script>
