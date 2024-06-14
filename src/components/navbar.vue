@@ -131,9 +131,7 @@ export default {
       }
     },
     executeSearch() {
-      // Implementa la logica di ricerca qui
-      console.log('Eseguo ricerca per:', this.searchQuery);
-      // Puoi chiamare un'API o filtrare i dati locali in base a searchQuery
+    this.$emit('ricerca-eseguita', this.searchQuery);
     }
   },
   created() {

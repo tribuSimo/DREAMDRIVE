@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <navbar></navbar>
+    <navbar @ricerca-eseguita="prendiCerca"></navbar>
     <v-container class="containerSearch">
       <v-row class="d-flex justify-space-between flex-wrap mb-4">
         <v-col cols="12" md="4" class="filter-item">
@@ -62,7 +62,8 @@ export default {
       idUtente: null,
       errorMessage: '',
       inner_filtro: "Nessuno",
-      inner_marca: "Nessuna"
+      inner_marca: "Nessuna",
+      cercaQuery: ""
     };
   },
   created() {
@@ -101,16 +102,23 @@ export default {
     }
   },
   methods: {
+    prendiCerca(searchQuery){
+      console.log("ciao");
+      this.cercaQuery = searchQuery;
+      this.caricaAuto();
+    },
     async caricaAuto() {
       try {
         const token = localStorage.getItem('token');
         let url = `${window.dreamdrive_cfg.api}/auto`;
         const params = new URLSearchParams();
-        console.log(this.filtro);
         if (this.filtro && this.filtro !== "Nessuno") {
           params.append('sortBy', this.filtro);
         }
-
+        console.log(this.cercaQuery);
+        if(this.cercaQuery && this.cercaQuery !== ""){
+          params.append('cerca', this.cercaQuery);
+        }
         if (this.mostraUsate) {
           params.append('usata', 'true');
         }

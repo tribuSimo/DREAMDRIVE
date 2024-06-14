@@ -31,6 +31,7 @@ const transporter = nodemailer.createTransport({
 });
 
 app.get('/api/auto', (req, res) => {
+    let queryParams = [];
     let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio,'
     q += 'auto.annoProduzione, auto.cambio, auto.peso, auto.usata, auto.prezzo, marche.marca, carburanti.carburante,'
     q += 'modelli.modello, colori.colore, GROUP_CONCAT(immagini.immagine) AS immagini '
@@ -46,9 +47,13 @@ app.get('/api/auto', (req, res) => {
     if (req.query.usata === 'true') {
         q += 'AND auto.usata = 1 ';
     }
-
     if (req.query.marca) {
         q += 'AND marche.marca = ? ';
+        queryParams.push(req.query.marca);
+    }
+    if(req.query.cerca) {
+        q += 'AND modelli.modello = ? '
+        queryParams.push(req.query.cerca);
     }
     q += ' group by auto.idAuto ';
     // Controlla se è presente il parametro di query sortBy e aggiorna la query di conseguenza
@@ -62,8 +67,9 @@ app.get('/api/auto', (req, res) => {
         q += 'ORDER BY auto.idAuto ';
     }
 
-    pool.query(q, [req.query.marca], (error, results) => {
+    pool.query(q, queryParams , (error, results) => {
         if (error) throw error;
+        console.log(results);
         res.send(results);
     });
 });

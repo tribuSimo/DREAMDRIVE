@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mag 31, 2024 alle 09:07
--- Versione del server: 10.4.28-MariaDB
--- Versione PHP: 8.0.28
+-- Creato il: Giu 14, 2024 alle 16:14
+-- Versione del server: 10.4.32-MariaDB
+-- Versione PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -44,7 +44,7 @@ CREATE TABLE `auto` (
   `idCarburante` int(11) NOT NULL,
   `idModello` int(11) NOT NULL,
   `idColore` int(11) NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dump dei dati per la tabella `auto`
@@ -395,7 +395,7 @@ ALTER TABLE `utenti`
 -- AUTO_INCREMENT per la tabella `auto`
 --
 ALTER TABLE `auto`
-  MODIFY `idAuto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idAuto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT per la tabella `carburanti`
