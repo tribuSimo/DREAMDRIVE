@@ -73,9 +73,8 @@ export default {
         }
 
         const token = await response.text(); // Assume che il token sia restituito come stringa dal server
-        console.log(token);
-        const ruolo = await this.verificaRuolo(token);
-        console.log(ruolo);
+        const ruolo = await this.verificaRuolo(token)
+        localStorage.setItem('ruolo', ruolo.role);
         // Esempio di salvataggio del token nello storage locale
         localStorage.setItem('token', token);
         // Reindirizza solo dopo aver ottenuto correttamente il ruolo
@@ -85,6 +84,7 @@ export default {
           router.push("/admin/dashboard");
         else if (parseInt(ruolo.role) === 0)
           this.errorMessage = 'Errore nella verifica del ruolo';
+        
       } catch (error) {
         // Gestione degli errori in caso di fallimento della richiesta
         console.error('Errore durante il login:', error);
