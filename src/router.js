@@ -17,6 +17,7 @@ import acquistaAutoCliente from './components/admin/effettuaAcquisto.vue';
 import notificheAdmin from './components/admin/notifiche.vue';
 import prenotazioniAdmin from './components/admin/prenotazioni.vue';
 import venditeAdmin from './components/admin/vendite.vue';
+import aggiungiAuto from './components/superAdmin/aggiungiAuto.vue';
 
 
 const routes = [
@@ -102,6 +103,11 @@ const routes = [
     path: '/admin/vendite/:idUtente',
     name : 'Vendite admin',
     component: venditeAdmin
+  },
+  {
+    path: '/superAdmin/aggiungiAuto',
+    name : 'Aggiungi auto',
+    component: aggiungiAuto
   },
 ];
 

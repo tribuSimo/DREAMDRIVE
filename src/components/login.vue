@@ -82,7 +82,8 @@ export default {
           router.push("/home");
         else if (parseInt(ruolo.role) === 2)
           router.push("/admin/dashboard");
-        else if (parseInt(ruolo.role) === 0)
+        else if (parseInt(ruolo.role) === 3)
+          router.push("/superAdmin/aggiungiAuto");
           this.errorMessage = 'Errore nella verifica del ruolo';
         
       } catch (error) {
