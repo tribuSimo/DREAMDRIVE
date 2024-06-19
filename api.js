@@ -191,19 +191,6 @@ app.get('/api/marche', (req, res) => {
     });
 });
 
-app.get('/api/notifiche/:idUtente', verificaCliente, (req, res) => {
-    const idUtente = req.params.idUtente;
-    //le notifiche avranno i seguenti tipi: conferma appuntamento, promemoria appuntamento, disdetta appuntamento, aggiornamenti auto
-    const query = 'SELECT * FROM notifiche WHERE idUtente = ?';
-    pool.query(query, [idUtente], (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).send('Errore durante il recupero delle notifiche');
-        }
-        res.send(results);
-    });
-});
-
 app.get('/api/utenti', verificaAdmin, (req, res) => {
     pool.query('SELECT * FROM utenti', (error, results) => {
         if (error) throw error;
@@ -215,6 +202,19 @@ app.get('/api/utenti/:id', verificaAdmin, (req, res) => {
     const id = req.params.id; // Accedi alla chiave 'id' di req.params
     pool.query('SELECT * FROM utenti WHERE id = ?', id, (error, results) => {
         if (error) throw error;
+        res.send(results);
+    });
+});
+
+app.get('/api/notifiche/:idUtente', verificaCliente, (req, res) => {
+    const idUtente = req.params.idUtente;
+    //le notifiche avranno i seguenti tipi: conferma appuntamento, promemoria appuntamento, disdetta appuntamento, aggiornamenti auto
+    const query = 'SELECT * FROM notifiche WHERE idUtente = ?';
+    pool.query(query, [idUtente], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante il recupero delle notifiche');
+        }
         res.send(results);
     });
 });
