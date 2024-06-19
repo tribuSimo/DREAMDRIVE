@@ -32,11 +32,9 @@
                     </v-card>
                 </v-col>
             </v-row>
-            <v-row v-else>
-                <v-col cols="12">
-                    <p class="no-new-release">Nessuna nuova notifica</p>
-                </v-col>
-            </v-row>
+            <div v-else class="no-data-message">
+                <h3>Non ci sono notifiche al momento.</h3>
+            </div>
         </v-container>
         <finePagina></finePagina>
 
@@ -60,7 +58,7 @@
 
 <script>
 import navbar from './navbar.vue';
-import finePagina from './footer.vue';
+import finePagina from '../footer.vue';
 import router from '@/router';
 
 export default {
@@ -77,7 +75,7 @@ export default {
         };
     },
     created() {
-        if (localStorage.getItem('token')) {
+        if (localStorage.getItem('token') && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 1) {
             this.caricaMessaggi(this.$route.params.idUtente);
         } else {
             router.push('/login');
@@ -243,11 +241,12 @@ export default {
     text-align: right;
 }
 
-.no-new-release {
-    font-size: 24px;
-    font-family: 'Roboto', sans-serif;
-    color: #555;
+.no-data-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
     text-align: center;
-    padding-bottom: 800px;
+    color: grey;
 }
 </style>

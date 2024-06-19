@@ -41,7 +41,7 @@
 
 <script>
 import navbar from './navbar.vue';
-import finePagina from './footer.vue';
+import finePagina from '../footer.vue';
 import router from '@/router';
 
 export default {
@@ -56,7 +56,7 @@ export default {
     };
   },
   created() {
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('token')  && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 1) {
       this.caricaAuto(this.$route.params.idAuto);
     } else {
       router.push('/login');

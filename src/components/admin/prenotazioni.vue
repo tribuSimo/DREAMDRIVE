@@ -78,7 +78,7 @@
       };
     },
     created() {
-      if (localStorage.getItem('token'))
+      if (localStorage.getItem('token')  && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 2)
         this.caricaPrenotazioni(this.$route.params.idUtente);
       else
         router.push('/login');

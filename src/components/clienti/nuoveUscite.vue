@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <navbar @ricerca-eseguita="prendiCerca"></navbar>
+    <navbar></navbar>
     <v-container class="containerSearch">
       <v-row class="d-flex justify-space-between flex-wrap mb-4">
         <v-col cols="12" md="4" class="filter-item">
@@ -14,10 +14,13 @@
           <v-checkbox class="custom-checkbox" v-model="mostraUsate" label="Usata"></v-checkbox>
         </v-col>
       </v-row>
+      <v-alert title="Errore" v-if="errorMessage" color="error" closable>
+        {{ errorMessage }}
+      </v-alert>
       <v-row v-if="auto.length > 0">
         <v-col cols="12" sm="6" md="4" v-for="(auto, index) in auto" :key="index">
           <v-card class="card" @click="visualizzaDettagli(index)" outlined>
-            <v-img :src="auto.immagini && auto.immagini.length > 0 ? auto.immagini.split(',')[0] : 'workInProgress.jpg'"
+            <v-img :src="getImageSrc(auto)"
               aspect-ratio="16/9" class="card-image" cover></v-img>
             <v-card-title class="card-title"><strong>{{ auto.marca }} {{ auto.modello }}</strong></v-card-title>
             <v-card-text class="card-text">
@@ -33,12 +36,9 @@
       </v-row>
       <v-row v-else>
         <v-col cols="12">
-          <p class="no-new-release">Nessuna auto disponibile</p>
+          <p class="no-new-release">Nessuna nuova uscita</p>
         </v-col>
       </v-row>
-      <v-alert title="Errore" v-if="errorMessage" color="error" closable>
-        {{ errorMessage }}
-      </v-alert>
     </v-container>
     <finePagina></finePagina>
   </v-app>
@@ -46,7 +46,7 @@
 
 <script>
 import navbar from './navbar.vue';
-import finePagina from './footer.vue';
+import finePagina from '../footer.vue';
 import router from '@/router';
 
 export default {
@@ -57,17 +57,16 @@ export default {
   data() {
     return {
       auto: [],
+      inner_filtro: "Nessuno",
       mostraUsate: false,
       marche: [],
-      idUtente: null,
-      errorMessage: '',
-      inner_filtro: "Nessuno",
       inner_marca: "Nessuna",
-      cercaQuery: ""
+      idUtente: null,
+      errorMessage: ''
     };
   },
   created() {
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('token')  && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 1) {
       this.caricaAuto();
       this.visualizzaMarche();
     } else {
@@ -77,7 +76,7 @@ export default {
   watch: {
     mostraUsate(newValue, oldValue) {
       if (newValue !== oldValue) {
-        this.visualizzaUsate();
+        this.caricaAuto();
       }
     }
   },
@@ -102,22 +101,26 @@ export default {
     }
   },
   methods: {
-    prendiCerca(searchQuery){
-      this.cercaQuery = searchQuery;
-      this.caricaAuto();
+    getImageSrc(auto) {
+      if (auto.immagini && auto.immagini.length > 0) {
+        // Separa la stringa delle immagini e prendi la prima immagine
+        const images = auto.immagini.split(',');
+        // Aggiungi il percorso corretto della cartella pubblica
+        return images.length > 0 ? `/${images[0]}` : '/workInProgress.jpg';
+      }
+      // Restituisce un'immagine di fallback se non ci sono immagini
+      return '/workInProgress.jpg';
     },
     async caricaAuto() {
       try {
         const token = localStorage.getItem('token');
-        let url = `${window.dreamdrive_cfg.api}/auto`;
+        let url = `${window.dreamdrive_cfg.api}/nuoveAuto`;
         const params = new URLSearchParams();
+
         if (this.filtro && this.filtro !== "Nessuno") {
           params.append('sortBy', this.filtro);
         }
-        console.log(this.cercaQuery);
-        if(this.cercaQuery && this.cercaQuery !== ""){
-          params.append('cerca', this.cercaQuery);
-        }
+
         if (this.mostraUsate) {
           params.append('usata', 'true');
         }
@@ -149,9 +152,6 @@ export default {
         this.errorMessage = 'Errore nella richiesta delle auto: ' + error.message;
       }
     },
-    visualizzaUsate() {
-      this.caricaAuto();
-    },
     async visualizzaMarche() {
       try {
         const token = localStorage.getItem('token');
@@ -164,7 +164,6 @@ export default {
         });
         if (response.ok) {
           const marcheJson = await response.json();
-          // Aggiungi la marca "Nessuna" all'inizio dell'array
           this.marche = ['Nessuna', ...marcheJson.map(marca => marca.marca)];
         } else {
           console.error('Errore nel caricamento delle marche:', response.statusText);
@@ -211,6 +210,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  /* Ensure the card takes full height */
 }
 
 .card:hover {
@@ -220,10 +220,18 @@ export default {
 }
 
 .card-image {
-  height: 250px;
+  height: 200px;
   /* Set a fixed height for the image */
   object-fit: cover;
   /* Ensure the image covers the area */
+}
+
+.card-title,
+.card-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .v-alert {

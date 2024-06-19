@@ -79,11 +79,12 @@ export default {
         localStorage.setItem('token', token);
         // Reindirizza solo dopo aver ottenuto correttamente il ruolo
         if (parseInt(ruolo.role) === 1)
-          router.push("/home");
+          router.push("/clienti/home");
         else if (parseInt(ruolo.role) === 2)
           router.push("/admin/dashboard");
         else if (parseInt(ruolo.role) === 3)
           router.push("/superAdmin/aggiungiAuto");
+        else
           this.errorMessage = 'Errore nella verifica del ruolo';
         
       } catch (error) {

@@ -54,7 +54,7 @@
 
 <script>
 import navbar from './navbar.vue';
-import finePagina from './footer.vue';
+import finePagina from '../footer.vue';
 import router from '@/router';
 import moment from 'moment';
 
@@ -91,7 +91,7 @@ export default {
     };
   },
   created() {
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('token')  && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 1) {
       this.prendiID();
       this.caricaAuto(this.$route.params.idAuto);
     }

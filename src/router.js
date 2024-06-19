@@ -3,12 +3,12 @@ import { createRouter, createWebHistory } from 'vue-router';
 import login from './components/login.vue';
 import registrazione from './components/registrazione.vue';
 //clienti
-import home from './components/home.vue';
-import dettagliAuto from './components/dettagliAuto.vue';
-import effettuaPrenotazioni from './components/effettuaPrenotazioni.vue';
-import prenotazioni from './components/prenotazioni.vue';
-import nuoveUscite from './components/nuoveUscite.vue';
-import notifiche from './components/notifiche.vue';
+import home from './components/clienti/home.vue';
+import dettagliAuto from './components/clienti/dettagliAuto.vue';
+import effettuaPrenotazioni from './components/clienti/effettuaPrenotazioni.vue';
+import prenotazioni from './components/clienti/prenotazioni.vue';
+import nuoveUscite from './components/clienti/nuoveUscite.vue';
+import notifiche from './components/clienti/notifiche.vue';
 //admin
 import dashboardAdmin from './components/admin/dashboard.vue';
 import autoAdmin from './components/admin/auto.vue';
@@ -17,6 +17,7 @@ import acquistaAutoCliente from './components/admin/effettuaAcquisto.vue';
 import notificheAdmin from './components/admin/notifiche.vue';
 import prenotazioniAdmin from './components/admin/prenotazioni.vue';
 import venditeAdmin from './components/admin/vendite.vue';
+//superAdmin
 import aggiungiAuto from './components/superAdmin/aggiungiAuto.vue';
 
 
@@ -40,32 +41,32 @@ const routes = [
   }
   ,
   {
-    path: '/home',
+    path: '/clienti/home',
     name : 'home',
     component: home
   },
   {
-    path: '/dettagliAuto/:idAuto',
+    path: '/clienti/dettagliAuto/:idAuto',
     name : 'Dettagli auto',
     component : dettagliAuto
   },
   {
-    path: '/effettuaPrenotazioni/:idAuto',
+    path: '/clienti/effettuaPrenotazioni/:idAuto',
     name : 'Effettua Prenotazioni',
     component: effettuaPrenotazioni
   },
   {
-    path: '/prenotazioni/:idUtente',
+    path: '/clienti/prenotazioni/:idUtente',
     name : 'Prenotazioni',
     component: prenotazioni
   },
   {
-    path: '/nuoveUscite',
+    path: '/clienti/nuoveUscite',
     name : 'Nuove Uscite',
     component: nuoveUscite
   },
   {
-    path: '/notifiche/:idUtente',
+    path: '/clienti/notifiche/:idUtente',
     name : 'Notifiche',
     component: notifiche
   },

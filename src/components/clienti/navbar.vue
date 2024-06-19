@@ -25,10 +25,10 @@
       <v-container class="nav-container">
         <v-row class="nav">
           <v-img src="/logo.jpg" max-width="50" max-height="50" contain />
-          <v-btn to="/home" class="nav-button">
+          <v-btn to="/clienti/home" class="nav-button">
             Auto <v-icon class="nav-icon">mdi-car</v-icon>
           </v-btn>
-          <v-btn to="/nuoveUscite" class="nav-button">
+          <v-btn to="/clienti/nuoveUscite" class="nav-button">
             Nuove Uscite <v-icon class="nav-icon">mdi-new-box</v-icon>
           </v-btn>
           <v-btn @click="raggiungiPrenotazioni()" class="nav-button">
@@ -68,8 +68,8 @@ export default {
       errorMessage: '',
       searchQuery: '', // Aggiungi la proprietà per il testo di ricerca
       menuItems: [
-        { title: 'Home', icon: 'mdi-home', path: '/home' },
-        { title: 'Nuove Uscite', icon: 'mdi-new-box', path: '/nuoveUscite' },
+        { title: 'Home', icon: 'mdi-home', path: '/clienti/home' },
+        { title: 'Nuove Uscite', icon: 'mdi-new-box', path: '/clienti/nuoveUscite' },
         { title: 'Prenotazioni', icon: 'mdi-calendar-check', action: 'raggiungiPrenotazioni' },
         { title: 'Notifiche', icon: 'mdi-bell', action: 'raggiungiNotifiche' },
         { title: 'Logout', icon: 'mdi-logout', action: 'logout' }
