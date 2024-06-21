@@ -13,11 +13,6 @@
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
           </v-list-item>
-          <v-list-item>
-            <v-text-field v-model="searchQuery" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined dense
-              @change="executeSearch">
-            </v-text-field>
-          </v-list-item>
         </v-list>
       </v-navigation-drawer>
   
@@ -25,11 +20,11 @@
         <v-container class="nav-container">
           <v-row class="nav">
             <v-img src="/logo.jpg" max-width="50" max-height="50" contain />
-            <v-btn to="/home" class="nav-button">
-              Auto <v-icon class="nav-icon">mdi-car</v-icon>
+            <v-btn to="/admin/dashboard" class="nav-button">
+              Dashboard <v-icon class="nav-icon">mdi-car</v-icon>
             </v-btn>
-            <v-btn to="/nuoveUscite" class="nav-button">
-              Nuove Uscite <v-icon class="nav-icon">mdi-new-box</v-icon>
+            <v-btn @click="raggiungiVendite()" class="nav-button">
+              Vendite <v-icon class="nav-icon">mdi-new-box</v-icon>
             </v-btn>
             <v-btn @click="raggiungiPrenotazioni()" class="nav-button">
               Prenotazioni <v-icon class="nav-icon">mdi-calendar-check</v-icon>
@@ -40,11 +35,6 @@
             <v-btn @click="logout()" class="nav-button">
               Logout <v-icon class="nav-icon">mdi-logout</v-icon>
             </v-btn>
-            <div class="div-search">
-              <v-text-field v-model="searchQuery" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined dense
-                @change="executeSearch">
-              </v-text-field>
-            </div>
           </v-row>
         </v-container>
       </v-app-bar>
@@ -68,8 +58,8 @@
         errorMessage: '',
         searchQuery: '', // Aggiungi la proprietà per il testo di ricerca
         menuItems: [
-          { title: 'Home', icon: 'mdi-home', path: '/home' },
-          { title: 'Nuove Uscite', icon: 'mdi-new-box', path: '/nuoveUscite' },
+          { title: 'Dashboard', icon: 'mdi-home', path: '/admin/dashboard' },
+          { title: 'Vendite', icon: 'mdi-new-box', action: 'raggiungiVendite' },
           { title: 'Prenotazioni', icon: 'mdi-calendar-check', action: 'raggiungiPrenotazioni' },
           { title: 'Notifiche', icon: 'mdi-bell', action: 'raggiungiNotifiche' },
           { title: 'Logout', icon: 'mdi-logout', action: 'logout' }
@@ -105,15 +95,22 @@
       },
       raggiungiPrenotazioni() {
         if (this.idUtente) {
-          router.push({ name: 'Prenotazioni', params: { idUtente: this.idUtente } });
+          router.push({ name: 'Prenotazioni admin', params: { idUtente: this.idUtente } });
         } else {
           this.errorMessage = 'ID utente non disponibile';
         }
       },
       raggiungiNotifiche() {
         if (this.idUtente) {
-          router.push({ name: 'Notifiche', params: { idUtente: this.idUtente } });
+          router.push({ name: 'Notifiche admin', params: { idUtente: this.idUtente } });
         } else {
+          this.errorMessage = 'ID utente non disponibile';
+        }
+      },
+      raggiungiVendite(){
+        if(this.idUtente){
+          router.push({ name: 'Vendite admin', params: { idUtente: this.idUtente } });
+        }else{
           this.errorMessage = 'ID utente non disponibile';
         }
       },
