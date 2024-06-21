@@ -30,6 +30,21 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+
+app.post('/api/inserisciAuto', verificaSuperAdmin, (req, res) => {
+
+    const {marca, modello, immagine, chilometri, annoUscita, carburante, potenza} = req.body;
+    pool.query('',
+        [], // idRuolo 1 corrisponde al ruolo 'cliente'
+        (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).send(`Errore durante l'inserimento dell'auto `);
+            }
+            res.send('Inserimento completato con successo');
+        });
+})
+
 app.get('/api/auto', (req, res) => {
     let queryParams = [];
     let q = 'SELECT auto.idAuto, auto.targa, auto.descrizione, auto.potenza, auto.chilometraggio,'

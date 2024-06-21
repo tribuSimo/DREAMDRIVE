@@ -97,12 +97,38 @@ export default {
     };
   },
   methods: {
-    submitForm() {
+  async submitForm() {
+    try {
       if (this.$refs.form.validate()) {
-        alert('Form inviato con successo!');
-        // Qui puoi aggiungere la logica per inviare i dati al server
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${window.dreamdrive_cfg.api}/inserisciAuto`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `${token}`
+          },
+          body: new URLSearchParams({
+            marca: this.auto.marca,
+            modello: this.auto.modello,
+            chilometri: this.auto.chilometri,
+            annoUscita: this.auto.annoUscita,
+            carburante: this.auto.carburante,
+            potenza: this.auto.potenza
+          }).toString()
+        });
+
+        if (response.ok) {
+          alert('Form inviato con successo!');
+        } else {
+          console.error('Errore nel caricamento delle marche:', response.statusText);
+          this.errorMessage = 'Errore nel caricamento delle marche: ' + response.statusText;
+        }
       }
+    } catch (error) {
+      console.error(`Errore nell'inserimento dell'auto:`, error);
+      this.errorMessage = `Errore nell'inserimento dell'auto: ` + error.message;
     }
+}
   }
 };
 </script>
