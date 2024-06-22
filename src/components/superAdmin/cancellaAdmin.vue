@@ -1,15 +1,31 @@
 <template>
     <v-app>
-      <navbar></navbar>
+    <navbar></navbar>
+    <v-container class="container">
 
-      <finePagina></finePagina>
-    </v-app>
+    </v-container>
+    <finePagina></finePagina>
+  </v-app>
   </template>
   
-  <script>
+
+<script>
+
+    import navbar from './navbar.vue';
+    import finePagina from '../footer.vue';
   
+
+  export default {
+    components: {
+      navbar,
+      finePagina
+    },
+}
   </script>
   
   <style scoped>
   
+  .container{
+    height: 80%;
+  }
   </style>

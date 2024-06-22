@@ -78,7 +78,7 @@ function verificaSuperAdmin(req, res, next) {
         req.user = decoded;
 
         // Verifica se l'utente è un super amministratore
-        if (parseInt(decoded.role) === 3) {
+        if (parseInt(decoded.role) >= 3) {
             // Prosegui con la richiesta
             next();
         } else {
