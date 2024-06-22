@@ -30,6 +30,37 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+app.post('/api/nuovoAdmin', verificaSuperAdmin, (req, res) => {
+    const { email, password, dataNascita } = req.body;
+
+    // Query per verificare se l'email esiste già nel database
+    pool.query('SELECT * FROM utenti WHERE email = ?', [email], async (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante la registrazione');
+        }
+
+        // Se l'email esiste già, restituisci un errore
+        if (results.length > 0) {
+            return res.status(400).send('Email già utilizzata');
+        }
+
+        // Hash della password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Query per inserire il nuovo utente nel database
+        pool.query('INSERT INTO utenti (email, password, dataNascita, idRuolo) VALUES (?, ?, ?, ?)',
+            [email, hashedPassword, dataNascita, 2], // idRuolo 1 corrisponde al ruolo 'cliente'
+            (error, results) => {
+                if (error) {
+                    console.error(error);
+                    return res.status(500).send('Errore durante la registrazione');
+                }
+
+                res.send('Registrazione completata con successo');
+            });
+    });
+});
 
 app.post('/api/inserisciAuto', verificaSuperAdmin, (req, res) => {
     const { targa, descrizione, potenza, chilometraggio, annoProduzione, cambio, peso, usata, prezzo, idMarca, idModello, idColore, idCarburante } = req.body;

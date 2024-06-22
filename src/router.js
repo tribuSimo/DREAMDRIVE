@@ -13,13 +13,14 @@ import notifiche from './components/clienti/notifiche.vue';
 import dashboardAdmin from './components/admin/dashboard.vue';
 import autoAdmin from './components/admin/auto.vue';
 import dettagliAutoAdmin from './components/admin/dettagliAuto.vue';
-import acquistaAutoCliente from './components/admin/effettuaAcquisto.vue';
+import vendiAutoCliente from './components/admin/effettuaVendita.vue';
 import notificheAdmin from './components/admin/notifiche.vue';
 import prenotazioniAdmin from './components/admin/prenotazioni.vue';
 import venditeAdmin from './components/admin/vendite.vue';
 //superAdmin
 import aggiungiAuto from './components/superAdmin/aggiungiAuto.vue';
-
+import nuovoAdmin from './components/superAdmin/nuovoAdmin.vue';
+import cancellaAdmin from './components/superAdmin/cancellaAdmin.vue'
 
 const routes = [
   {
@@ -86,9 +87,9 @@ const routes = [
     component: dettagliAutoAdmin
   },
   {
-    path: '/admin/effettuaAcquisto/:idAuto',
+    path: '/admin/effettuaVendita/:idAuto',
     name : 'Acquisto admin',
-    component: acquistaAutoCliente
+    component: vendiAutoCliente
   },
   {
     path: '/admin/notifiche/:idUtente',
@@ -109,6 +110,18 @@ const routes = [
     path: '/superAdmin/aggiungiAuto',
     name : 'Aggiungi auto',
     component: aggiungiAuto
+  },
+
+  {
+    path: '/superAdmin/nuovoAdmin',
+    name : 'Nuovo admin',
+    component: nuovoAdmin
+  },
+
+  {
+    path: '/superAdmin/cancellaAdmin',
+    name : 'Cancella admin',
+    component: cancellaAdmin
   },
 ];
 

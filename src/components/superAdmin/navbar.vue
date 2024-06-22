@@ -23,8 +23,11 @@
           <v-btn to="/superAdmin/inserisciAuto" class="nav-button">
             Inserisci <v-icon class="nav-icon">mdi-car</v-icon>
           </v-btn>
-          <v-btn @click="raggiungiAcquisti()" class="nav-button">
-            Acquisti <v-icon class="nav-icon">mdi-calendar-check</v-icon>
+          <v-btn to="/superAdmin/nuovoAdmin" class="nav-button">
+            Nuovo admin <v-icon class="nav-icon">mdi-calendar-check</v-icon>
+          </v-btn>
+          <v-btn to="/superAdmin/cancellaAdmin" class="nav-button">
+            Elimina admin <v-icon class="nav-icon">mdi-calendar-check</v-icon>
           </v-btn>
           <v-btn @click="logout()" class="nav-button">
             Logout <v-icon class="nav-icon">mdi-logout</v-icon>
@@ -53,7 +56,8 @@ export default {
       searchQuery: '', // Aggiungi la proprietà per il testo di ricerca
       menuItems: [
         { title: 'Inserisci', icon: 'mdi-home', path: '/superAdmin/inserisciAuto' },
-        { title: 'Acquisti', icon: 'mdi-calendar-check', action: 'raggiungiAcquisti' },
+        { title: 'Nuovo admin', icon: 'mdi-calendar-check', path: '/superAdmin/nuovoAdmin' },
+        { title: 'Elimina admin', icon: 'mdi-calendar-check', path: '/superAdmin/cancellaAdmin' },
         { title: 'Logout', icon: 'mdi-logout', action: 'logout' }
       ],
       isMobile: false
@@ -85,13 +89,7 @@ export default {
         this.errorMessage = 'Errore nella richiesta per idUtente: ' + error.message;
       }
     },
-    raggiungiAcquisti() {
-      if (this.idUtente) {
-        router.push({ name: 'Acquisti', params: { idUtente: this.idUtente } });
-      } else {
-        this.errorMessage = 'ID utente non disponibile';
-      }
-    },
+  
     checkMobile() {
       this.isMobile = window.innerWidth <= 1024;
     },
