@@ -1,4 +1,22 @@
 <template>
-    <div></div>
+    <v-app>
+        <navbar></navbar>
+        <v-container>
+
+        </v-container>
+        <finePagina></finePagina>
+    </v-app>
+    
 </template>
-<script></script>
+<script>
+    import navbar from './navbar.vue';
+    import finePagina from '../footer.vue';
+
+    export default {
+        components: {
+            navbar,
+            finePagina
+        },
+    }
+
+</script>

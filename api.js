@@ -323,6 +323,16 @@ app.get('/api/carburanti', verificaSuperAdmin, (req, res) => {
     });
 });
 
+app.get('api/admin/:idUtente', verificaSuperAdmin, (req,res) => {
+    const idUtente = req.params.idUtente;
+    pool.query('SELECT * FROM utenti WHERE idUtente = ? and idRuolo = 2', idUtente,
+     (error, results) =>  {
+        if (error) throw error;
+            res.send(results);
+     });
+    
+})
+
 app.get('/api/utenti', verificaAdmin, (req, res) => {
     pool.query('SELECT * FROM utenti', (error, results) => {
         if (error) throw error;
