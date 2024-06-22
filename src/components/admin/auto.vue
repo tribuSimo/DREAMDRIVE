@@ -195,6 +195,7 @@ export default {
 <style scoped>
 .containerSearch {
   width: 100%;
+  height: 100%;
   margin-top: 10vh;
 }
 

@@ -13,11 +13,6 @@
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
         </v-list-item>
-        <v-list-item>
-          <v-text-field v-model="searchQuery" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined dense
-            @change="executeSearch">
-          </v-text-field>
-        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -25,26 +20,15 @@
       <v-container class="nav-container">
         <v-row class="nav">
           <v-img src="/logo.jpg" max-width="50" max-height="50" contain />
-          <v-btn to="/home" class="nav-button">
-            Auto <v-icon class="nav-icon">mdi-car</v-icon>
+          <v-btn to="/superAdmin/inserisciAuto" class="nav-button">
+            Inserisci <v-icon class="nav-icon">mdi-car</v-icon>
           </v-btn>
-          <v-btn to="/nuoveUscite" class="nav-button">
-            Nuove Uscite <v-icon class="nav-icon">mdi-new-box</v-icon>
-          </v-btn>
-          <v-btn @click="raggiungiPrenotazioni()" class="nav-button">
-            Prenotazioni <v-icon class="nav-icon">mdi-calendar-check</v-icon>
-          </v-btn>
-          <v-btn @click="raggiungiNotifiche()" class="nav-button">
-            Notifiche <v-icon class="nav-icon">mdi-bell</v-icon>
+          <v-btn @click="raggiungiAcquisti()" class="nav-button">
+            Acquisti <v-icon class="nav-icon">mdi-calendar-check</v-icon>
           </v-btn>
           <v-btn @click="logout()" class="nav-button">
             Logout <v-icon class="nav-icon">mdi-logout</v-icon>
           </v-btn>
-          <div class="div-search">
-            <v-text-field v-model="searchQuery" append-inner-icon="mdi-magnify" placeholder="Cerca" outlined dense
-              @change="executeSearch">
-            </v-text-field>
-          </div>
         </v-row>
       </v-container>
     </v-app-bar>
@@ -68,10 +52,8 @@ export default {
       errorMessage: '',
       searchQuery: '', // Aggiungi la proprietà per il testo di ricerca
       menuItems: [
-        { title: 'Home', icon: 'mdi-home', path: '/home' },
-        { title: 'Nuove Uscite', icon: 'mdi-new-box', path: '/nuoveUscite' },
-        { title: 'Prenotazioni', icon: 'mdi-calendar-check', action: 'raggiungiPrenotazioni' },
-        { title: 'Notifiche', icon: 'mdi-bell', action: 'raggiungiNotifiche' },
+        { title: 'Inserisci', icon: 'mdi-home', path: '/superAdmin/inserisciAuto' },
+        { title: 'Acquisti', icon: 'mdi-calendar-check', action: 'raggiungiAcquisti' },
         { title: 'Logout', icon: 'mdi-logout', action: 'logout' }
       ],
       isMobile: false
@@ -103,16 +85,9 @@ export default {
         this.errorMessage = 'Errore nella richiesta per idUtente: ' + error.message;
       }
     },
-    raggiungiPrenotazioni() {
+    raggiungiAcquisti() {
       if (this.idUtente) {
-        router.push({ name: 'Prenotazioni', params: { idUtente: this.idUtente } });
-      } else {
-        this.errorMessage = 'ID utente non disponibile';
-      }
-    },
-    raggiungiNotifiche() {
-      if (this.idUtente) {
-        router.push({ name: 'Notifiche', params: { idUtente: this.idUtente } });
+        router.push({ name: 'Acquisti', params: { idUtente: this.idUtente } });
       } else {
         this.errorMessage = 'ID utente non disponibile';
       }
@@ -130,9 +105,7 @@ export default {
         router.push(item.path);
       }
     },
-    executeSearch() {
-    this.$emit('ricerca-eseguita', this.searchQuery);
-    }
+  
   },
   created() {
     if (localStorage.getItem('token')) {

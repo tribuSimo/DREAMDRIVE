@@ -32,14 +32,39 @@ const transporter = nodemailer.createTransport({
 
 
 app.post('/api/inserisciAuto', verificaSuperAdmin, (req, res) => {
-
-    const {marca, modello, immagine, chilometri, annoUscita, carburante, potenza} = req.body;
-    pool.query('',
-        [], // idRuolo 1 corrisponde al ruolo 'cliente'
+    const { targa, descrizione, potenza, chilometraggio, annoProduzione, cambio, peso, usata, prezzo, idMarca, idModello, idColore, idCarburante } = req.body;
+    pool.query('INSERT INTO auto (targa, descrizione, potenza, chilometraggio, annoProduzione, cambio, peso, usata, prezzo,'
+        + ' idMarca, idModello, idColore, idCarburante) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+        [targa, descrizione, potenza, chilometraggio, annoProduzione, cambio, peso, usata, prezzo, idMarca, idModello, idColore, idCarburante], // idRuolo 1 corrisponde al ruolo 'cliente'
         (error, results) => {
             if (error) {
                 console.error(error);
                 return res.status(500).send(`Errore durante l'inserimento dell'auto `);
+            }
+            res.send('Inserimento completato con successo');
+        });
+})
+
+app.post('/api/inserisciMarca', verificaSuperAdmin, (req, res) => {
+    const { marca } = req.body;
+    console.log(marca)
+    pool.query('INSERT INTO marche (marca) VALUES(?)', [marca], 
+        (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).send(`Errore durante l'inserimento della marca `);
+            }
+            res.send('Inserimento completato con successo');
+        });
+})
+
+app.post('/api/inserisciModello', verificaSuperAdmin, (req, res) => {
+    const { modello, idMarca } = req.body;
+    pool.query('INSERT INTO modelli (modello, idMarca) VALUES(?,?)', [modello, idMarca], // idRuolo 1 corrisponde al ruolo 'cliente'
+        (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).send(`Errore durante l'inserimento della marca `);
             }
             res.send('Inserimento completato con successo');
         });
@@ -66,7 +91,7 @@ app.get('/api/auto', (req, res) => {
         q += 'AND marche.marca = ? ';
         queryParams.push(req.query.marca);
     }
-    if(req.query.cerca) {
+    if (req.query.cerca) {
         q += 'AND modelli.modello = ? '
         queryParams.push(req.query.cerca);
     }
@@ -82,7 +107,7 @@ app.get('/api/auto', (req, res) => {
         q += 'ORDER BY auto.idAuto ';
     }
 
-    pool.query(q, queryParams , (error, results) => {
+    pool.query(q, queryParams, (error, results) => {
         if (error) throw error;
         console.log(results);
         res.send(results);
@@ -200,6 +225,65 @@ app.get('/api/autoMarca/:marca', verificaCliente, (req, res) => {
 
 app.get('/api/marche', (req, res) => {
     let q = 'SELECT * FROM marche';
+    pool.query(q, (error, results) => {
+        if (error) throw error;
+        res.json(results);
+    });
+});
+// Verifica esistenza della marca
+app.get('/api/marche/:marca', verificaSuperAdmin, (req, res) => {
+    const { marca } = req.params;
+    console.log(marca);
+    pool.query('SELECT * FROM marche WHERE marca = ? LIMIT 1',
+      [marca],
+      (error, results) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send(`Errore durante la verifica della marca`);
+        }
+        if (results.length > 0) {
+          res.json(results[0]); // Restituisce le informazioni sulla marca
+        } else {
+          res.json(`Marca non trovata`);
+        }
+      });
+  });
+
+  app.get('/api/colori/:colore', verificaSuperAdmin, (req, res) => {
+    const { colore } = req.params;
+    pool.query('SELECT * FROM colori WHERE colore = ? LIMIT 1',
+      [colore],
+      (error, results) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send(`Errore durante la verifica della marca`);
+        }
+        if (results.length > 0) {
+          res.json(results[0]); // Restituisce le informazioni sulla marca
+        } else {
+          res.json(`Colore non trovato`);
+        }
+      });
+  });
+
+  app.get('/api/modelli/:modello', verificaSuperAdmin, (req, res) => {
+    const { modello } = req.params;
+    pool.query('SELECT * FROM modelli WHERE modello = ? LIMIT 1', [modello], (error, results) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send(`Errore durante la verifica del modello`);
+        }
+        if (results.length > 0) {
+          res.json(results[0]); // Restituisce le informazioni sul modello
+        } else {
+          res.json(`Modello non trovato`);
+        }
+      });
+      
+  });
+
+app.get('/api/carburanti', verificaSuperAdmin, (req, res) => {
+    let q = 'SELECT * FROM carburanti';
     pool.query(q, (error, results) => {
         if (error) throw error;
         res.send(results);
@@ -327,6 +411,25 @@ app.get('/api/GetPrenotazioni/:idUtente', verificaCliente, (req, res) => {
     });
 });
 
+app.get('/api/GetPrenotazioni', verificaAdmin, (req, res) => {
+    const query = `
+        SELECT idPrenotazione, marca, modello, data_ora, email, dettagliPrenotazione
+        FROM prenotazioni
+        INNER JOIN auto ON prenotazioni.idAuto = auto.idAuto
+        INNER JOIN modelli ON auto.idModello = modelli.idModello
+        INNER JOIN marche ON auto.idMarca = marche.idMarca
+        INNER JOIN utenti ON prenotazioni.idUtente = utenti.idUtente
+        WHERE stato = 'Accettata'`;
+    pool.query(query, (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante il recupero delle prenotazioni');
+        }
+        // Invia i risultati delle prenotazioni come risposta
+        res.json(results);
+    });
+});
+
 app.delete('/api/disdiciPrenotazione/:idPrenotazione', verificaCliente, (req, res) => {
     const idPrenotazione = req.params.idPrenotazione;
 
@@ -432,7 +535,7 @@ app.post('/api/registrazione', (req, res) => {
 
 app.get('/api/verificaRuolo', async (req, res) => {
     const token = req.header('Authorization');
-    
+
     // Verifica se il token è presente
     if (!token) {
         return res.status(401).json({ message: 'Token di autenticazione non fornito' });

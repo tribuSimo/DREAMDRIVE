@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Giu 14, 2024 alle 16:14
--- Versione del server: 10.4.32-MariaDB
--- Versione PHP: 8.0.30
+-- Creato il: Giu 22, 2024 alle 16:17
+-- Versione del server: 10.4.28-MariaDB
+-- Versione PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -305,7 +305,8 @@ CREATE TABLE `utenti` (
 
 INSERT INTO `utenti` (`idUtente`, `email`, `password`, `dataNascita`, `dataRegistrazione`, `idRuolo`) VALUES
 (1, 'tribusimo@gmail.com', '$2b$10$yOjBgKYT3bACUWaVLjWkLeteBjDk2zv4KSHwasJzeYB4dFcLxRWCu', '2005-07-04', '2024-03-04 08:27:19', 1),
-(2, 'ciao@gmail.com', '$2b$10$UJKP3bHVWxepLqPfRpkoy.FOjVHsWzLEpXVh8Y1aOKn4lwdzBmcxe', '2024-03-12', '2024-03-25 08:13:30', 1);
+(2, 'ciao@gmail.com', '$2b$10$UJKP3bHVWxepLqPfRpkoy.FOjVHsWzLEpXVh8Y1aOKn4lwdzBmcxe', '2024-03-12', '2024-03-25 08:13:30', 2),
+(4, 'superAdmin@gmail.com', '$2b$10$6JUYnb8YyU.bShFNgXv4ze4UAPeKi4oAvRYS7KthHH6M9tQPnYwdq', '2005-06-12', '2024-06-14 16:54:23', 3);
 
 --
 -- Indici per le tabelle scaricate
@@ -455,7 +456,7 @@ ALTER TABLE `ruoli`
 -- AUTO_INCREMENT per la tabella `utenti`
 --
 ALTER TABLE `utenti`
-  MODIFY `idUtente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idUtente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Limiti per le tabelle scaricate

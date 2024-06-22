@@ -13,7 +13,7 @@
             prepend-inner-icon="mdi-email-outline"></v-text-field>
 
           <v-text-field v-model="password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-            :type="visible ? 'text' : 'password'" @click:append-inner="toggleVisibility" @focus="visible = true"
+            :type="visible ? 'text' : 'password'" @click:append-inner="toggleVisibility" @focus="visible = false"
             @blur="visible = false" label="Password" outlined required :rules="passwordRules"
             prepend-inner-icon="mdi-lock-outline">
           </v-text-field>
