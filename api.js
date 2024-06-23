@@ -30,6 +30,20 @@ const transporter = nodemailer.createTransport({
     }
 }); //mail:o gu d o ghi u t r z z e e h
 
+app.get('api/prendiMarcaModello', verificaSuperAdmin, (req,res) => {
+    pool.query('SELECT marche.marca, modelli.modello FROM ' +
+         ' auto, marche, modelli' +
+        ' where marche.idMarca = auto.idMarca AND modelli.idModello = auto.idModello ' +
+         'AND modelli.idMarca = marche.idMarca', (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).send(`Errore durante il recupero dei dati `);
+            }
+            res.send('Recupero dei dati completato con successo');
+         })
+})
+
+
 app.post('/api/nuovoAdmin', verificaSuperAdmin, (req, res) => {
     const { email, password, dataNascita } = req.body;
 

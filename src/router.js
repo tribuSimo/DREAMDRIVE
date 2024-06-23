@@ -19,6 +19,7 @@ import prenotazioniAdmin from './components/admin/prenotazioni.vue';
 import venditeAdmin from './components/admin/vendite.vue';
 //superAdmin
 import aggiungiAuto from './components/superAdmin/aggiungiAuto.vue';
+import aggiungiImmagine from './components/superAdmin/aggiungiImmagine.vue';
 import nuovoAdmin from './components/superAdmin/nuovoAdmin.vue';
 import cancellaAdmin from './components/superAdmin/cancellaAdmin.vue'
 
@@ -123,6 +124,11 @@ const routes = [
     name : 'Cancella admin',
     component: cancellaAdmin
   },
+  {
+    path: '/superAdmin/aggiungiImmagine',
+    name : 'Aggiungi immagine',
+    component: aggiungiImmagine
+  }
 ];
 
 const router = createRouter({

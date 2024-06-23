@@ -23,6 +23,9 @@
           <v-btn to="/superAdmin/aggiungiAuto" class="nav-button">
             Inserisci <v-icon class="nav-icon">mdi-car</v-icon>
           </v-btn>
+          <v-btn to="/superAdmin/aggiungiImmagine" class="nav-button">
+            Immagine <v-icon class="nav-icon">mdi-image-filter-none</v-icon>
+          </v-btn>
           <v-btn to="/superAdmin/nuovoAdmin" class="nav-button">
             Nuovo admin <v-icon class="nav-icon">mdi-account</v-icon>
           </v-btn>
@@ -56,6 +59,7 @@ export default {
       searchQuery: '', // Aggiungi la proprietà per il testo di ricerca
       menuItems: [
         { title: 'Inserisci', icon: 'mdi-home', path: '/superAdmin/aggiungiAuto' },
+        { title: 'Aggiungi immagine', icon: 'mdi-image-filter-none', path: '/superAdmin/aggiungiImmagine'},
         { title: 'Nuovo admin', icon: 'mdi-account', path: '/superAdmin/nuovoAdmin' },
         { title: 'Elimina admin', icon: 'mdi-cancel', path: '/superAdmin/cancellaAdmin' },
         { title: 'Logout', icon: 'mdi-logout', action: 'logout' }
