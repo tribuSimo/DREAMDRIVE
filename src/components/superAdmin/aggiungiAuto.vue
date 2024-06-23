@@ -5,29 +5,43 @@
       <v-form ref="form" v-model="valid">
         <v-text-field class="txtMarca" v-model="marca" :rules="[v => !!v || 'Marca è obbligatoria']" label="Marca"
           required></v-text-field>
+
         <v-text-field class="txtAuto" v-model="modello" :rules="[v => !!v || 'Modello è obbligatorio']" label="Modello"
           required></v-text-field>
+
         <v-text-field class="txtAuto" v-model="chilometri" :rules="[v => !!v || 'Chilometri è obbligatorio']"
           label="Chilometri" type="number" required></v-text-field>
+
         <v-text-field class="txtAuto" v-model="annoUscita" :rules="[v => !!v || 'Anno di Uscita è obbligatorio']"
           label="Anno di Uscita" type="number" :min="1886" :max="new Date().getFullYear()" required></v-text-field>
+
         <v-select v-model="carburante" item-title="carburante" :items="carburanti" item-text="carburante"
           item-value="idCarburante" label="Carburante" required :rules="[v => !!v || 'Carburante è obbligatorio']">
         </v-select>
+
         <v-text-field class="txtAuto" v-model="potenza" :rules="[v => !!v || 'Potenza è obbligatoria']"
           label="Potenza (in CV)" type="number" required></v-text-field>
+
         <v-text-field class="txtAuto" v-model="targa" :rules="[v => !!v || 'Targa è obbligatoria']" label="Targa"
           type="text" required></v-text-field>
+
         <v-text-field class="txtAuto" v-model="descrizione" :rules="[v => !!v || 'Descrizione è obbligatoria']"
           label="Descrizione" type="text" required></v-text-field>
-        <v-text-field class="txtAuto" v-model="cambio" :rules="[v => !!v || 'Cambio è obbligatorio']" label="Cambio"
-          type="text" required></v-text-field>
+
+        
+        <v-select v-model="cambio" :items="cambi" item-text="cambio"
+          label="Cambio" required :rules="[v => !!v || 'Cambio è obbligatorio']">
+        </v-select>
+
         <v-text-field class="txtAuto" v-model="peso" :rules="[v => !!v || 'Peso è obbligatorio']" label="Peso"
           type="number" required></v-text-field>
+
         <v-text-field class="txtAuto" v-model="prezzo" :rules="[v => !!v || 'Prezzo è obbligatorio']" label="Prezzo"
           type="number" required>€</v-text-field>
+
         <v-text-field class="txtAuto" v-model="colore" :rules="[v => !!v || 'Colore è obbligatorio']" label="Colore"
           type="text" required></v-text-field>
+
         <v-checkbox class="custom-checkbox" v-model="usata" label="Usata"></v-checkbox>
         <v-btn :disabled="!valid" color="success" @click="submitForm">Invia</v-btn>
       </v-form>
@@ -50,6 +64,7 @@ export default {
     return {
       valid: false,
       carburanti: [],
+      cambi: ['Automatico', 'Manuale'],
       marca: '',
       modello: '',
       immagine: null,

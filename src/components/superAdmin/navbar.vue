@@ -24,10 +24,10 @@
             Inserisci <v-icon class="nav-icon">mdi-car</v-icon>
           </v-btn>
           <v-btn to="/superAdmin/nuovoAdmin" class="nav-button">
-            Nuovo admin <v-icon class="nav-icon">mdi-calendar-check</v-icon>
+            Nuovo admin <v-icon class="nav-icon">mdi-account</v-icon>
           </v-btn>
           <v-btn to="/superAdmin/cancellaAdmin" class="nav-button">
-            Elimina admin <v-icon class="nav-icon">mdi-calendar-check</v-icon>
+            Elimina admin <v-icon class="nav-icon">mdi-cancel</v-icon>
           </v-btn>
           <v-btn @click="logout()" class="nav-button">
             Logout <v-icon class="nav-icon">mdi-logout</v-icon>
@@ -56,8 +56,8 @@ export default {
       searchQuery: '', // Aggiungi la proprietà per il testo di ricerca
       menuItems: [
         { title: 'Inserisci', icon: 'mdi-home', path: '/superAdmin/aggiungiAuto' },
-        { title: 'Nuovo admin', icon: 'mdi-calendar-check', path: '/superAdmin/nuovoAdmin' },
-        { title: 'Elimina admin', icon: 'mdi-calendar-check', path: '/superAdmin/cancellaAdmin' },
+        { title: 'Nuovo admin', icon: 'mdi-account', path: '/superAdmin/nuovoAdmin' },
+        { title: 'Elimina admin', icon: 'mdi-cancel', path: '/superAdmin/cancellaAdmin' },
         { title: 'Logout', icon: 'mdi-logout', action: 'logout' }
       ],
       isMobile: false
