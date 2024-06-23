@@ -14,9 +14,6 @@
               <b>Email</b>
             </th>
             <th class="text-center">
-              <b>Password</b>
-            </th>
-            <th class="text-center">
               <b>Data nascita</b>
             </th>
             <th class="text-center">
@@ -26,14 +23,11 @@
         </thead>
         <tbody>
           <tr v-for="item in dati" :key="item.name">
-            <td><b>{{ item.marca }} {{ item.modello }}</b></td>
-            <td><b>{{ formatDateTime(item.data_ora) }}</b></td>
-            <td>
-              <v-chip :color="getChipColor(item.stato)" variant="flat"><b>{{ item.stato }}</b></v-chip>
-            </td>
+            <td><b>{{ item.email }}</b></td>
+            <td><b>{{ formatDateTime(item.dataNascita) }}</b></td>
             <td>
               <!-- Aggiorna il pulsante Disdici -->
-              <v-btn color="error" @click="dialog = true; selectedPrenotazione = item">Disdici</v-btn>
+              <v-btn color="error" @click="dialog = true; selectedAdmin = item">Elimina</v-btn>
             </td>
           </tr>
         </tbody>
@@ -44,14 +38,14 @@
       <!-- Aggiungi il dialog di conferma -->
       <v-dialog v-model="dialog" max-width="500">
         <v-card>
-          <v-card-title class="headline">Conferma disdetta</v-card-title>
+          <v-card-title class="headline">Conferma eliminazione</v-card-title>
           <v-card-text>
-            Sei sicuro di voler disdire l'appuntamento?
+            Sei sicuro di voler eliminare l'utente?
           </v-card-text>
           <v-card-actions>
             <v-btn color="primary" @click="dialog = false">Annulla</v-btn>
             <v-btn color="error"
-              @click="disdiciPrenotazione(selectedAdmin.idUtente); dialog = false">Conferma</v-btn>
+              @click="eliminaAdmin(selectedAdmin.idUtente); dialog = false">Conferma</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -79,16 +73,17 @@
       };
     },
     created() {
-      if (localStorage.getItem('token')  && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 1)
-        this.caricaUtenti(this.$route.params.idUtente);
+      if (localStorage.getItem('token')  && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 3)
+        this.caricaUtenti();
       else
         router.push('/login');
     },
     methods: {
-      async caricaUtenti(idUtente) {
+      async caricaUtenti() {
         try {
           const token = localStorage.getItem('token');
-          const response = await fetch(`${window.dreamdrive_cfg.api}/utenti/${idUtente}`, {
+          const idRuolo = 2;
+          const response = await fetch(`${window.dreamdrive_cfg.api}/utenti/${idRuolo}`, {
             method: 'GET',
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
@@ -109,6 +104,7 @@
       async eliminaAdmin(idUtente) {
         try {
           const token = localStorage.getItem('token');
+          console.log('elimina: ', idUtente);
           const response = await fetch(`${window.dreamdrive_cfg.api}/eliminaAdmin/${idUtente}`, {
             method: 'DELETE',
             headers: {
@@ -118,8 +114,8 @@
           });
           if (response.ok) {
             // Ricarica le prenotazioni dopo aver disdetto una
-            this.caricaPrenotazioni(this.$route.params.idUtente);
-            console.log('Prenotazione disdetta con successo');
+            this.caricaUtenti();
+            console.log('Utente eliminato con successo');
           } else {
             console.error(`Errore nella cancellazione dell'admin:`, response.statusText);
             this.errorMessage = `Errore nella cancellazione dell'admin: ` + response.statusText;
@@ -130,21 +126,8 @@
         }
       },
       formatDateTime(dateTime) {
-        return moment(dateTime).format('DD/MM/YYYY HH:mm:ss');
+        return moment(dateTime).format('DD/MM/YYYY');
       },
-      getChipColor(status) {
-        // Assegna un colore diverso in base allo stato della prenotazione
-        switch (status) {
-          case 'In attesa':
-            return 'yellow';
-          case 'Accettata':
-            return 'primary';
-          case 'Effettuata':
-            return 'green';
-          default:
-            return '';
-        }
-      }
     }
   };
   </script>

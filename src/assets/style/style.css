@@ -31,16 +31,23 @@
 }
 .registrazione-card {
   width: 400px;
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 90vw !important;
+  margin-bottom: 15px;
 }
 .register-btn {
   width: 100%;
   margin-top: 20px;
   margin-bottom: 10px;
 }
+.titolo{
+  font-size: 20pt !important;
+}
 
 .lblRouterLink {
   text-decoration: none;
-  font-size: 12pt;
+  
   transition: font-size 0.3s ease, color 0.3s ease; /* Aggiungo una transizione per un effetto più fluido */
 }
 

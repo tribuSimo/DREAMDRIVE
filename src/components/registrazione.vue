@@ -2,8 +2,8 @@
   <div>
     <v-img class="mx-auto my-6" src="logo.jpg" width="150px" height="150px"></v-img>
 
-    <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
-      <v-card-title class="title">Registrazione</v-card-title>
+    <v-card class="registrazione-card" elevation="8" max-width="448" rounded="lg">
+      <v-card-title class="titolo"><strong>Registrati</strong></v-card-title>
 
       <v-card-text>
         <v-form @submit.prevent="registrazione">

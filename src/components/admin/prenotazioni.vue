@@ -14,22 +14,26 @@
               <b>Nome auto</b>
             </th>
             <th class="text-center">
+              <b>Email</b>
+            </th>
+            <th class="text-center">
               <b>Data Ora</b>
             </th>
             <th class="text-center">
-              <b>Stato</b>
+              <b>Disdetta</b>
             </th>
             <th class="text-center">
-              <b>Azioni</b>
+              <b>Conferma</b>
             </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in dati" :key="item.name">
             <td><b>{{ item.marca }} {{ item.modello }}</b></td>
+            <td><b>{{ item.email }}</b></td>
             <td><b>{{ formatDateTime(item.data_ora) }}</b></td>
             <td>
-              <v-chip :color="getChipColor(item.stato)" variant="flat"><b>{{ item.stato }}</b></v-chip>
+              <v-btn color="success" @click="selectedPrenotazione = item; accettaPrenotazione(selectedPrenotazione.idPrenotazione,selectedPrenotazione.email)">Conferma</v-btn>
             </td>
             <td>
               <!-- Aggiorna il pulsante Disdici -->
@@ -51,7 +55,7 @@
           <v-card-actions>
             <v-btn color="primary" @click="dialog = false">Annulla</v-btn>
             <v-btn color="error"
-              @click="disdiciPrenotazione(selectedPrenotazione.idPrenotazione); dialog = false">Conferma</v-btn>
+              @click="disdiciPrenotazione(selectedPrenotazione.idPrenotazione, selectedPrenotazione.email); dialog = false">Conferma</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -69,7 +73,7 @@
       navbar,
       finePagina
     },
-    data() {this.$route.params.idUtente
+    data() {
       return {
         dati: {}, // Aggiungi un array vuoto per contenere i dati della tabella
         dialog: false, // Aggiungi una variabile per controllare la visualizzazione del dialog di conferma
@@ -79,15 +83,15 @@
     },
     created() {
       if (localStorage.getItem('token')  && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 2)
-        this.caricaPrenotazioni(this.$route.params.idUtente);
+        this.caricaPrenotazioni();
       else
         router.push('/login');
     },
     methods: {
-      async caricaPrenotazioni(idUtente) {
+      async caricaPrenotazioni() {
         try {
           const token = localStorage.getItem('token');
-          const response = await fetch(`${window.dreamdrive_cfg.api}/GetPrenotazioni/${idUtente}`, {
+          const response = await fetch(`${window.dreamdrive_cfg.api}/getPrenotazioniAttesa`, {
             method: 'GET',
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
@@ -105,15 +109,19 @@
           this.errorMessage = 'Errore nella richiesta di caricamento delle prenotazioni: ' + error.message;
         }
       },
-      async disdiciPrenotazione(idPrenotazione) {
+      async disdiciPrenotazione(idPrenotazione, email) {
         try {
           const token = localStorage.getItem('token');
+          const bodyData = new URLSearchParams();
+          bodyData.append('email', email);
+
           const response = await fetch(`${window.dreamdrive_cfg.api}/disdiciPrenotazione/${idPrenotazione}`, {
             method: 'DELETE',
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
               'Authorization': `${token}`
-            }
+            },
+            body: bodyData.toString()
           });
           if (response.ok) {
             // Ricarica le prenotazioni dopo aver disdetto una
@@ -128,22 +136,35 @@
           this.errorMessage = 'Errore nella richiesta di disdetta della prenotazione: ' + error.message;
         }
       },
+      async accettaPrenotazione(idPrenotazione,email) {
+        try {
+          const token = localStorage.getItem('token');
+          const bodyData = new URLSearchParams();
+          bodyData.append('email', email);
+          const response = await fetch(`${window.dreamdrive_cfg.api}/accettaPrenotazioni/${idPrenotazione}`, {
+            method: 'PUT',
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              'Authorization': `${token}`
+            },
+            body: bodyData.toString()
+            });
+          if (response.ok) {
+            // Ricarica le prenotazioni dopo aver disdetto una
+            this.caricaPrenotazioni();
+            console.log('Prenotazione accettata con successo');
+          } else {
+            console.error('Errore nella conferma della prenotazione:', response.statusText);
+            this.errorMessage = 'Errore nella conferma della prenotazione: ' + response.statusText;
+          }
+        } catch (error) {
+          console.error('Errore nella richiesta di conferma della prenotazione:', error);
+          this.errorMessage = 'Errore nella richiesta di conferma della prenotazione: ' + error.message;
+        }
+      },
       formatDateTime(dateTime) {
         return moment(dateTime).format('DD/MM/YYYY HH:mm:ss');
       },
-      getChipColor(status) {
-        // Assegna un colore diverso in base allo stato della prenotazione
-        switch (status) {
-          case 'In attesa':
-            return 'yellow';
-          case 'Accettata':
-            return 'primary';
-          case 'Effettuata':
-            return 'green';
-          default:
-            return '';
-        }
-      }
     }
   };
   </script>

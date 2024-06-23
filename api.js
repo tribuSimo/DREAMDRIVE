@@ -26,46 +26,68 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'dreamdrive.concessionario@gmail.com',
-        pass: 'Concessionario05'
+        pass: 'o gu d o ghi u t r z z e e h'
     }
-});
+}); //mail:o gu d o ghi u t r z z e e h
 
 app.post('/api/nuovoAdmin', verificaSuperAdmin, (req, res) => {
     const { email, password, dataNascita } = req.body;
-  
+
     pool.query('SELECT * FROM utenti WHERE email = ?', [email], async (error, results) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).send('Errore durante la registrazione');
-      }
-  
-      if (results.length > 0) {
-        return res.status(400).send('Email già utilizzata');
-      }
-  
-      try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-  
-        pool.query('INSERT INTO utenti (email, password, dataNascita, idRuolo) VALUES (?, ?, ?, ?)', 
-        [email, hashedPassword, dataNascita, 2], 
-        (error, results) => {
-          if (error) {
+        if (error) {
             console.error(error);
             return res.status(500).send('Errore durante la registrazione');
-          }
-  
-          res.send('Registrazione completata con successo');
-        });
-      } catch (hashError) {
-        console.error(hashError);
-        return res.status(500).send('Errore durante la registrazione');
-      }
+        }
+
+        if (results.length > 0) {
+            return res.status(400).send('Email già utilizzata');
+        }
+
+        try {
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            pool.query('INSERT INTO utenti (email, password, dataNascita, idRuolo) VALUES (?, ?, ?, ?)',
+                [email, hashedPassword, dataNascita, 2],
+                (error, results) => {
+                    if (error) {
+                        console.error(error);
+                        return res.status(500).send('Errore durante la registrazione');
+                    }
+
+                    res.send('Admin aggiunto con successo');
+                });
+        } catch (hashError) {
+            console.error(hashError);
+            return res.status(500).send('Errore durante la registrazione');
+        }
     });
-  });
-  
+});
+app.delete('/api/eliminaAdmin/:idUtente', verificaSuperAdmin, (req, res) => {
+    const idUtente = req.params.idUtente;
+    // Verifica se l'id della prenotazione è stato fornito
+    if (!idUtente) {
+        return res.status(400).send('ID utente non fornito');
+    }
+
+    // Query per eliminare la prenotazione dal database
+    const query = 'DELETE FROM utenti WHERE idUtente = ?';
+    pool.query(query, [idUtente], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante la cancellazione di admin');
+        }
+
+        // Verifica se la prenotazione è stata eliminata correttamente
+        if (results.affectedRows === 0) {
+            return res.status(404).send('Admin non trovato');
+        }
+        res.send('Admin eliminato con successo');
+    });
+});
 
 app.post('/api/inserisciAuto', verificaSuperAdmin, (req, res) => {
     const { targa, descrizione, potenza, chilometraggio, annoProduzione, cambio, peso, usata, prezzo, idMarca, idModello, idColore, idCarburante } = req.body;
+    console.log(idMarca);
     pool.query('INSERT INTO auto (targa, descrizione, potenza, chilometraggio, annoProduzione, cambio, peso, usata, prezzo,'
         + ' idMarca, idModello, idColore, idCarburante) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',
         [targa, descrizione, potenza, chilometraggio, annoProduzione, cambio, peso, usata, prezzo, idMarca, idModello, idColore, idCarburante], // idRuolo 1 corrisponde al ruolo 'cliente'
@@ -80,14 +102,13 @@ app.post('/api/inserisciAuto', verificaSuperAdmin, (req, res) => {
 
 app.post('/api/inserisciMarca', verificaSuperAdmin, (req, res) => {
     const { marca } = req.body;
-    console.log(marca)
-    pool.query('INSERT INTO marche (marca) VALUES(?)', [marca], 
+    pool.query('INSERT INTO marche (marca) VALUES(?)', [marca],
         (error, results) => {
             if (error) {
                 console.error(error);
                 return res.status(500).send(`Errore durante l'inserimento della marca `);
             }
-            res.send('Inserimento completato con successo');
+            res.send('Inserimento marca completato con successo');
         });
 })
 
@@ -97,9 +118,20 @@ app.post('/api/inserisciModello', verificaSuperAdmin, (req, res) => {
         (error, results) => {
             if (error) {
                 console.error(error);
-                return res.status(500).send(`Errore durante l'inserimento della marca `);
+                return res.status(500).send(`Errore durante l'inserimento del modello `);
             }
-            res.send('Inserimento completato con successo');
+            res.send('Inserimento modello completato con successo');
+        });
+})
+app.post('/api/inserisciColore', verificaSuperAdmin, (req, res) => {
+    const { colore } = req.body;
+    pool.query('INSERT INTO colori (colore) VALUES(?)', [colore],
+        (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).send(`Errore durante l'inserimento del colore `);
+            }
+            res.send('Inserimento colore completato con successo');
         });
 })
 
@@ -268,52 +300,52 @@ app.get('/api/marche/:marca', verificaSuperAdmin, (req, res) => {
     const { marca } = req.params;
     console.log(marca);
     pool.query('SELECT * FROM marche WHERE marca = ? LIMIT 1',
-      [marca],
-      (error, results) => {
-        if (error) {
-          console.error(error);
-          return res.status(500).send(`Errore durante la verifica della marca`);
-        }
-        if (results.length > 0) {
-          res.json(results[0]); // Restituisce le informazioni sulla marca
-        } else {
-          res.json(`Marca non trovata`);
-        }
-      });
-  });
+        [marca],
+        (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).send(`Errore durante la verifica della marca`);
+            }
+            if (results.length > 0) {
+                res.json(results[0]); // Restituisce le informazioni sulla marca
+            } else {
+                res.json(`Marca non trovata`);
+            }
+        });
+});
 
-  app.get('/api/colori/:colore', verificaSuperAdmin, (req, res) => {
+app.get('/api/colori/:colore', verificaSuperAdmin, (req, res) => {
     const { colore } = req.params;
     pool.query('SELECT * FROM colori WHERE colore = ? LIMIT 1',
-      [colore],
-      (error, results) => {
-        if (error) {
-          console.error(error);
-          return res.status(500).send(`Errore durante la verifica della marca`);
-        }
-        if (results.length > 0) {
-          res.json(results[0]); // Restituisce le informazioni sulla marca
-        } else {
-          res.json(`Colore non trovato`);
-        }
-      });
-  });
+        [colore],
+        (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).send(`Errore durante la verifica della marca`);
+            }
+            if (results.length > 0) {
+                res.json(results[0]); // Restituisce le informazioni sulla marca
+            } else {
+                res.json(`Colore non trovato`);
+            }
+        });
+});
 
-  app.get('/api/modelli/:modello', verificaSuperAdmin, (req, res) => {
+app.get('/api/modelli/:modello', verificaSuperAdmin, (req, res) => {
     const { modello } = req.params;
     pool.query('SELECT * FROM modelli WHERE modello = ? LIMIT 1', [modello], (error, results) => {
         if (error) {
-          console.error(error);
-          return res.status(500).send(`Errore durante la verifica del modello`);
+            console.error(error);
+            return res.status(500).send(`Errore durante la verifica del modello`);
         }
         if (results.length > 0) {
-          res.json(results[0]); // Restituisce le informazioni sul modello
+            res.json(results[0]); // Restituisce le informazioni sul modello
         } else {
-          res.json(`Modello non trovato`);
+            res.json(`Modello non trovato`);
         }
-      });
-      
-  });
+    });
+
+});
 
 app.get('/api/carburanti', verificaSuperAdmin, (req, res) => {
     let q = 'SELECT * FROM carburanti';
@@ -323,14 +355,14 @@ app.get('/api/carburanti', verificaSuperAdmin, (req, res) => {
     });
 });
 
-app.get('api/admin/:idUtente', verificaSuperAdmin, (req,res) => {
+app.get('api/admin/:idUtente', verificaSuperAdmin, (req, res) => {
     const idUtente = req.params.idUtente;
     pool.query('SELECT * FROM utenti WHERE idUtente = ? and idRuolo = 2', idUtente,
-     (error, results) =>  {
-        if (error) throw error;
+        (error, results) => {
+            if (error) throw error;
             res.send(results);
-     });
-    
+        });
+
 })
 
 app.get('/api/utenti', verificaAdmin, (req, res) => {
@@ -340,9 +372,9 @@ app.get('/api/utenti', verificaAdmin, (req, res) => {
     });
 });
 
-app.get('/api/utenti/:id', verificaAdmin, (req, res) => {
-    const id = req.params.id; // Accedi alla chiave 'id' di req.params
-    pool.query('SELECT * FROM utenti WHERE id = ?', id, (error, results) => {
+app.get('/api/utenti/:idRuolo', verificaSuperAdmin, (req, res) => {
+    const idRuolo = req.params.idRuolo; // Accedi alla chiave 'id' di req.params
+    pool.query('SELECT * FROM utenti WHERE idRuolo = ?', [idRuolo], (error, results) => {
         if (error) throw error;
         res.send(results);
     });
@@ -382,6 +414,20 @@ app.post('/api/prenotazione', verificaCliente, (req, res) => {
     });
 });
 
+function notificaUtente(tipo, messaggio, email) {
+    const query = 'SELECT * FROM utenti WHERE email = ?';
+    pool.query(query, [email], (error, results) => {
+        if (error) {
+            console.error('Errore durante il recupero degli utenti:', error);
+            return;
+        }
+
+        // Invia notifica a ciascun utente del ruolo specificato
+        results.forEach(utente => {
+            inviaNotifica(utente.idUtente, tipo, messaggio, utente.email);
+        });
+    });
+}
 function notifica(tipo, messaggio, idRuolo) {
     const query = 'SELECT * FROM utenti WHERE idRuolo = ?';
     pool.query(query, [idRuolo], (error, results) => {
@@ -454,7 +500,42 @@ app.get('/api/GetPrenotazioni/:idUtente', verificaCliente, (req, res) => {
     });
 });
 
-app.get('/api/GetPrenotazioni', verificaAdmin, (req, res) => {
+app.put('/api/accettaPrenotazioni/:idPrenotazione', verificaAdmin, (req, res) => {
+    const idPrenotazione = req.params.idPrenotazione;
+    const { email } = req.body;
+
+
+    const query = `UPDATE prenotazioni SET stato = 'Accettata' WHERE idPrenotazione = ?`
+    pool.query(query, [idPrenotazione], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante la modifica della prenotazione');
+        }
+        // Invia i risultati delle prenotazioni come risposta
+        notificaUtente('conferma', 'Il tuo appuntamento è stato confermato', email);
+        res.json(results);
+    });
+})
+
+app.get('/api/getPrenotazioniAttesa', verificaAdmin, (req, res) => {
+    const query = `
+        SELECT idPrenotazione, marca, modello, data_ora, email, dettagliPrenotazione
+        FROM prenotazioni
+        INNER JOIN auto ON prenotazioni.idAuto = auto.idAuto
+        INNER JOIN modelli ON auto.idModello = modelli.idModello
+        INNER JOIN marche ON auto.idMarca = marche.idMarca
+        INNER JOIN utenti ON prenotazioni.idUtente = utenti.idUtente
+        WHERE stato = 'In attesa'`;
+    pool.query(query, (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante il recupero delle prenotazioni');
+        }
+        // Invia i risultati delle prenotazioni come risposta
+        res.json(results);
+    });
+});
+app.get('/api/getPrenotazioni', verificaAdmin, (req, res) => {
     const query = `
         SELECT idPrenotazione, marca, modello, data_ora, email, dettagliPrenotazione
         FROM prenotazioni
@@ -475,6 +556,7 @@ app.get('/api/GetPrenotazioni', verificaAdmin, (req, res) => {
 
 app.delete('/api/disdiciPrenotazione/:idPrenotazione', verificaCliente, (req, res) => {
     const idPrenotazione = req.params.idPrenotazione;
+    const { email } = req.body;
 
     // Verifica se l'id della prenotazione è stato fornito
     if (!idPrenotazione) {
@@ -493,7 +575,7 @@ app.delete('/api/disdiciPrenotazione/:idPrenotazione', verificaCliente, (req, re
         if (results.affectedRows === 0) {
             return res.status(404).send('Prenotazione non trovata');
         }
-
+        notificaUtente('disdetta', 'Il tuo appuntamento è stato disdetto', email);
         res.send('Prenotazione disdetta con successo');
     });
 });

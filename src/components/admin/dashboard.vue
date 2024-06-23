@@ -41,7 +41,7 @@ export default {
     };
   },
   created() {
-    if (localStorage.getItem('token') && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 1) {
+    if (localStorage.getItem('token') && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 2) {
       this.caricaPrenotazioni();
     } else {
       router.push('/login');

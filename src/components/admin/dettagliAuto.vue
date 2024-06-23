@@ -23,7 +23,7 @@
               <div>Prezzo: {{ auto[0].prezzo }} €</div>
               <div>Carburante: {{ auto[0].carburante }}</div>
               <div>Colore: {{ auto[0].colore }}</div>
-              <div>Colore: {{ auto[0].colore }}</div>
+              <div>Descrizione: {{ auto[0].descrizione }}</div>
               <v-btn @click="effettuaVendita()" class="btnDetails" block>Effettua vendita</v-btn>
               <v-btn @click="returnCatalog()" class="btnDetails" block>Ritorna al catalogo</v-btn>
             </v-card-text>

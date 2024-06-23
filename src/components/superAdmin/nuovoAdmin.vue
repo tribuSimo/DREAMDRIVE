@@ -7,8 +7,6 @@
   
           <v-text-field class="txtUtente" v-model="password" :rules="[v => !!v || 'Password obbligatoria']" label="Password" required readonly></v-text-field>
   
-          <v-text-field class="txtUtente" v-model="idRuolo" label="idRuolo" type="number" required readonly></v-text-field>
-  
           <v-text-field v-model="dataNascita" label="Data di nascita" outlined required readonly prepend-inner-icon="mdi-calendar" @click="showDatePicker"></v-text-field>
   
           <v-dialog v-model="datePickerDialog" :max-width="dialogMaxWidth">
@@ -46,7 +44,6 @@
       return {
         email: '',
         password: 'admin',
-        idRuolo: 2,
         dataNascita: null,
         emailRules: [
           v => !!v || 'Il campo Email è richiesto',
@@ -61,6 +58,7 @@
     methods: {
       async submitForm() {
         try {
+          const token = localStorage.getItem('token');
           const formattedDate = moment(this.dataNascita);
   
           if (!formattedDate.isValid()) {
@@ -75,10 +73,10 @@
               email: this.email,
               password: this.password,
               dataNascita: formattedDateString,
-              idRuolo: this.idRuolo
             }).toString(),
             headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
+              "Content-Type": "application/x-www-form-urlencoded",
+              'Authorization': `${token}`
             }
           });
   

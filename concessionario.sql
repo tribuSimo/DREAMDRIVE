@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Giu 22, 2024 alle 16:17
+-- Creato il: Giu 23, 2024 alle 18:14
 -- Versione del server: 10.4.28-MariaDB
 -- Versione PHP: 8.2.4
 
@@ -306,7 +306,10 @@ CREATE TABLE `utenti` (
 INSERT INTO `utenti` (`idUtente`, `email`, `password`, `dataNascita`, `dataRegistrazione`, `idRuolo`) VALUES
 (1, 'tribusimo@gmail.com', '$2b$10$yOjBgKYT3bACUWaVLjWkLeteBjDk2zv4KSHwasJzeYB4dFcLxRWCu', '2005-07-04', '2024-03-04 08:27:19', 1),
 (2, 'ciao@gmail.com', '$2b$10$UJKP3bHVWxepLqPfRpkoy.FOjVHsWzLEpXVh8Y1aOKn4lwdzBmcxe', '2024-03-12', '2024-03-25 08:13:30', 2),
-(4, 'superAdmin@gmail.com', '$2b$10$6JUYnb8YyU.bShFNgXv4ze4UAPeKi4oAvRYS7KthHH6M9tQPnYwdq', '2005-06-12', '2024-06-14 16:54:23', 3);
+(4, 'superAdmin@gmail.com', '$2b$10$6JUYnb8YyU.bShFNgXv4ze4UAPeKi4oAvRYS7KthHH6M9tQPnYwdq', '2005-06-12', '2024-06-14 16:54:23', 3),
+(5, 'emabrate05@gmail.com', '$2b$10$.sbHyzjnYEyghdyuyjujeuE6IjdgHujmlXGlaED4KwegqP.vAmPg.', '2024-06-10', '2024-06-22 20:37:13', 2),
+(6, 'admin@gmail.com', '$2b$10$.oEJKRJ4uOYUHz6hZsBIP.1YGmG91erclDKAMJ56LUpig4TH1R0WC', '2024-06-03', '2024-06-22 20:40:58', 2),
+(7, 'pietro.mellano12@gmail.com', '$2b$10$h/Nc/G3v84AI4os5/Rk7ge8v8yFqEkACMdfkUmR3lmEPMVq0iRKju', '2024-06-02', '2024-06-22 20:48:54', 2);
 
 --
 -- Indici per le tabelle scaricate
@@ -456,7 +459,7 @@ ALTER TABLE `ruoli`
 -- AUTO_INCREMENT per la tabella `utenti`
 --
 ALTER TABLE `utenti`
-  MODIFY `idUtente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idUtente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Limiti per le tabelle scaricate
