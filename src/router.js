@@ -89,7 +89,7 @@ const routes = [
   },
   {
     path: '/admin/effettuaVendita/:idAuto',
-    name : 'Acquisto admin',
+    name : 'Effettua vendita admin',
     component: vendiAutoCliente
   },
   {

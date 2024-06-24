@@ -21,10 +21,13 @@
           <v-row class="nav">
             <v-img src="/logo.jpg" max-width="50" max-height="50" contain />
             <v-btn to="/admin/dashboard" class="nav-button">
-              Dashboard <v-icon class="nav-icon">mdi-car</v-icon>
+              Dashboard <v-icon class="nav-icon">mdi-home</v-icon>
+            </v-btn>
+            <v-btn to="/admin/auto" class="nav-button">
+              Auto <v-icon class="nav-icon">mdi-car</v-icon>
             </v-btn>
             <v-btn @click="raggiungiVendite()" class="nav-button">
-              Vendite <v-icon class="nav-icon">mdi-new-box</v-icon>
+              Vendite <v-icon class="nav-icon">mdi-cash-multiple</v-icon>
             </v-btn>
             <v-btn @click="raggiungiPrenotazioni()" class="nav-button">
               Prenotazioni <v-icon class="nav-icon">mdi-calendar-check</v-icon>
@@ -59,7 +62,8 @@
         searchQuery: '', // Aggiungi la proprietà per il testo di ricerca
         menuItems: [
           { title: 'Dashboard', icon: 'mdi-home', path: '/admin/dashboard' },
-          { title: 'Vendite', icon: 'mdi-new-box', action: 'raggiungiVendite' },
+          { title: 'Auto', icon: 'mdi-car', path: '/admin/auto' },
+          { title: 'Vendite', icon: 'mdi-cash-multiple', action: 'raggiungiVendite' },
           { title: 'Prenotazioni', icon: 'mdi-calendar-check', action: 'raggiungiPrenotazioni' },
           { title: 'Notifiche', icon: 'mdi-bell', action: 'raggiungiNotifiche' },
           { title: 'Logout', icon: 'mdi-logout', action: 'logout' }

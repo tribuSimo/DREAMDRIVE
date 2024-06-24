@@ -42,7 +42,7 @@
           <v-btn-toggle v-model="orarioSelezionato" color="primary" class="text-center">
             <v-btn :value="orario" v-for="orario in orari" :key="orario" color="primary">{{ orario }}</v-btn>
           </v-btn-toggle>
-          <v-date-picker v-model="dataSelezionata" class="mt-4"></v-date-picker>
+          <v-date-picker v-model="dataSelezionata" class="mt-4" :min="minDate"></v-date-picker>
         </v-card-text>
         <v-card-actions class="justify-center">
           <v-btn color="blue darken-1" @click="prenota">Prenota</v-btn>
@@ -87,16 +87,17 @@ export default {
       dataSelezionata: null,
       orari: ['9:00', '12:00', '15:00'],
       idUtente: null,
-      errorMessage: ''
+      errorMessage: '',
+      minDate: moment().add(1, 'days').format('YYYY-MM-DD')
     };
   },
   created() {
-    if (localStorage.getItem('token')  && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 1) {
+    if (localStorage.getItem('token') && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 1) {
       this.prendiID();
       this.caricaAuto(this.$route.params.idAuto);
-    }
-    else
+    } else {
       router.push('/login');
+    }
   },
   methods: {
     async prendiID() {
@@ -118,7 +119,7 @@ export default {
         }
       } catch (error) {
         console.error('Errore nella richiesta per idUtente', error);
-        this.errorMessage = 'Errore nella richiesta per idUtente', error.message
+        this.errorMessage = 'Errore nella richiesta per idUtente', error.message;
       }
     },
     async caricaAuto(idAuto) {

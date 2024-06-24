@@ -85,11 +85,11 @@ export default {
     },
 
     returnCatalog() {
-      router.push("/home");
+      router.push("/admin/auto");
     },
 
-    effettuaPrenotazione() {
-      this.$router.push({ name: 'Effettua Prenotazioni', params: { idAuto: this.auto.idAuto } });
+    effettuaVendita() {
+      this.$router.push({ name: 'Effettua vendita admin', params: { idAuto: this.auto.idAuto } });
     }
   }
 };

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <navbar></navbar>
+    <navbar @ricerca-eseguita="prendiCerca"></navbar>
     <v-container class="containerSearch">
       <v-row class="d-flex justify-space-between flex-wrap mb-4">
         <v-col cols="12" md="4" class="filter-item">
@@ -14,13 +14,10 @@
           <v-checkbox class="custom-checkbox" v-model="mostraUsate" label="Usata"></v-checkbox>
         </v-col>
       </v-row>
-      <v-alert title="Errore" v-if="errorMessage" color="error" closable>
-        {{ errorMessage }}
-      </v-alert>
       <v-row v-if="auto.length > 0">
         <v-col cols="12" sm="6" md="4" v-for="(auto, index) in auto" :key="index">
           <v-card class="card" @click="visualizzaDettagli(index)" outlined>
-            <v-img :src="getImageSrc(auto)"
+            <v-img :src="getImageSrc(auto)" 
               aspect-ratio="16/9" class="card-image" cover></v-img>
             <v-card-title class="card-title"><strong>{{ auto.marca }} {{ auto.modello }}</strong></v-card-title>
             <v-card-text class="card-text">
@@ -36,9 +33,12 @@
       </v-row>
       <v-row v-else>
         <v-col cols="12">
-          <p class="no-new-release">Nessuna nuova uscita</p>
+          <p class="no-new-release">Nessuna auto disponibile</p>
         </v-col>
       </v-row>
+      <v-alert title="Errore" v-if="errorMessage" color="error" closable>
+        {{ errorMessage }}
+      </v-alert>
     </v-container>
     <finePagina></finePagina>
   </v-app>
@@ -185,6 +185,7 @@ export default {
 <style scoped>
 .containerSearch {
   width: 100%;
+  height: 100%;
   margin-top: 10vh;
 }
 
@@ -210,7 +211,6 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* Ensure the card takes full height */
 }
 
 .card:hover {
@@ -220,18 +220,10 @@ export default {
 }
 
 .card-image {
-  height: 200px;
+  height: 250px;
   /* Set a fixed height for the image */
   object-fit: cover;
   /* Ensure the image covers the area */
-}
-
-.card-title,
-.card-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 }
 
 .v-alert {

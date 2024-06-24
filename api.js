@@ -30,19 +30,18 @@ const transporter = nodemailer.createTransport({
     }
 }); //mail:o gu d o ghi u t r z z e e h
 
-app.get('api/prendiMarcaModello', verificaSuperAdmin, (req,res) => {
+app.get('api/prendiMarcaModello', verificaSuperAdmin, (req, res) => {
     pool.query('SELECT marche.marca, modelli.modello FROM ' +
-         ' auto, marche, modelli' +
+        ' auto, marche, modelli' +
         ' where marche.idMarca = auto.idMarca AND modelli.idModello = auto.idModello ' +
-         'AND modelli.idMarca = marche.idMarca', (error, results) => {
+        'AND modelli.idMarca = marche.idMarca', (error, results) => {
             if (error) {
                 console.error(error);
                 return res.status(500).send(`Errore durante il recupero dei dati `);
             }
             res.send('Recupero dei dati completato con successo');
-         })
+        })
 })
-
 
 app.post('/api/nuovoAdmin', verificaSuperAdmin, (req, res) => {
     const { email, password, dataNascita } = req.body;
@@ -76,6 +75,7 @@ app.post('/api/nuovoAdmin', verificaSuperAdmin, (req, res) => {
         }
     });
 });
+
 app.delete('/api/eliminaAdmin/:idUtente', verificaSuperAdmin, (req, res) => {
     const idUtente = req.params.idUtente;
     // Verifica se l'id della prenotazione è stato fornito
@@ -147,6 +147,29 @@ app.post('/api/inserisciColore', verificaSuperAdmin, (req, res) => {
             }
             res.send('Inserimento colore completato con successo');
         });
+})
+
+app.post('/api/effettuaVendita', verificaAdmin, (req, res) => {
+    const { idAuto, idAdmin, nome, cognome, codiceFiscale, telefono } = req.body;
+    pool.query('INSERT INTO vendite (nome, cognome, codiceFiscale, telefono, idAdmin, idAuto) VALUES(?,?,?,?,?,?)',
+        [nome, cognome, codiceFiscale, telefono, idAdmin, idAuto],
+        (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).send(`Errore durante l'inserimento della vendita`);
+            }
+            res.send('Vendita completata con successo');
+        });
+})
+
+app.get('/api/getVendite/:idUtente', verificaAdmin, (req, res) => {
+    const idAdmin = req.params.idUtente;
+    let q = 'SELECT marche.marca, modelli.modello, vendite.* FROM auto,marche,modelli,vendite WHERE vendite.idAuto = auto.idAuto'
+    + ' AND marche.idMarca = modelli.idMarca AND auto.idMarca = marche.idMarca AND auto.idModello = modelli.idModello AND idAdmin = ?';
+    pool.query(q, [idAdmin], (error, results) => {
+        if (error) throw error;
+        res.json(results);
+    });
 })
 
 app.get('/api/auto', (req, res) => {
@@ -302,6 +325,19 @@ app.get('/api/autoMarca/:marca', verificaCliente, (req, res) => {
     });
 });
 
+app.put('/api/aggiornaDisponibilitaAuto/:idAuto', verificaAdmin, (req,res) => {
+    const idAuto = req.params.idAuto;
+    const query = `UPDATE auto SET disponibile = 0 WHERE idAuto = ?`
+    pool.query(query, [idAuto], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Errore durante la modifica della disponibilita');
+        }
+        // Invia i risultati delle prenotazioni come risposta
+        res.json(results);
+    });
+})
+
 app.get('/api/marche', (req, res) => {
     let q = 'SELECT * FROM marche';
     pool.query(q, (error, results) => {
@@ -422,7 +458,7 @@ app.post('/api/prenotazione', verificaCliente, (req, res) => {
             console.error(error);
             return res.status(500).send('Errore durante la prenotazione');
         }
-        notifica('', '', 2);//inserisco il tipo di notifica e il messaggio di tale notifica 
+        notifica('Nuova prenotazione', 'Un utente ha effettuato una prenotazione', 2);//inserisco il tipo di notifica e il messaggio di tale notifica 
         //e il tipo di utente che la deve ricevere
         res.send('Prenotazione effettuata con successo');
     });
@@ -452,11 +488,11 @@ function notifica(tipo, messaggio, idRuolo) {
 
         // Invia notifica a ciascun utente del ruolo specificato
         results.forEach(utente => {
-            inviaNotifica(utente.idUtente, tipo, messaggio, utente.email);
+            inviaNotifica(utente.idUtente, tipo, messaggio, utente.email, idRuolo);
         });
     });
 }
-function inviaNotifica(idUtente, tipo, messaggio, email) {
+function inviaNotifica(idUtente, tipo, messaggio, email, idRuolo) {
     const query = 'INSERT INTO notifiche (idUtente, tipo, messaggio) VALUES (?, ?, ?)';
     pool.query(query, [idUtente, tipo, messaggio], (error, results) => {
         if (error) {
@@ -464,20 +500,23 @@ function inviaNotifica(idUtente, tipo, messaggio, email) {
             return;
         }
         //implementa l'invio della mail qui
-        const mailOptions = {
-            from: 'dreamdrive.concessionario@gmail.com', // Sostituisci con la tua email
-            to: email,
-            subject: 'Nuova Notifica da dreamdrive',
-            text: messaggio
-        };
+        if (idRuolo < 2) {
+            const mailOptions = {
+                from: 'dreamdrive.concessionario@gmail.com', // Sostituisci con la tua email
+                to: email,
+                subject: 'Nuova Notifica da dreamdrive',
+                text: messaggio
+            };
 
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.error('Errore durante l\'invio dell\'email:', error);
-            } else {
-                console.log('Email inviata: ' + info.response);
-            }
-        });
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Errore durante l\'invio dell\'email:', error);
+                } else {
+                    console.log('Email inviata: ' + info.response);
+                }
+            });
+        }
+
     });
 }
 

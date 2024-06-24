@@ -16,14 +16,15 @@
             prepend-inner-icon="mdi-lock-outline">
           </v-text-field>
 
-          <v-text-field v-model="dataNascita" label="Data di nascita" outlined required readonly
+          <v-text-field v-model="formattedDateNascita" label="Data di nascita" outlined required readonly
             prepend-inner-icon="mdi-calendar" @click="showDatePicker()"></v-text-field>
 
           <v-dialog v-model="datePickerDialog" :max-width="dialogMaxWidth">
             <v-card>
               <v-card-title class="headline primary--text">Seleziona una data</v-card-title>
               <v-card-text>
-                <v-date-picker v-model="dataNascita" no-title scrollable @input="updateDialogMaxWidth"></v-date-picker>
+                <v-date-picker v-model="dataNascita" :max="maxDate" no-title scrollable @input="updateDialogMaxWidth"
+                  @change="formatDateNascita"></v-date-picker>
               </v-card-text>
               <v-card-actions>
                 <v-btn text color="primary" @click="datePickerDialog = false">Chiudi</v-btn>
@@ -68,12 +69,17 @@ export default {
       ],
       datePickerDialog: false,
       dialogMaxWidth: 400,
-      errorMessage: ''
+      errorMessage: '',
+      maxDate: moment().format('YYYY-MM-DD')
     };
+  },
+  computed: {
+    formattedDateNascita() {
+      return this.dataNascita ? moment(this.dataNascita).format('DD-MM-YYYY') : '';
+    }
   },
   methods: {
     async registrazione() {
-      // Implementazione del login
       try {
         const formattedDate = moment(this.dataNascita);
 
@@ -97,11 +103,11 @@ export default {
         if (!response.ok) {
           this.errorMessage = 'Errore durante la registrazione';
           throw new Error('Errore durante la registrazione');
-        } else
+        } else {
           this.$router.push("/login");
+        }
 
       } catch (error) {
-        // Gestione degli errori in caso di fallimento della richiesta
         console.error('Errore la richiesta di registrazione: ', error);
         this.errorMessage = 'Errore durante la richiesta di registrazione: ' + error.message;
       }
@@ -110,17 +116,20 @@ export default {
       this.datePickerDialog = true;
     },
     updateDialogMaxWidth() {
-      // Aggiorna la larghezza massima della dialog in base alla larghezza del date picker
       this.$nextTick(() => {
         const datePicker = this.$refs.datePicker.$el;
         if (datePicker) {
-          this.dialogMaxWidth = datePicker.offsetWidth + 40; // Aggiungi una spaziatura di 20px su ciascun lato
+          this.dialogMaxWidth = datePicker.offsetWidth + 40;
         }
       });
     },
     toggleVisibility() {
       this.visible = !this.visible;
     },
+    formatDateNascita() {
+      this.dataNascita = moment(this.dataNascita).format('YYYY-MM-DD');
+      this.datePickerDialog = false;
+    }
   }
 };
 </script>

@@ -1,11 +1,8 @@
 <template>
     <v-app>
       <navbar></navbar>
-      <v-alert title="Errore" v-if="errorMessage" color="error" closable>
-        {{ errorMessage }}
-      </v-alert>
       <div v-if="dati.length === 0" class="no-data-message">
-        <h3>Non ci sono prenotazioni attive a tuo nome al momento.</h3>
+        <h3>Non ci sono prenotazioni da confermare o disdire al momento.</h3>
       </div>
       <v-table class="tabella" v-else>
         <thead>
@@ -42,7 +39,9 @@
           </tr>
         </tbody>
       </v-table>
-  
+      <v-alert title="Errore" v-if="errorMessage" color="error" closable>
+        {{ errorMessage }}
+      </v-alert>
       <finePagina></finePagina>
   
       <!-- Aggiungi il dialog di conferma -->
