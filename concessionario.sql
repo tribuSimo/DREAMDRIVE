@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Giu 23, 2024 alle 18:14
--- Versione del server: 10.4.28-MariaDB
--- Versione PHP: 8.2.4
+-- Creato il: Giu 24, 2024 alle 18:24
+-- Versione del server: 10.4.32-MariaDB
+-- Versione PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -39,7 +39,7 @@ CREATE TABLE `auto` (
   `usata` bit(1) DEFAULT b'0',
   `prezzo` float NOT NULL,
   `disponibile` bit(1) NOT NULL DEFAULT b'1',
-  `dataAcquisto` date NOT NULL DEFAULT current_timestamp(),
+  `dataAcquisto` datetime NOT NULL DEFAULT current_timestamp(),
   `idMarca` int(11) NOT NULL,
   `idCarburante` int(11) NOT NULL,
   `idModello` int(11) NOT NULL,
@@ -58,9 +58,10 @@ INSERT INTO `auto` (`idAuto`, `targa`, `descrizione`, `potenza`, `chilometraggio
 (5, 'QR345ST', 'Chevrolet Cruze usata, buone condizioni generali', 130, 70000, 2015, 'Manuale', 1250, b'1', 18500, b'1', '2024-03-27', 5, 1, 5, 5),
 (6, 'UV678WX', 'Nissan Altima nuova di zecca', 150, 30000, 2020, 'Automatico', 1350, b'0', 21000, b'1', '2024-03-27', 6, 2, 6, 6),
 (7, 'YZ901AB', 'BMW Serie 3, quasi nuova', 170, 25000, 2021, 'Automatico', 1400, b'0', 25000, b'1', '2024-03-27', 7, 1, 7, 7),
-(8, 'CD234EF', 'Mercedes-Benz Classe C usata, ottime condizioni', 160, 45000, 2019, 'Automatico', 1300, b'1', 30000, b'1', '2024-03-27', 8, 2, 8, 8),
+(8, 'CD234EF', 'Mercedes-Benz Classe C usata, ottime condizioni', 160, 45000, 2019, 'Automatico', 1300, b'1', 30000, b'0', '2024-03-27', 8, 2, 8, 8),
 (9, 'GH567IJ', 'Audi A4 usata, leggeri segni di usura', 140, 80000, 2014, 'Manuale', 1200, b'1', 20000, b'1', '2024-03-27', 9, 1, 9, 9),
-(10, 'KL890MN', 'Fiat 500 usata, ideale per la città', 120, 60000, 2016, 'Manuale', 1100, b'1', 15000, b'1', '2024-03-27', 10, 2, 10, 10);
+(10, 'KL890MN', 'Fiat 500 usata, ideale per la città', 120, 60000, 2016, 'Manuale', 1100, b'1', 15000, b'0', '2024-03-27', 10, 2, 10, 10),
+(13, 'FR000CI', 'Una bellissima lamborghini ', 666, 0, 2023, 'Manuale', 2000, b'1', 5000000, b'0', '2024-06-23', 11, 1, 11, 8);
 
 -- --------------------------------------------------------
 
@@ -111,7 +112,8 @@ INSERT INTO `colori` (`idColore`, `colore`) VALUES
 (7, 'Verde smeraldo'),
 (8, 'Giallo sportivo'),
 (9, 'Arancione metallizzato'),
-(10, 'Bronzo');
+(10, 'Bronzo'),
+(11, 'Giallo race');
 
 -- --------------------------------------------------------
 
@@ -138,31 +140,8 @@ INSERT INTO `immagini` (`idImmagine`, `immagine`, `idAuto`) VALUES
 (6, 'toyotaCorolla3.jpg', 1),
 (7, 'fordFocus1.jpg', 3),
 (8, 'fordFocus2.jpg', 3),
-(9, 'fordFocus3.jpg', 3);
-
--- --------------------------------------------------------
-
---
--- Struttura della tabella `magazzini`
---
-
-CREATE TABLE `magazzini` (
-  `idMagazzino` int(11) NOT NULL,
-  `citta` varchar(50) NOT NULL,
-  `via` varchar(100) NOT NULL,
-  `capienza` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dump dei dati per la tabella `magazzini`
---
-
-INSERT INTO `magazzini` (`idMagazzino`, `citta`, `via`, `capienza`) VALUES
-(1, 'Roma', 'Via Roma 123', 1000),
-(2, 'Milano', 'Via Milano 456', 800),
-(3, 'Napoli', 'Via Napoli 789', 1200),
-(4, 'Torino', 'Via Torino 012', 600),
-(5, 'Firenze', 'Via Firenze 345', 1500);
+(9, 'fordFocus3.jpg', 3),
+(16, 'images.jpeg', 13);
 
 -- --------------------------------------------------------
 
@@ -189,7 +168,8 @@ INSERT INTO `marche` (`idMarca`, `marca`) VALUES
 (7, 'BMW'),
 (8, 'Mercedes-Benz'),
 (9, 'Audi'),
-(10, 'Fiat');
+(10, 'Fiat'),
+(11, 'Lamborghini');
 
 -- --------------------------------------------------------
 
@@ -217,7 +197,8 @@ INSERT INTO `modelli` (`idModello`, `modello`, `idMarca`) VALUES
 (7, '3 Series', 7),
 (8, 'C-Class', 8),
 (9, 'A4', 9),
-(10, '500', 10);
+(10, '500', 10),
+(11, 'Urus', 11);
 
 -- --------------------------------------------------------
 
@@ -238,7 +219,7 @@ CREATE TABLE `notifiche` (
 --
 
 INSERT INTO `notifiche` (`idNotifica`, `tipo`, `messaggio`, `dataOra`, `idUtente`) VALUES
-(1, 'conferma', 'Il tuo appuntamento è stato confermato.', '2024-05-31 08:46:31', 2);
+(6, 'conferma', 'Il tuo appuntamento è stato confermato', '2024-06-24 00:15:12', 11);
 
 -- --------------------------------------------------------
 
@@ -262,7 +243,7 @@ CREATE TABLE `prenotazioni` (
 
 INSERT INTO `prenotazioni` (`idPrenotazione`, `idUtente`, `idAuto`, `data_ora`, `stato`, `dettagliPrenotazione`, `dataOraCreazione`) VALUES
 (3, 2, 1, '2024-05-15 12:00:00', 'Accettata', NULL, '2024-05-12 20:08:21'),
-(4, 2, 3, '2024-05-31 15:00:00', 'In attesa', NULL, '2024-05-15 08:45:32');
+(5, 11, 2, '2024-07-05 12:00:00', 'Accettata', NULL, '2024-06-24 00:11:04');
 
 -- --------------------------------------------------------
 
@@ -304,12 +285,39 @@ CREATE TABLE `utenti` (
 --
 
 INSERT INTO `utenti` (`idUtente`, `email`, `password`, `dataNascita`, `dataRegistrazione`, `idRuolo`) VALUES
-(1, 'tribusimo@gmail.com', '$2b$10$yOjBgKYT3bACUWaVLjWkLeteBjDk2zv4KSHwasJzeYB4dFcLxRWCu', '2005-07-04', '2024-03-04 08:27:19', 1),
 (2, 'ciao@gmail.com', '$2b$10$UJKP3bHVWxepLqPfRpkoy.FOjVHsWzLEpXVh8Y1aOKn4lwdzBmcxe', '2024-03-12', '2024-03-25 08:13:30', 2),
 (4, 'superAdmin@gmail.com', '$2b$10$6JUYnb8YyU.bShFNgXv4ze4UAPeKi4oAvRYS7KthHH6M9tQPnYwdq', '2005-06-12', '2024-06-14 16:54:23', 3),
 (5, 'emabrate05@gmail.com', '$2b$10$.sbHyzjnYEyghdyuyjujeuE6IjdgHujmlXGlaED4KwegqP.vAmPg.', '2024-06-10', '2024-06-22 20:37:13', 2),
-(6, 'admin@gmail.com', '$2b$10$.oEJKRJ4uOYUHz6hZsBIP.1YGmG91erclDKAMJ56LUpig4TH1R0WC', '2024-06-03', '2024-06-22 20:40:58', 2),
-(7, 'pietro.mellano12@gmail.com', '$2b$10$h/Nc/G3v84AI4os5/Rk7ge8v8yFqEkACMdfkUmR3lmEPMVq0iRKju', '2024-06-02', '2024-06-22 20:48:54', 2);
+(7, 'pietro.mellano12@gmail.com', '$2b$10$h/Nc/G3v84AI4os5/Rk7ge8v8yFqEkACMdfkUmR3lmEPMVq0iRKju', '2024-06-02', '2024-06-22 20:48:54', 2),
+(9, 'admin@gmail.com', '$2b$10$i1h8l5IeyIh9n0P.doyMxOFXL.PLWZjLtaB4O631BHmFIcUTWfqLm', '2024-06-02', '2024-06-23 16:41:25', 2),
+(11, 'tribusimo@gmail.com', '$2b$10$IFUsrjMecmdtgRz21QhQ5.PSUBE2EUHZ3olVWODC3B30cvmVjc6ha', '2005-07-04', '2024-06-23 22:03:58', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `vendite`
+--
+
+CREATE TABLE `vendite` (
+  `idVendita` int(11) NOT NULL,
+  `nome` varchar(50) NOT NULL,
+  `cognome` varchar(50) NOT NULL,
+  `codiceFiscale` varchar(16) NOT NULL,
+  `telefono` varchar(20) NOT NULL,
+  `data_ora` timestamp NOT NULL DEFAULT current_timestamp(),
+  `idAdmin` int(11) NOT NULL,
+  `idAuto` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `vendite`
+--
+
+INSERT INTO `vendite` (`idVendita`, `nome`, `cognome`, `codiceFiscale`, `telefono`, `data_ora`, `idAdmin`, `idAuto`) VALUES
+(5, 'Simone', 'Tribunella', 'TRBSMN05L04I470U', '3382553547', '2024-06-23 23:32:02', 2, 2),
+(8, 'Simone', 'Tribunella', 'TRBSMN05L04I470U', '3382553547', '2024-06-24 00:08:32', 2, 8),
+(9, 'Simone', 'Tribunella', 'TRBSMN05L04I470U', '3382553547', '2024-06-24 00:10:11', 2, 10),
+(10, 'Simone', 'Tribunella', 'TRBSMN05L04I470U', '3382553547', '2024-06-24 16:21:14', 2, 13);
 
 --
 -- Indici per le tabelle scaricate
@@ -343,12 +351,6 @@ ALTER TABLE `colori`
 ALTER TABLE `immagini`
   ADD PRIMARY KEY (`idImmagine`),
   ADD KEY `fk_immagine_id` (`idAuto`);
-
---
--- Indici per le tabelle `magazzini`
---
-ALTER TABLE `magazzini`
-  ADD PRIMARY KEY (`idMagazzino`);
 
 --
 -- Indici per le tabelle `marche`
@@ -392,6 +394,14 @@ ALTER TABLE `utenti`
   ADD KEY `fk_ruolo` (`idRuolo`);
 
 --
+-- Indici per le tabelle `vendite`
+--
+ALTER TABLE `vendite`
+  ADD PRIMARY KEY (`idVendita`),
+  ADD KEY `idAdmin` (`idAdmin`),
+  ADD KEY `idAuto` (`idAuto`);
+
+--
 -- AUTO_INCREMENT per le tabelle scaricate
 --
 
@@ -399,7 +409,7 @@ ALTER TABLE `utenti`
 -- AUTO_INCREMENT per la tabella `auto`
 --
 ALTER TABLE `auto`
-  MODIFY `idAuto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idAuto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT per la tabella `carburanti`
@@ -411,43 +421,37 @@ ALTER TABLE `carburanti`
 -- AUTO_INCREMENT per la tabella `colori`
 --
 ALTER TABLE `colori`
-  MODIFY `idColore` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idColore` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT per la tabella `immagini`
 --
 ALTER TABLE `immagini`
-  MODIFY `idImmagine` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT per la tabella `magazzini`
---
-ALTER TABLE `magazzini`
-  MODIFY `idMagazzino` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `idImmagine` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT per la tabella `marche`
 --
 ALTER TABLE `marche`
-  MODIFY `idMarca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idMarca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT per la tabella `modelli`
 --
 ALTER TABLE `modelli`
-  MODIFY `idModello` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idModello` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT per la tabella `notifiche`
 --
 ALTER TABLE `notifiche`
-  MODIFY `idNotifica` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idNotifica` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT per la tabella `prenotazioni`
 --
 ALTER TABLE `prenotazioni`
-  MODIFY `idPrenotazione` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idPrenotazione` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT per la tabella `ruoli`
@@ -459,7 +463,13 @@ ALTER TABLE `ruoli`
 -- AUTO_INCREMENT per la tabella `utenti`
 --
 ALTER TABLE `utenti`
-  MODIFY `idUtente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `idUtente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT per la tabella `vendite`
+--
+ALTER TABLE `vendite`
+  MODIFY `idVendita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Limiti per le tabelle scaricate
@@ -504,6 +514,13 @@ ALTER TABLE `prenotazioni`
 --
 ALTER TABLE `utenti`
   ADD CONSTRAINT `fk_ruolo` FOREIGN KEY (`idRuolo`) REFERENCES `ruoli` (`idRuolo`);
+
+--
+-- Limiti per la tabella `vendite`
+--
+ALTER TABLE `vendite`
+  ADD CONSTRAINT `vendite_ibfk_1` FOREIGN KEY (`idAdmin`) REFERENCES `utenti` (`idUtente`),
+  ADD CONSTRAINT `vendite_ibfk_2` FOREIGN KEY (`idAuto`) REFERENCES `auto` (`idAuto`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

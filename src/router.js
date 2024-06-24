@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import login from './components/login.vue';
 import registrazione from './components/registrazione.vue';
+import notFound from './components/notFound.vue';
 //clienti
 import home from './components/clienti/home.vue';
 import dettagliAuto from './components/clienti/dettagliAuto.vue';
@@ -140,6 +141,10 @@ const routes = [
     path: '/superAdmin/dettagliAuto/:idAuto',
     name : 'Dettagli auto superAdmin',
     component: dettagliAutoSuperAdmin
+  },
+  {
+    path: '/:catchAll(.*)', // Cattura tutti i percorsi non corrispondenti
+    component: notFound // Rinvia alla pagina NotFound
   }
 ];
 

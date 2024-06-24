@@ -19,8 +19,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({
     origin: '*'
 }));
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
+// Configurazione Multer per salvare le immagini nella cartella public/uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    },
+});
+
+const upload = multer({ storage });
 
 const pool = mysql.createPool({
     host: 'localhost',
@@ -36,10 +47,28 @@ const transporter = nodemailer.createTransport({
     }
 }); //mail:o gu d o ghi u t r z z e e h
 
+app.post('/api/inserisciImmagine', verificaSuperAdmin, upload.array('immagini', 10), async (req, res) => {
+    const idAuto = req.body.idAuto;
+    const immagini = req.files;
+  
+    if (!idAuto || !immagini) {
+      return res.status(400).send('ID Auto o immagini mancanti');
+    }
+    try {
+      // Utilizza Promise.all per eseguire tutte le query in parallelo
+      await Promise.all(immagini.map(async (immagine) => {
+        const insertQuery = 'INSERT INTO immagini(immagine, idAuto) VALUES (?, ?)';
+        await pool.query(insertQuery, [immagine.filename, idAuto]);
+      }));
+  
+      // Invia la risposta solo dopo aver inserito tutte le immagini con successo
+      res.send('Immagini caricate con successo');
+    } catch (error) {
+      console.error('Errore durante l\'inserimento delle immagini:', error);
+      res.status(500).send('Errore durante l\'inserimento delle immagini');
+    }
+  });
 
-app.post('/api/inserisciImmagine', verificaSuperAdmin, (req, res) => {
-    
-})
 app.get('/api/prendiMarcaModello', verificaSuperAdmin, (req, res) => {
     pool.query('SELECT auto.idAuto, marche.marca, modelli.modello FROM ' +
         ' auto, marche, modelli' +
@@ -175,7 +204,7 @@ app.post('/api/effettuaVendita', verificaAdmin, (req, res) => {
 app.get('/api/getVendite/:idUtente', verificaAdmin, (req, res) => {
     const idAdmin = req.params.idUtente;
     let q = 'SELECT marche.marca, modelli.modello, vendite.* FROM auto,marche,modelli,vendite WHERE vendite.idAuto = auto.idAuto'
-    + ' AND marche.idMarca = modelli.idMarca AND auto.idMarca = marche.idMarca AND auto.idModello = modelli.idModello AND idAdmin = ?';
+        + ' AND marche.idMarca = modelli.idMarca AND auto.idMarca = marche.idMarca AND auto.idModello = modelli.idModello AND idAdmin = ?';
     pool.query(q, [idAdmin], (error, results) => {
         if (error) throw error;
         res.json(results);
@@ -335,7 +364,7 @@ app.get('/api/autoMarca/:marca', verificaCliente, (req, res) => {
     });
 });
 
-app.put('/api/aggiornaDisponibilitaAuto/:idAuto', verificaAdmin, (req,res) => {
+app.put('/api/aggiornaDisponibilitaAuto/:idAuto', verificaAdmin, (req, res) => {
     const idAuto = req.params.idAuto;
     const query = `UPDATE auto SET disponibile = 0 WHERE idAuto = ?`
     pool.query(query, [idAuto], (error, results) => {
