@@ -4,6 +4,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
+const bodyParser = require('body-parser');
 
 const app = express();
 const port = 3000;
@@ -15,6 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({
     origin: '*'
 }));
+
+app.use(bodyParser.json());
 
 const pool = mysql.createPool({
     host: 'localhost',
@@ -30,8 +36,12 @@ const transporter = nodemailer.createTransport({
     }
 }); //mail:o gu d o ghi u t r z z e e h
 
-app.get('api/prendiMarcaModello', verificaSuperAdmin, (req, res) => {
-    pool.query('SELECT marche.marca, modelli.modello FROM ' +
+
+app.post('/api/inserisciImmagine', verificaSuperAdmin, (req, res) => {
+    
+})
+app.get('/api/prendiMarcaModello', verificaSuperAdmin, (req, res) => {
+    pool.query('SELECT auto.idAuto, marche.marca, modelli.modello FROM ' +
         ' auto, marche, modelli' +
         ' where marche.idMarca = auto.idMarca AND modelli.idModello = auto.idModello ' +
         'AND modelli.idMarca = marche.idMarca', (error, results) => {
@@ -39,7 +49,7 @@ app.get('api/prendiMarcaModello', verificaSuperAdmin, (req, res) => {
                 console.error(error);
                 return res.status(500).send(`Errore durante il recupero dei dati `);
             }
-            res.send('Recupero dei dati completato con successo');
+            res.send(results);
         })
 })
 
