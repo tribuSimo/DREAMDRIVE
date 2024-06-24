@@ -21,7 +21,9 @@ import venditeAdmin from './components/admin/vendite.vue';
 import aggiungiAuto from './components/superAdmin/aggiungiAuto.vue';
 import aggiungiImmagine from './components/superAdmin/aggiungiImmagine.vue';
 import nuovoAdmin from './components/superAdmin/nuovoAdmin.vue';
-import cancellaAdmin from './components/superAdmin/cancellaAdmin.vue'
+import cancellaAdmin from './components/superAdmin/cancellaAdmin.vue';
+import catalogo from './components/superAdmin/catalogo.vue';
+import dettagliAutoSuperAdmin from './components/superAdmin/dettagliAuto.vue';
 
 const routes = [
   {
@@ -128,6 +130,16 @@ const routes = [
     path: '/superAdmin/aggiungiImmagine',
     name : 'Aggiungi immagine',
     component: aggiungiImmagine
+  },
+  {
+    path: '/superAdmin/catalogo',
+    name : 'Catalogo',
+    component: catalogo
+  },
+  {
+    path: '/superAdmin/dettagliAuto/:idAuto',
+    name : 'Dettagli auto superAdmin',
+    component: dettagliAutoSuperAdmin
   }
 ];
 
