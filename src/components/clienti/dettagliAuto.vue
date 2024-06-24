@@ -84,7 +84,7 @@ export default {
     },
 
     returnCatalog() {
-      router.push("/home");
+      router.push("/clienti/home");
     },
 
     effettuaPrenotazione() {
