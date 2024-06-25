@@ -50,30 +50,30 @@ const transporter = nodemailer.createTransport({
 app.post('/api/inserisciImmagine', verificaSuperAdmin, upload.array('immagini', 10), async (req, res) => {
     const idAuto = req.body.idAuto;
     const immagini = req.files;
-  
+
     if (!idAuto || !immagini) {
-      return res.status(400).send('ID Auto o immagini mancanti');
+        return res.status(400).send('ID Auto o immagini mancanti');
     }
     try {
-      // Utilizza Promise.all per eseguire tutte le query in parallelo
-      await Promise.all(immagini.map(async (immagine) => {
-        const insertQuery = 'INSERT INTO immagini(immagine, idAuto) VALUES (?, ?)';
-        await pool.query(insertQuery, [immagine.filename, idAuto]);
-      }));
-  
-      // Invia la risposta solo dopo aver inserito tutte le immagini con successo
-      res.send('Immagini caricate con successo');
+        // Utilizza Promise.all per eseguire tutte le query in parallelo
+        await Promise.all(immagini.map(async (immagine) => {
+            const insertQuery = 'INSERT INTO immagini(immagine, idAuto) VALUES (?, ?)';
+            await pool.query(insertQuery, [immagine.filename, idAuto]);
+        }));
+
+        // Invia la risposta solo dopo aver inserito tutte le immagini con successo
+        res.send('Immagini caricate con successo');
     } catch (error) {
-      console.error('Errore durante l\'inserimento delle immagini:', error);
-      res.status(500).send('Errore durante l\'inserimento delle immagini');
+        console.error('Errore durante l\'inserimento delle immagini:', error);
+        res.status(500).send('Errore durante l\'inserimento delle immagini');
     }
-  });
+});
 
 app.get('/api/prendiMarcaModello', verificaSuperAdmin, (req, res) => {
     pool.query('SELECT auto.idAuto, marche.marca, modelli.modello FROM ' +
         ' auto, marche, modelli' +
         ' where marche.idMarca = auto.idMarca AND modelli.idModello = auto.idModello ' +
-        'AND modelli.idMarca = marche.idMarca', (error, results) => {
+        'AND modelli.idMarca = marche.idMarca AND auto.disponibile = 1', (error, results) => {
             if (error) {
                 console.error(error);
                 return res.status(500).send(`Errore durante il recupero dei dati `);
@@ -140,16 +140,19 @@ app.delete('/api/eliminaAdmin/:idUtente', verificaSuperAdmin, (req, res) => {
 
 app.post('/api/inserisciAuto', verificaSuperAdmin, (req, res) => {
     const { targa, descrizione, potenza, chilometraggio, annoProduzione, cambio, peso, usata, prezzo, idMarca, idModello, idColore, idCarburante } = req.body;
-    console.log(idMarca);
+    let usataVal = 0;
+    if(usata === "1")
+        usataVal = 1;
+
     pool.query('INSERT INTO auto (targa, descrizione, potenza, chilometraggio, annoProduzione, cambio, peso, usata, prezzo,'
         + ' idMarca, idModello, idColore, idCarburante) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-        [targa, descrizione, potenza, chilometraggio, annoProduzione, cambio, peso, usata, prezzo, idMarca, idModello, idColore, idCarburante], // idRuolo 1 corrisponde al ruolo 'cliente'
+        [targa, descrizione, potenza, chilometraggio, annoProduzione, cambio, peso, usataVal, prezzo, idMarca, idModello, idColore, idCarburante], // idRuolo 1 corrisponde al ruolo 'cliente'
         (error, results) => {
             if (error) {
                 console.error(error);
                 return res.status(500).send(`Errore durante l'inserimento dell'auto `);
             }
-            res.send('Inserimento completato con successo');
+            res.send(results);
         });
 })
 
@@ -161,7 +164,16 @@ app.post('/api/inserisciMarca', verificaSuperAdmin, (req, res) => {
                 console.error(error);
                 return res.status(500).send(`Errore durante l'inserimento della marca `);
             }
-            res.send('Inserimento marca completato con successo');
+            pool.query('SELECT MAX(idMarca) as idMarca FROM marche', (error, results) => {
+                if (error) {
+                    console.error(error);
+                    return res.status(500).send(`Errore durante il recupero dell'ID della marca`);
+                }
+
+                // Invia l'ID della marca come risposta
+                const idMarca = results[0].idMarca;
+                res.send({ "idMarca" : idMarca });
+            });
         });
 })
 
@@ -173,7 +185,16 @@ app.post('/api/inserisciModello', verificaSuperAdmin, (req, res) => {
                 console.error(error);
                 return res.status(500).send(`Errore durante l'inserimento del modello `);
             }
-            res.send('Inserimento modello completato con successo');
+            pool.query('SELECT MAX(idModello) as idModello FROM modelli', (error, results) => {
+                if (error) {
+                    console.error(error);
+                    return res.status(500).send(`Errore durante il recupero dell'ID della marca`);
+                }
+
+                // Invia l'ID della marca come risposta
+                const idModello = results[0].idModello;
+                res.send({ "idModello" : idModello });
+            });
         });
 })
 app.post('/api/inserisciColore', verificaSuperAdmin, (req, res) => {
@@ -184,7 +205,16 @@ app.post('/api/inserisciColore', verificaSuperAdmin, (req, res) => {
                 console.error(error);
                 return res.status(500).send(`Errore durante l'inserimento del colore `);
             }
-            res.send('Inserimento colore completato con successo');
+            pool.query('SELECT MAX(idColore) as idColore FROM colori', (error, results) => {
+                if (error) {
+                    console.error(error);
+                    return res.status(500).send(`Errore durante il recupero dell'ID della marca`);
+                }
+
+                // Invia l'ID della marca come risposta
+                const idColore = results[0].idColore;
+                res.send({ "idColore" : idColore });
+            });
         });
 })
 

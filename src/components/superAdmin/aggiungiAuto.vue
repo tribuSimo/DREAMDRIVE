@@ -85,6 +85,7 @@ export default {
   created() {
     if (localStorage.getItem('token') && localStorage.getItem('ruolo') && localStorage.getItem('ruolo') >= 3) {
       this.visualizzaCarburanti();
+      console.log(this.usata);
     } else {
       router.push('/login');
     }
@@ -115,7 +116,7 @@ export default {
             });
             marca = await response.json();
           }
-
+          console.log("diocane!: ", marca);
           response = await fetch(`${window.dreamdrive_cfg.api}/modelli/${this.modello}`, {
             method: 'GET',
             headers: {
@@ -166,7 +167,7 @@ export default {
             annoProduzione: this.annoUscita,
             cambio: this.cambio,
             peso: this.peso,
-            usata: this.usata,
+            usata: this.usata ? 1 : 0,
             prezzo: this.prezzo,
             idMarca: marca.idMarca,
             idModello: modello.idModello,
