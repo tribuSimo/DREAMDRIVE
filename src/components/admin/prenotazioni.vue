@@ -17,10 +17,10 @@
               <b>Data Ora</b>
             </th>
             <th class="text-center">
-              <b>Disdetta</b>
+              <b>Conferma</b>
             </th>
             <th class="text-center">
-              <b>Conferma</b>
+              <b>Disdetta</b>
             </th>
           </tr>
         </thead>
